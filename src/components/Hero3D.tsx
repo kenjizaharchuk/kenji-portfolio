@@ -51,54 +51,54 @@ function Name3D() {
       currentRotation.current.x = THREE.MathUtils.lerp(
         currentRotation.current.x,
         targetRotation.current.x,
-        0.3
+        0.2  // Slower drag response
       );
       currentRotation.current.y = THREE.MathUtils.lerp(
         currentRotation.current.y,
         targetRotation.current.y,
-        0.3
+        0.2
       );
     } else {
       // Apply inertia and slowly return to center
       targetRotation.current.x += velocity.x;
       targetRotation.current.y += velocity.y;
       
-      // Decay velocity
+      // Slower velocity decay (30-40% slower)
       setVelocity(v => ({
-        x: v.x * 0.95,
-        y: v.y * 0.95
+        x: v.x * 0.97,
+        y: v.y * 0.97
       }));
       
-      // Slowly ease back to original position
-      targetRotation.current.x = THREE.MathUtils.lerp(targetRotation.current.x, 0, 0.02);
-      targetRotation.current.y = THREE.MathUtils.lerp(targetRotation.current.y, 0, 0.02);
+      // Much slower ease back to original position (30-40% slower)
+      targetRotation.current.x = THREE.MathUtils.lerp(targetRotation.current.x, 0, 0.012);
+      targetRotation.current.y = THREE.MathUtils.lerp(targetRotation.current.y, 0, 0.012);
       
       currentRotation.current.x = THREE.MathUtils.lerp(
         currentRotation.current.x,
         targetRotation.current.x,
-        0.08
+        0.05  // Slower easing
       );
       currentRotation.current.y = THREE.MathUtils.lerp(
         currentRotation.current.y,
         targetRotation.current.y,
-        0.08
+        0.05
       );
       
-      // Subtle idle animation when not interacting
-      const idleX = Math.sin(state.clock.elapsedTime * 0.15) * 0.03;
-      const idleY = Math.sin(state.clock.elapsedTime * 0.1) * 0.02;
+      // Slower, subtler idle animation (30-40% slower)
+      const idleX = Math.sin(state.clock.elapsedTime * 0.1) * 0.025;
+      const idleY = Math.sin(state.clock.elapsedTime * 0.07) * 0.015;
       
       if (Math.abs(velocity.x) < 0.001 && Math.abs(velocity.y) < 0.001) {
-        currentRotation.current.x += idleX * 0.1;
-        currentRotation.current.y += idleY * 0.1;
+        currentRotation.current.x += idleX * 0.08;
+        currentRotation.current.y += idleY * 0.08;
       }
     }
 
     groupRef.current.rotation.x = currentRotation.current.x;
     groupRef.current.rotation.y = currentRotation.current.y;
     
-    // Subtle floating motion
-    groupRef.current.position.y = Math.sin(state.clock.elapsedTime * 0.3) * 0.05;
+    // Slower floating motion (30-40% slower)
+    groupRef.current.position.y = Math.sin(state.clock.elapsedTime * 0.2) * 0.04;
   });
 
   return (
@@ -114,20 +114,20 @@ function Name3D() {
         <Text3D
           font="/fonts/helvetiker_bold.typeface.json"
           size={1}
-          height={0.25}
-          curveSegments={24}
+          height={0.3}
+          curveSegments={32}
           bevelEnabled
-          bevelThickness={0.015}
-          bevelSize={0.015}
+          bevelThickness={0.04}
+          bevelSize={0.035}
           bevelOffset={0}
-          bevelSegments={8}
+          bevelSegments={12}
         >
           KENJI ZAHARCHUK
           <meshStandardMaterial
-            color="#c0c8d0"
-            metalness={0.95}
-            roughness={0.15}
-            envMapIntensity={1.2}
+            color="#e0e8ef"
+            metalness={0.92}
+            roughness={0.12}
+            envMapIntensity={1.8}
           />
         </Text3D>
       </Center>
@@ -138,17 +138,18 @@ function Name3D() {
 function Lights() {
   return (
     <>
-      <ambientLight intensity={0.15} />
-      <directionalLight position={[10, 10, 8]} intensity={1.5} color="#ffffff" />
-      <directionalLight position={[-8, -5, -8]} intensity={0.4} color="#60a5c8" />
-      <pointLight position={[0, 5, 10]} intensity={0.8} color="#ffffff" />
-      <pointLight position={[-10, 0, -5]} intensity={0.3} color="#4fd1c5" />
+      <ambientLight intensity={0.4} />
+      <directionalLight position={[10, 10, 8]} intensity={2.2} color="#ffffff" />
+      <directionalLight position={[-8, -5, -8]} intensity={0.6} color="#80c5e8" />
+      <pointLight position={[0, 5, 10]} intensity={1.2} color="#ffffff" />
+      <pointLight position={[-10, 0, -5]} intensity={0.5} color="#6fd1e5" />
+      <pointLight position={[5, -5, 8]} intensity={0.8} color="#ffffff" />
       <spotLight
         position={[0, 10, 0]}
         angle={0.5}
         penumbra={1}
-        intensity={0.5}
-        color="#e0e8f0"
+        intensity={0.8}
+        color="#f0f4f8"
       />
     </>
   );

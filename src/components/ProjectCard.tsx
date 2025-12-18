@@ -9,11 +9,10 @@ interface ProjectCardProps {
 
 export function ProjectCard({ title, description, image, index }: ProjectCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
-  const [isVisible, setIsVisible] = useState(false);
+  const [progress, setProgress] = useState(0);
   
   // Generate controlled random variations for each card
   const variations = useMemo(() => {
-    // Seeded pseudo-random based on index for consistency
     const seed = index * 137.5;
     const random = (offset: number) => {
       const x = Math.sin(seed + offset) * 10000;
@@ -23,60 +22,70 @@ export function ProjectCard({ title, description, image, index }: ProjectCardPro
     // Alternate sides with offset from edge
     const isLeft = index % 2 === 0;
     const translateX = isLeft 
-      ? -150 - random(1) * 100 
-      : 150 + random(2) * 100;
+      ? -180 - random(1) * 80 
+      : 180 + random(2) * 80;
     
     // Varied vertical offset
-    const translateY = (random(3) - 0.5) * 60;
+    const translateY = (random(3) - 0.5) * 50;
     
-    // Subtle rotation (-8 to 8 degrees)
-    const rotate = (random(4) - 0.5) * 16;
+    // Subtle rotation (-6 to 6 degrees)
+    const rotate = (random(4) - 0.5) * 12;
     
-    // Staggered delay based on position
-    const delay = 200 + index * 150;
+    // Slight scale variation
+    const scaleStart = 0.85 + random(5) * 0.1;
     
-    // Animation duration with slight variation
-    const duration = 1200 + random(5) * 400;
-    
-    return { translateX, translateY, rotate, delay, duration, isLeft };
+    return { translateX, translateY, rotate, scaleStart, isLeft };
   }, [index]);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
-    );
+    const handleScroll = () => {
+      if (!cardRef.current) return;
+      
+      const rect = cardRef.current.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+      
+      // Calculate progress: 0 when card bottom enters viewport, 1 when card top reaches center
+      const startPoint = windowHeight; // Card bottom at viewport bottom
+      const endPoint = windowHeight * 0.3; // Card top at 30% from top
+      
+      const cardCenter = rect.top + rect.height / 2;
+      
+      // Calculate raw progress
+      let rawProgress = (startPoint - cardCenter) / (startPoint - endPoint);
+      rawProgress = Math.max(0, Math.min(1, rawProgress));
+      
+      setProgress(rawProgress);
+    };
 
-    if (cardRef.current) {
-      observer.observe(cardRef.current);
-    }
-
-    return () => observer.disconnect();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll(); // Initial calculation
+    
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const initialStyle: React.CSSProperties = {
-    transform: `translate(${variations.translateX}px, ${variations.translateY}px) rotate(${variations.rotate}deg)`,
-    opacity: 0,
-  };
+  // Smooth easing function for premium feel
+  const easeOutQuart = (t: number) => 1 - Math.pow(1 - t, 4);
+  const easedProgress = easeOutQuart(progress);
 
-  const visibleStyle: React.CSSProperties = {
-    transform: 'translate(0px, 0px) rotate(0deg)',
-    opacity: 1,
-    transition: `all ${variations.duration}ms cubic-bezier(0.16, 1, 0.3, 1)`,
-    transitionDelay: `${variations.delay}ms`,
+  // Calculate current transform values based on scroll progress
+  const currentTranslateX = variations.translateX * (1 - easedProgress);
+  const currentTranslateY = variations.translateY * (1 - easedProgress);
+  const currentRotate = variations.rotate * (1 - easedProgress);
+  const currentScale = variations.scaleStart + (1 - variations.scaleStart) * easedProgress;
+
+  const style: React.CSSProperties = {
+    transform: `translate(${currentTranslateX}px, ${currentTranslateY}px) rotate(${currentRotate}deg) scale(${currentScale})`,
+    opacity: easedProgress,
+    transition: 'none', // No transition - purely scroll-driven
   };
 
   return (
     <div
       ref={cardRef}
-      style={isVisible ? visibleStyle : initialStyle}
+      style={style}
+      className="will-change-transform"
     >
-      <div className="group relative bg-card rounded-lg overflow-hidden card-glow transition-all duration-700">
+      <div className="group relative bg-card rounded-lg overflow-hidden card-glow transition-shadow duration-700">
         {/* Image */}
         <div className="aspect-video overflow-hidden">
           <img

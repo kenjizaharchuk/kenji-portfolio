@@ -39,13 +39,13 @@ export function ProjectsSection() {
       <div className="max-w-6xl mx-auto">
         {/* Section header */}
         <div className="mb-20 space-y-4">
-          <p className="text-primary font-mono text-sm tracking-widest uppercase">
+          <p className="font-mono text-sm tracking-widest uppercase bg-gradient-to-r from-[#a8b8c8] via-[#e0e8ef] to-[#a8b8c8] bg-clip-text text-transparent drop-shadow-[0_0_20px_rgba(180,200,220,0.3)]">
             Selected Work
           </p>
-          <h2 className="text-4xl md:text-5xl font-bold text-foreground">
+          <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-[#b0c0d0] via-[#f0f4f8] to-[#b0c0d0] bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(200,220,240,0.25)]">
             Projects
           </h2>
-          <div className="h-px w-24 bg-gradient-to-r from-primary to-transparent" />
+          <div className="h-px w-24 bg-gradient-to-r from-[#a8c0d8]/60 via-[#e0e8f0]/40 to-transparent" />
         </div>
         
         {/* Projects grid */}
