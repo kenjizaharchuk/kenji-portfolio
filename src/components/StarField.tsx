@@ -31,24 +31,28 @@ const starFragmentShader = `
     vec2 uv = gl_PointCoord - vec2(0.5);
     float dist = length(uv);
     
-    // Sharp point core
-    float core = 1.0 - smoothstep(0.0, 0.08, dist);
+    // Very sharp point core - astronomy photo style
+    float core = 1.0 - smoothstep(0.0, 0.05, dist);
     
-    // Subtle glow around core
-    float glow = exp(-dist * 12.0) * 0.25;
+    // Tight glow around core
+    float glow = exp(-dist * 16.0) * 0.2;
     
-    // Lens flare / diffraction spikes for large stars only
+    // Sharp cross-shaped diffraction spikes for large stars only
     float spikes = 0.0;
     if (vIsLarge > 0.5) {
-      // Much slower twinkle - natural night sky feel
-      float twinkle = 0.92 + 0.08 * sin(time * 0.04 + vBrightness * 6.28);
+      // Very slow, organic twinkle - like real stars
+      float twinkle = 0.94 + 0.06 * sin(time * 0.015 + vBrightness * 6.28);
+      float twinkle2 = 0.96 + 0.04 * sin(time * 0.022 + vBrightness * 3.14);
       
-      // 4-point star diffraction pattern - sharper
-      float angle1 = abs(uv.x) + abs(uv.y);
-      float angle2 = abs(uv.x - uv.y) + abs(uv.x + uv.y);
-      float spike1 = exp(-angle1 * 18.0) * 0.7;
-      float spike2 = exp(-angle2 * 22.0) * 0.4;
-      spikes = (spike1 + spike2) * twinkle;
+      // Sharp 4-point cross diffraction spikes
+      float spikeX = exp(-abs(uv.y) * 35.0) * exp(-abs(uv.x) * 8.0) * 0.6;
+      float spikeY = exp(-abs(uv.x) * 35.0) * exp(-abs(uv.y) * 8.0) * 0.6;
+      
+      // Diagonal spikes (fainter)
+      float spikeDiag1 = exp(-abs(uv.x - uv.y) * 28.0) * exp(-abs(uv.x + uv.y) * 12.0) * 0.25;
+      float spikeDiag2 = exp(-abs(uv.x + uv.y) * 28.0) * exp(-abs(uv.x - uv.y) * 12.0) * 0.25;
+      
+      spikes = (spikeX + spikeY) * twinkle + (spikeDiag1 + spikeDiag2) * twinkle2;
     }
     
     float alpha = (core + glow + spikes) * vBrightness;
@@ -66,7 +70,7 @@ function Stars() {
   const materialRef = useRef<THREE.ShaderMaterial>(null);
   
   const [geometry, uniforms] = useMemo(() => {
-    const count = 600;
+    const count = 400; // Reduced count for cleaner look
     const positions = new Float32Array(count * 3);
     const sizes = new Float32Array(count);
     const brightnesses = new Float32Array(count);
@@ -82,10 +86,10 @@ function Stars() {
       positions[i3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
       positions[i3 + 2] = radius * Math.cos(phi);
       
-      // Most stars small and sharp, few are larger with flares - increased sizes
-      const isLargeStar = Math.random() > 0.94;
-      sizes[i] = isLargeStar ? 3.5 + Math.random() * 2.5 : 1.2 + Math.random() * 1.0;
-      brightnesses[i] = isLargeStar ? 0.95 + Math.random() * 0.05 : 0.6 + Math.random() * 0.3;
+      // Fewer but larger, sharper stars - real astronomy feel
+      const isLargeStar = Math.random() > 0.92;
+      sizes[i] = isLargeStar ? 4.5 + Math.random() * 3.0 : 1.8 + Math.random() * 1.4;
+      brightnesses[i] = isLargeStar ? 0.95 + Math.random() * 0.05 : 0.55 + Math.random() * 0.35;
       isLarge[i] = isLargeStar ? 1.0 : 0.0;
     }
     
@@ -131,28 +135,29 @@ function MilkyWay() {
   const ref = useRef<THREE.Points>(null);
   
   const positions = useMemo(() => {
-    const count = 22000;
+    const count = 28000;
     const positions = new Float32Array(count * 3);
     
     for (let i = 0; i < count; i++) {
       const i3 = i * 3;
       const t = Math.random();
       
-      // Wider diagonal band - rotated clockwise (bottom-left to top-right)
-      const bandWidth = 28 + Math.random() * 18;
+      // Wide diagonal band - bottom-left to top-right (clockwise rotation)
+      const bandWidth = 35 + Math.random() * 25;
       const spread = (Math.random() - 0.5) * bandWidth;
       
-      // Diagonal from bottom-left to top-right (rotated clockwise)
-      const diagX = -90 + t * 180;
-      const diagY = -50 + t * 100;
+      // Diagonal running from bottom-left to top-right
+      const diagX = -120 + t * 240;
+      const diagY = -70 + t * 140;
       
-      // Add spread perpendicular to the diagonal
-      const perpX = spread * 0.5;
-      const perpY = spread * -0.5;
+      // Spread perpendicular to diagonal (rotated clockwise)
+      const angle = Math.PI * 0.25; // 45 degrees
+      const perpX = spread * Math.cos(angle);
+      const perpY = spread * -Math.sin(angle);
       
-      positions[i3] = diagX + perpX + (Math.random() - 0.5) * 20;
-      positions[i3 + 1] = diagY + perpY + (Math.random() - 0.5) * 15;
-      positions[i3 + 2] = -130 - Math.random() * 50; // Very far behind
+      positions[i3] = diagX + perpX + (Math.random() - 0.5) * 25;
+      positions[i3 + 1] = diagY + perpY + (Math.random() - 0.5) * 18;
+      positions[i3 + 2] = -150 - Math.random() * 60; // Very far behind all content
     }
     
     return positions;
@@ -160,7 +165,7 @@ function MilkyWay() {
 
   useFrame((state) => {
     if (ref.current) {
-      ref.current.rotation.z = state.clock.elapsedTime * 0.0002;
+      ref.current.rotation.z = state.clock.elapsedTime * 0.00015;
     }
   });
 
@@ -175,10 +180,10 @@ function MilkyWay() {
         />
       </bufferGeometry>
       <pointsMaterial
-        size={0.07}
-        color="#9ab4d0"
+        size={0.08}
+        color="#a8c0d8"
         transparent
-        opacity={0.18}
+        opacity={0.22}
         sizeAttenuation
         depthWrite={false}
         blending={THREE.AdditiveBlending}
@@ -191,7 +196,7 @@ function DistantStars() {
   const ref = useRef<THREE.Points>(null);
   
   const positions = useMemo(() => {
-    const count = 300;
+    const count = 200; // Reduced for cleaner look
     const positions = new Float32Array(count * 3);
     
     for (let i = 0; i < count; i++) {
@@ -210,7 +215,7 @@ function DistantStars() {
 
   useFrame((state) => {
     if (ref.current) {
-      ref.current.rotation.y = state.clock.elapsedTime * 0.0004;
+      ref.current.rotation.y = state.clock.elapsedTime * 0.0003;
     }
   });
 
@@ -225,10 +230,10 @@ function DistantStars() {
         />
       </bufferGeometry>
       <pointsMaterial
-        size={0.05}
+        size={0.06}
         color="#b0c5d8"
         transparent
-        opacity={0.2}
+        opacity={0.18}
         sizeAttenuation
         depthWrite={false}
       />
