@@ -87,25 +87,25 @@ function Name3D() {
       targetRotation.current.x += velocity.x;
       targetRotation.current.y += velocity.y;
       
-      // Velocity decay - slightly faster for more responsiveness
+      // Velocity decay - faster for more damped feel
       setVelocity(v => ({
-        x: v.x * 0.97,
-        y: v.y * 0.97
+        x: v.x * 0.95,
+        y: v.y * 0.95
       }));
       
-      // Slightly faster ease back to original position
-      targetRotation.current.x = THREE.MathUtils.lerp(targetRotation.current.x, 0, 0.012);
-      targetRotation.current.y = THREE.MathUtils.lerp(targetRotation.current.y, 0, 0.012);
+      // Faster ease back to center - physically damped, not floaty
+      targetRotation.current.x = THREE.MathUtils.lerp(targetRotation.current.x, 0, 0.025);
+      targetRotation.current.y = THREE.MathUtils.lerp(targetRotation.current.y, 0, 0.025);
       
       currentRotation.current.x = THREE.MathUtils.lerp(
         currentRotation.current.x,
         targetRotation.current.x,
-        0.04
+        0.08
       );
       currentRotation.current.y = THREE.MathUtils.lerp(
         currentRotation.current.y,
         targetRotation.current.y,
-        0.04
+        0.08
       );
       
       // Even slower, subtler idle animation (40% slower)
@@ -134,7 +134,7 @@ function Name3D() {
       onPointerUp={handlePointerUp}
       onPointerLeave={handlePointerUp}
     >
-      <Center>
+      <Center position={[0.2, 0, 0]}>
         <Text3D
           font="/fonts/helvetiker_bold.typeface.json"
           size={1}
@@ -159,21 +159,25 @@ function Name3D() {
   );
 }
 
-// 3D Chevron scroll indicator
+// 3D Chevron scroll indicator - positioned at bottom of viewport
 function ScrollChevron() {
   const groupRef = useRef<THREE.Group>(null);
+  const { viewport } = useThree();
+  
+  // Position at bottom of viewport
+  const yPosition = -viewport.height / 2 + 0.8;
   
   useFrame((state) => {
     if (!groupRef.current) return;
-    // Slow bobbing motion
-    groupRef.current.position.y = Math.sin(state.clock.elapsedTime * 0.5) * 0.08;
+    // Slow, subtle vertical bobbing motion
+    groupRef.current.position.y = yPosition + Math.sin(state.clock.elapsedTime * 0.8) * 0.12;
   });
 
   // Create chevron shape
   const chevronShape = new THREE.Shape();
-  const w = 0.3;
-  const h = 0.15;
-  const t = 0.04;
+  const w = 0.35;
+  const h = 0.18;
+  const t = 0.05;
   
   chevronShape.moveTo(-w, h);
   chevronShape.lineTo(-w + t, h + t);
@@ -185,22 +189,22 @@ function ScrollChevron() {
 
   const extrudeSettings = {
     steps: 1,
-    depth: 0.05,
+    depth: 0.06,
     bevelEnabled: true,
-    bevelThickness: 0.015,
-    bevelSize: 0.015,
+    bevelThickness: 0.018,
+    bevelSize: 0.018,
     bevelSegments: 8,
   };
 
   return (
-    <group ref={groupRef} position={[0, -4.2, 0]} rotation={[0.1, 0, 0]}>
+    <group ref={groupRef} position={[0, yPosition, 0]} rotation={[0.15, 0, 0]}>
       <mesh>
         <extrudeGeometry args={[chevronShape, extrudeSettings]} />
         <meshStandardMaterial
           color="#d0dce8"
           metalness={0.9}
-          roughness={0.2}
-          envMapIntensity={1.8}
+          roughness={0.18}
+          envMapIntensity={2.0}
         />
       </mesh>
     </group>
