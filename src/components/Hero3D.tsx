@@ -87,25 +87,25 @@ function Name3D() {
       targetRotation.current.x += velocity.x;
       targetRotation.current.y += velocity.y;
       
-      // Even slower velocity decay (40% slower)
+      // Velocity decay - slightly faster for more responsiveness
       setVelocity(v => ({
-        x: v.x * 0.98,
-        y: v.y * 0.98
+        x: v.x * 0.97,
+        y: v.y * 0.97
       }));
       
-      // Much slower ease back to original position (40% slower)
-      targetRotation.current.x = THREE.MathUtils.lerp(targetRotation.current.x, 0, 0.006);
-      targetRotation.current.y = THREE.MathUtils.lerp(targetRotation.current.y, 0, 0.006);
+      // Slightly faster ease back to original position
+      targetRotation.current.x = THREE.MathUtils.lerp(targetRotation.current.x, 0, 0.012);
+      targetRotation.current.y = THREE.MathUtils.lerp(targetRotation.current.y, 0, 0.012);
       
       currentRotation.current.x = THREE.MathUtils.lerp(
         currentRotation.current.x,
         targetRotation.current.x,
-        0.025
+        0.04
       );
       currentRotation.current.y = THREE.MathUtils.lerp(
         currentRotation.current.y,
         targetRotation.current.y,
-        0.025
+        0.04
       );
       
       // Even slower, subtler idle animation (40% slower)
@@ -193,7 +193,7 @@ function ScrollChevron() {
   };
 
   return (
-    <group ref={groupRef} position={[0, -3.5, 0]} rotation={[0.1, 0, 0]}>
+    <group ref={groupRef} position={[0, -4.2, 0]} rotation={[0.1, 0, 0]}>
       <mesh>
         <extrudeGeometry args={[chevronShape, extrudeSettings]} />
         <meshStandardMaterial
