@@ -19,22 +19,14 @@ export function ProjectCard({ title, description, image, index }: ProjectCardPro
       return x - Math.floor(x);
     };
     
-    // Alternate sides with offset from edge
-    const isLeft = index % 2 === 0;
-    const translateX = isLeft 
-      ? -180 - random(1) * 80 
-      : 180 + random(2) * 80;
+    // Slight initial rotation for variety
+    const rotateX = (random(1) - 0.5) * 10;
+    const rotateY = (random(2) - 0.5) * 8;
     
-    // Varied vertical offset
-    const translateY = (random(3) - 0.5) * 50;
+    // Staggered timing based on index
+    const staggerDelay = index * 0.15;
     
-    // Subtle rotation (-6 to 6 degrees)
-    const rotate = (random(4) - 0.5) * 12;
-    
-    // Slight scale variation
-    const scaleStart = 0.85 + random(5) * 0.1;
-    
-    return { translateX, translateY, rotate, scaleStart, isLeft };
+    return { rotateX, rotateY, staggerDelay };
   }, [index]);
 
   useEffect(() => {
@@ -44,48 +36,65 @@ export function ProjectCard({ title, description, image, index }: ProjectCardPro
       const rect = cardRef.current.getBoundingClientRect();
       const windowHeight = window.innerHeight;
       
-      // Calculate progress: 0 when card bottom enters viewport, 1 when card top reaches center
-      const startPoint = windowHeight; // Card bottom at viewport bottom
-      const endPoint = windowHeight * 0.3; // Card top at 30% from top
+      // Calculate progress: starts when card enters viewport, completes when fully visible
+      // Slow reveal - takes more scroll distance
+      const startPoint = windowHeight * 1.1;
+      const endPoint = windowHeight * 0.25;
       
       const cardCenter = rect.top + rect.height / 2;
       
-      // Calculate raw progress
-      let rawProgress = (startPoint - cardCenter) / (startPoint - endPoint);
+      // Stagger effect - each card starts animation slightly later
+      const staggerOffset = variations.staggerDelay * windowHeight * 0.15;
+      const adjustedCardCenter = cardCenter + staggerOffset;
+      
+      let rawProgress = (startPoint - adjustedCardCenter) / (startPoint - endPoint);
       rawProgress = Math.max(0, Math.min(1, rawProgress));
       
       setProgress(rawProgress);
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll(); // Initial calculation
+    handleScroll();
     
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [variations.staggerDelay]);
 
-  // Smooth easing function for premium feel
+  // Smooth easing function for cinematic feel
   const easeOutQuart = (t: number) => 1 - Math.pow(1 - t, 4);
   const easedProgress = easeOutQuart(progress);
 
-  // Calculate current transform values based on scroll progress
-  const currentTranslateX = variations.translateX * (1 - easedProgress);
-  const currentTranslateY = variations.translateY * (1 - easedProgress);
-  const currentRotate = variations.rotate * (1 - easedProgress);
-  const currentScale = variations.scaleStart + (1 - variations.scaleStart) * easedProgress;
+  // Depth-based reveal: start from far away (small), come toward viewer (full size)
+  const startScale = 0.3;
+  const currentScale = startScale + (1 - startScale) * easedProgress;
+  
+  // Z-translation for depth effect (CSS perspective will handle visual depth)
+  const startZ = -200;
+  const currentZ = startZ * (1 - easedProgress);
+  
+  // Rotation eases to neutral
+  const currentRotateX = variations.rotateX * (1 - easedProgress);
+  const currentRotateY = variations.rotateY * (1 - easedProgress);
+
+  // Floating animation at rest (only when fully revealed)
+  const floatAmount = easedProgress > 0.95 ? 'translateY(var(--float-y, 0px))' : '';
 
   const style: React.CSSProperties = {
-    transform: `translate(${currentTranslateX}px, ${currentTranslateY}px) rotate(${currentRotate}deg) scale(${currentScale})`,
+    transform: `perspective(1000px) translateZ(${currentZ}px) scale(${currentScale}) rotateX(${currentRotateX}deg) rotateY(${currentRotateY}deg) ${floatAmount}`,
     opacity: easedProgress,
-    transition: 'none', // No transition - purely scroll-driven
+    transition: 'none',
   };
 
   return (
     <div
       ref={cardRef}
       style={style}
-      className="will-change-transform"
+      className="will-change-transform card-float"
     >
-      <div className="group relative bg-card rounded-lg overflow-hidden card-glow transition-shadow duration-700">
+      <div className="group relative bg-gradient-to-br from-card via-card to-secondary/20 rounded-2xl overflow-hidden card-3d transition-shadow duration-700">
+        {/* Metallic edge highlight */}
+        <div className="absolute inset-0 rounded-2xl border border-[#4a5a6a]/30 pointer-events-none" />
+        <div className="absolute inset-[1px] rounded-2xl border border-[#8090a0]/10 pointer-events-none" />
+        
         {/* Image */}
         <div className="aspect-video overflow-hidden">
           <img
@@ -93,12 +102,12 @@ export function ProjectCard({ title, description, image, index }: ProjectCardPro
             alt={title}
             className="w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-105"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-card via-transparent to-transparent opacity-70" />
+          <div className="absolute inset-0 bg-gradient-to-t from-card via-card/50 to-transparent opacity-80" />
         </div>
         
         {/* Content */}
-        <div className="p-6 space-y-3">
-          <h3 className="text-xl font-semibold text-foreground group-hover:text-primary transition-colors duration-500">
+        <div className="p-6 space-y-3 relative z-10">
+          <h3 className="text-xl font-semibold bg-gradient-to-r from-foreground via-foreground to-muted-foreground bg-clip-text text-transparent group-hover:from-primary group-hover:to-foreground transition-all duration-500">
             {title}
           </h3>
           <p className="text-muted-foreground text-sm leading-relaxed">
@@ -106,11 +115,14 @@ export function ProjectCard({ title, description, image, index }: ProjectCardPro
           </p>
           
           {/* Hover line */}
-          <div className="h-px w-0 bg-primary group-hover:w-full transition-all duration-700 ease-out" />
+          <div className="h-px w-0 bg-gradient-to-r from-primary via-primary to-transparent group-hover:w-full transition-all duration-700 ease-out" />
         </div>
         
+        {/* Depth/thickness illusion - bottom edge */}
+        <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-[#2a3a4a] via-[#3a4a5a] to-[#2a3a4a] rounded-b-2xl" />
+        
         {/* Corner accent */}
-        <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-[#506070]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
       </div>
     </div>
   );

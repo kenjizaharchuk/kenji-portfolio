@@ -4,7 +4,7 @@ import { ProjectsSection } from '@/components/ProjectsSection';
 
 const Index = () => {
   return (
-    <main className="relative">
+    <main className="relative overflow-x-hidden">
       <StarField />
       <Hero3D />
       <ProjectsSection />

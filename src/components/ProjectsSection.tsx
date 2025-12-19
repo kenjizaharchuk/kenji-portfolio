@@ -35,21 +35,21 @@ const projects = [
 
 export function ProjectsSection() {
   return (
-    <section className="relative min-h-screen py-32 px-6">
-      <div className="max-w-6xl mx-auto">
+    <section className="relative min-h-screen py-32 px-4 sm:px-6 overflow-hidden">
+      <div className="max-w-5xl mx-auto">
         {/* Section header */}
-        <div className="mb-20 space-y-4">
-          <p className="font-mono text-sm tracking-widest uppercase bg-gradient-to-r from-[#a8b8c8] via-[#e0e8ef] to-[#a8b8c8] bg-clip-text text-transparent drop-shadow-[0_0_20px_rgba(180,200,220,0.3)]">
+        <div className="mb-24 space-y-4">
+          <p className="font-mono text-sm tracking-widest uppercase bg-gradient-to-r from-[#707a84] via-[#c0c8d0] to-[#707a84] bg-clip-text text-transparent">
             Selected Work
           </p>
-          <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-[#b0c0d0] via-[#f0f4f8] to-[#b0c0d0] bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(200,220,240,0.25)]">
+          <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-[#a0aab4] via-[#e8ecf0] to-[#a0aab4] bg-clip-text text-transparent drop-shadow-[0_0_20px_rgba(180,190,200,0.15)]">
             Projects
           </h2>
-          <div className="h-px w-24 bg-gradient-to-r from-[#a8c0d8]/60 via-[#e0e8f0]/40 to-transparent" />
+          <div className="h-px w-24 bg-gradient-to-r from-[#606a74]/60 via-[#909aa4]/40 to-transparent" />
         </div>
         
         {/* Projects grid */}
-        <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
+        <div className="grid md:grid-cols-2 gap-6 lg:gap-8">
           {projects.map((project, index) => (
             <ProjectCard
               key={project.title}
