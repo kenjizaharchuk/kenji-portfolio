@@ -40,8 +40,8 @@ const starFragmentShader = `
     // Lens flare / diffraction spikes for large stars only
     float spikes = 0.0;
     if (vIsLarge > 0.5) {
-      // Very slow twinkle only on large stars
-      float twinkle = 0.9 + 0.1 * sin(time * 0.2 + vBrightness * 6.28);
+      // Much slower twinkle - natural night sky feel
+      float twinkle = 0.92 + 0.08 * sin(time * 0.04 + vBrightness * 6.28);
       
       // 4-point star diffraction pattern - sharper
       float angle1 = abs(uv.x) + abs(uv.y);
@@ -82,9 +82,9 @@ function Stars() {
       positions[i3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
       positions[i3 + 2] = radius * Math.cos(phi);
       
-      // Most stars small and sharp, few are larger with flares
+      // Most stars small and sharp, few are larger with flares - increased sizes
       const isLargeStar = Math.random() > 0.94;
-      sizes[i] = isLargeStar ? 2.0 + Math.random() * 1.5 : 0.5 + Math.random() * 0.5;
+      sizes[i] = isLargeStar ? 3.5 + Math.random() * 2.5 : 1.2 + Math.random() * 1.0;
       brightnesses[i] = isLargeStar ? 0.95 + Math.random() * 0.05 : 0.6 + Math.random() * 0.3;
       isLarge[i] = isLargeStar ? 1.0 : 0.0;
     }
@@ -131,25 +131,28 @@ function MilkyWay() {
   const ref = useRef<THREE.Points>(null);
   
   const positions = useMemo(() => {
-    const count = 18000;
+    const count = 22000;
     const positions = new Float32Array(count * 3);
     
     for (let i = 0; i < count; i++) {
       const i3 = i * 3;
       const t = Math.random();
       
-      // Wider diagonal band from bottom-left to top-right
-      const bandWidth = 18 + Math.random() * 12;
+      // Wider diagonal band - rotated clockwise (bottom-left to top-right)
+      const bandWidth = 28 + Math.random() * 18;
       const spread = (Math.random() - 0.5) * bandWidth;
       
-      // Position along diagonal
-      const x = -80 + t * 160 + (Math.random() - 0.5) * 30;
-      const y = -40 + t * 80 + spread;
-      const z = -120 - Math.random() * 40; // Very far behind
+      // Diagonal from bottom-left to top-right (rotated clockwise)
+      const diagX = -90 + t * 180;
+      const diagY = -50 + t * 100;
       
-      positions[i3] = x;
-      positions[i3 + 1] = y;
-      positions[i3 + 2] = z;
+      // Add spread perpendicular to the diagonal
+      const perpX = spread * 0.5;
+      const perpY = spread * -0.5;
+      
+      positions[i3] = diagX + perpX + (Math.random() - 0.5) * 20;
+      positions[i3 + 1] = diagY + perpY + (Math.random() - 0.5) * 15;
+      positions[i3 + 2] = -130 - Math.random() * 50; // Very far behind
     }
     
     return positions;
@@ -157,7 +160,7 @@ function MilkyWay() {
 
   useFrame((state) => {
     if (ref.current) {
-      ref.current.rotation.z = state.clock.elapsedTime * 0.0003;
+      ref.current.rotation.z = state.clock.elapsedTime * 0.0002;
     }
   });
 
@@ -172,10 +175,10 @@ function MilkyWay() {
         />
       </bufferGeometry>
       <pointsMaterial
-        size={0.06}
-        color="#8aa8c8"
+        size={0.07}
+        color="#9ab4d0"
         transparent
-        opacity={0.12}
+        opacity={0.18}
         sizeAttenuation
         depthWrite={false}
         blending={THREE.AdditiveBlending}
