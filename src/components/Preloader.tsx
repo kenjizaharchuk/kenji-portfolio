@@ -19,34 +19,44 @@ const BEAT_DURATION = 0.32; // Slower for visible wave effect
 const RING_COUNT = 5;
 const INITIAL_DELAY = 0.5; // Start blank for half a second
 
-const generateCloud = (): CloudPoint[] => {
+const generateOrganizedRings = (): CloudPoint[] => {
   const points: CloudPoint[] = [];
-  const count = 85; // Dense swarm of letters
   
-  for (let i = 0; i < count; i++) {
-    // Radial distribution - denser in center, sparser at edges
-    const angle = Math.random() * Math.PI * 2;
-    const radius = Math.pow(Math.random(), 0.55) * 45; // Power curve for organic density
+  // Define each ring: [radius %, number of letters]
+  const ringConfig = [
+    { radius: 12, count: 8 },   // Ring 1 - closest to center (but with gap!)
+    { radius: 20, count: 12 },  // Ring 2
+    { radius: 28, count: 16 },  // Ring 3
+    { radius: 36, count: 20 },  // Ring 4
+    { radius: 44, count: 24 },  // Ring 5 - outermost
+  ];
+  
+  ringConfig.forEach((config, ringIndex) => {
+    const ring = ringIndex + 1;
     
-    // Add organic jitter
-    const jitterX = (Math.random() - 0.5) * 6;
-    const jitterY = (Math.random() - 0.5) * 6;
-    
-    const x = 50 + Math.cos(angle) * radius + jitterX;
-    const y = 50 + Math.sin(angle) * radius + jitterY;
-    
-    // Calculate ring (1-5) based on distance from center
-    const distance = Math.sqrt(Math.pow(x - 50, 2) + Math.pow(y - 50, 2));
-    const ring = Math.min(RING_COUNT, Math.max(1, Math.ceil(distance / (45 / RING_COUNT))));
-    
-    points.push({
-      x,
-      y,
-      distance,
-      ring,
-      id: `cloud-${i}`,
-    });
-  }
+    for (let i = 0; i < config.count; i++) {
+      // Evenly space letters around the circle
+      const baseAngle = (i / config.count) * Math.PI * 2;
+      // Add slight randomness to angle and radius
+      const angleJitter = (Math.random() - 0.5) * 0.3;
+      const radiusJitter = (Math.random() - 0.5) * 3;
+      
+      const angle = baseAngle + angleJitter;
+      const radius = config.radius + radiusJitter;
+      
+      const x = 50 + Math.cos(angle) * radius;
+      const y = 50 + Math.sin(angle) * radius;
+      
+      points.push({
+        x,
+        y,
+        distance: radius,
+        ring,
+        id: `ring-${ring}-${i}`,
+      });
+    }
+  });
+  
   return points;
 };
 
@@ -67,39 +77,39 @@ export const Preloader = ({ onComplete }: PreloaderProps) => {
   const cloudRef = useRef<HTMLDivElement>(null);
   const [currentLetterIndex, setCurrentLetterIndex] = useState(-1); // Start blank
   const [visibleRing, setVisibleRing] = useState(0);
-  const [cloudPoints] = useState<CloudPoint[]>(generateCloud);
+  const [cloudPoints] = useState<CloudPoint[]>(generateOrganizedRings);
 
   useGSAP(
     () => {
       const timeline = gsap.timeline();
 
-      // Phase 1: Letter cycling with radial expansion
+      // Phase 1: Letter cycling with synchronized ring expansion
       LETTERS.forEach((_, index) => {
         timeline.call(
           () => {
             setCurrentLetterIndex(index);
-            // Expand visible ring progressively (1 to 5)
-            const ringProgress = Math.ceil(((index + 1) / LETTERS.length) * RING_COUNT);
-            setVisibleRing(ringProgress);
+            // Ring 1 appears when index=1 (center shows E, ring shows K)
+            // Ring 2 appears when index=2, etc. Cap at RING_COUNT
+            setVisibleRing(Math.min(index, RING_COUNT));
           },
           [],
-          INITIAL_DELAY + index * BEAT_DURATION // Add delay before first letter
+          INITIAL_DELAY + index * BEAT_DURATION
         );
       });
 
       const implosionStart = INITIAL_DELAY + LETTERS.length * BEAT_DURATION + 0.3;
 
-      // Phase 2: Implosion - fade rings from INSIDE to OUTSIDE (center disappears first)
+      // Phase 2: Implosion - same rhythm as expansion
       for (let ring = 1; ring <= RING_COUNT; ring++) {
         timeline.to(
           `.ring-${ring}`,
           {
             opacity: 0,
-            scale: 0.8,
-            duration: 0.12,
+            scale: 0.9,
+            duration: BEAT_DURATION * 0.8,
             ease: 'power2.out',
           },
-          implosionStart + (ring - 1) * 0.08
+          implosionStart + (ring - 1) * (BEAT_DURATION * 0.6)
         );
       }
 
