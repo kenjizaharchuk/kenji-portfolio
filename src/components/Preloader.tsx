@@ -15,8 +15,9 @@ interface CloudPoint {
 }
 
 const LETTERS = ['K', 'E', 'N', 'J', 'I', 'Z', 'A', 'H', 'A', 'R', 'C', 'H', 'U', 'K'];
-const BEAT_DURATION = 0.16; // Slightly faster for smoother feel
+const BEAT_DURATION = 0.32; // Slower for visible wave effect
 const RING_COUNT = 5;
+const INITIAL_DELAY = 0.5; // Start blank for half a second
 
 const generateCloud = (): CloudPoint[] => {
   const points: CloudPoint[] = [];
@@ -64,7 +65,7 @@ export const Preloader = ({ onComplete }: PreloaderProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const centerLetterRef = useRef<HTMLDivElement>(null);
   const cloudRef = useRef<HTMLDivElement>(null);
-  const [currentLetterIndex, setCurrentLetterIndex] = useState(0);
+  const [currentLetterIndex, setCurrentLetterIndex] = useState(-1); // Start blank
   const [visibleRing, setVisibleRing] = useState(0);
   const [cloudPoints] = useState<CloudPoint[]>(generateCloud);
 
@@ -82,11 +83,11 @@ export const Preloader = ({ onComplete }: PreloaderProps) => {
             setVisibleRing(ringProgress);
           },
           [],
-          index * BEAT_DURATION
+          INITIAL_DELAY + index * BEAT_DURATION // Add delay before first letter
         );
       });
 
-      const implosionStart = LETTERS.length * BEAT_DURATION + 0.3;
+      const implosionStart = INITIAL_DELAY + LETTERS.length * BEAT_DURATION + 0.3;
 
       // Phase 2: Implosion - fade rings from INSIDE to OUTSIDE (center disappears first)
       for (let ring = 1; ring <= RING_COUNT; ring++) {
@@ -145,12 +146,12 @@ export const Preloader = ({ onComplete }: PreloaderProps) => {
           const ringLetter = getLetterForRing(point.ring, currentLetterIndex);
           const isVisible = ringLetter !== null && point.ring <= visibleRing;
           // Opacity fades toward edges
-          const baseOpacity = Math.max(0.15, 0.5 - point.distance * 0.008);
+          const baseOpacity = Math.max(0.3, 0.8 - point.distance * 0.01);
 
           return (
             <div
               key={point.id}
-              className={`ring-${point.ring} absolute transform -translate-x-1/2 -translate-y-1/2 transition-opacity duration-150`}
+              className={`ring-${point.ring} absolute transform -translate-x-1/2 -translate-y-1/2`}
               style={{
                 left: `${point.x}%`,
                 top: `${point.y}%`,
@@ -160,7 +161,7 @@ export const Preloader = ({ onComplete }: PreloaderProps) => {
               <span
                 className="font-sans font-bold text-xs md:text-sm lg:text-base"
                 style={{
-                  background: 'linear-gradient(180deg, #ffffff 0%, #a0a0a0 50%, #606060 100%)',
+                  background: 'linear-gradient(180deg, #ffffff 0%, #c0c0c0 50%, #808080 100%)',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
                   backgroundClip: 'text',
@@ -178,18 +179,20 @@ export const Preloader = ({ onComplete }: PreloaderProps) => {
         ref={centerLetterRef}
         className="relative z-10 flex items-center justify-center"
       >
-        <span
-          className="font-sans font-bold text-3xl md:text-5xl lg:text-6xl"
-          style={{
-            background: 'linear-gradient(180deg, #ffffff 0%, #d0d0d0 30%, #a0a0a0 60%, #707070 100%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text',
-            textShadow: '0 0 40px rgba(255,255,255,0.25)',
-          }}
-        >
-          {currentLetter}
-        </span>
+        {currentLetterIndex >= 0 && (
+          <span
+            className="font-sans font-bold text-7xl md:text-8xl lg:text-9xl"
+            style={{
+              background: 'linear-gradient(180deg, #ffffff 0%, #d0d0d0 30%, #a0a0a0 60%, #707070 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+              textShadow: '0 0 40px rgba(255,255,255,0.25)',
+            }}
+          >
+            {currentLetter}
+          </span>
+        )}
       </div>
     </div>
   );
