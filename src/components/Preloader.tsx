@@ -16,7 +16,7 @@ interface CloudPoint {
 
 const LETTERS = ['K', 'E', 'N', 'J', 'I', 'Z', 'A', 'H', 'A', 'R', 'C', 'H', 'U', 'K'];
 const BEAT_DURATION = 0.32; // Slower for visible wave effect
-const RING_COUNT = 5;
+const RING_COUNT = 7;
 const INITIAL_DELAY = 0.5; // Start blank for half a second
 
 const generateOrganizedRings = (): CloudPoint[] => {
@@ -24,33 +24,37 @@ const generateOrganizedRings = (): CloudPoint[] => {
   
   // Define each ring: [radius %, number of letters]
   const ringConfig = [
-    { radius: 12, count: 8 },   // Ring 1 - closest to center (but with gap!)
-    { radius: 20, count: 12 },  // Ring 2
+    { radius: 10, count: 8 },   // Ring 1
+    { radius: 18, count: 12 },  // Ring 2
     { radius: 28, count: 16 },  // Ring 3
-    { radius: 36, count: 20 },  // Ring 4
-    { radius: 44, count: 24 },  // Ring 5 - outermost
+    { radius: 40, count: 22 },  // Ring 4
+    { radius: 55, count: 28 },  // Ring 5
+    { radius: 72, count: 34 },  // Ring 6
+    { radius: 92, count: 42 },  // Ring 7 - extends past edges
   ];
+  
+  // Get aspect ratio for ellipse scaling
+  const aspectRatio = typeof window !== 'undefined' 
+    ? window.innerWidth / window.innerHeight 
+    : 1.5;
+  
+  const scaleX = aspectRatio > 1 ? aspectRatio * 0.7 : 1;
+  const scaleY = aspectRatio < 1 ? (1 / aspectRatio) * 0.7 : 1;
   
   ringConfig.forEach((config, ringIndex) => {
     const ring = ringIndex + 1;
     
     for (let i = 0; i < config.count; i++) {
-      // Evenly space letters around the circle
-      const baseAngle = (i / config.count) * Math.PI * 2;
-      // Add slight randomness to angle and radius
-      const angleJitter = (Math.random() - 0.5) * 0.3;
-      const radiusJitter = (Math.random() - 0.5) * 3;
+      // Perfect even spacing - NO jitter
+      const angle = (i / config.count) * Math.PI * 2;
       
-      const angle = baseAngle + angleJitter;
-      const radius = config.radius + radiusJitter;
-      
-      const x = 50 + Math.cos(angle) * radius;
-      const y = 50 + Math.sin(angle) * radius;
+      const x = 50 + Math.cos(angle) * config.radius * scaleX;
+      const y = 50 + Math.sin(angle) * config.radius * scaleY;
       
       points.push({
         x,
         y,
-        distance: radius,
+        distance: config.radius,
         ring,
         id: `ring-${ring}-${i}`,
       });
@@ -175,6 +179,10 @@ export const Preloader = ({ onComplete }: PreloaderProps) => {
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
                   backgroundClip: 'text',
+                  color: 'transparent',
+                  WebkitBoxDecorationBreak: 'clone',
+                  boxDecorationBreak: 'clone' as const,
+                  padding: '0 1px',
                 }}
               >
                 {ringLetter}
