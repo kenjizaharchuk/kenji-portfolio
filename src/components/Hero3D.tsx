@@ -146,10 +146,10 @@ function Name3D() {
           >
             KENJI ZAHARCHUK
             <meshStandardMaterial
-              color="#f0f4f8"
-              metalness={0.88}
-              roughness={0.15}
-              envMapIntensity={2.2}
+              color="#ffffff"
+              metalness={1}
+              roughness={0.1}
+              envMapIntensity={2.5}
             />
           </Text3D>
         </Center>
