@@ -1,6 +1,6 @@
 import { useRef, useState, useCallback, Suspense, useEffect } from 'react';
 import { Canvas, useFrame, useThree, ThreeEvent } from '@react-three/fiber';
-import { Text3D, Center, Environment } from '@react-three/drei';
+import { Text3D, Center, Environment, Float } from '@react-three/drei';
 import * as THREE from 'three';
 
 function Name3D() {
@@ -120,42 +120,41 @@ function Name3D() {
 
     groupRef.current.rotation.x = currentRotation.current.x;
     groupRef.current.rotation.y = currentRotation.current.y;
-    
-    // Even slower floating motion (40% slower)
-    groupRef.current.position.y = Math.sin(state.clock.elapsedTime * 0.12) * 0.03;
   });
 
   return (
-    <group
-      ref={groupRef}
-      scale={scale}
-      onPointerDown={handlePointerDown}
-      onPointerMove={handlePointerMove}
-      onPointerUp={handlePointerUp}
-      onPointerLeave={handlePointerUp}
-    >
-      <Center position={[0.2, 0, 0]}>
-        <Text3D
-          font="/fonts/helvetiker_bold.typeface.json"
-          size={1}
-          height={0.35}
-          curveSegments={48}
-          bevelEnabled
-          bevelThickness={0.06}
-          bevelSize={0.05}
-          bevelOffset={0}
-          bevelSegments={16}
-        >
-          KENJI ZAHARCHUK
-          <meshStandardMaterial
-            color="#f0f4f8"
-            metalness={0.88}
-            roughness={0.15}
-            envMapIntensity={2.2}
-          />
-        </Text3D>
-      </Center>
-    </group>
+    <Float speed={1.5} rotationIntensity={0.3} floatIntensity={0.4}>
+      <group
+        ref={groupRef}
+        scale={scale}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerLeave={handlePointerUp}
+      >
+        <Center position={[0.2, 0, 0]}>
+          <Text3D
+            font="/fonts/helvetiker_bold.typeface.json"
+            size={1}
+            height={0.35}
+            curveSegments={48}
+            bevelEnabled
+            bevelThickness={0.06}
+            bevelSize={0.05}
+            bevelOffset={0}
+            bevelSegments={16}
+          >
+            KENJI ZAHARCHUK
+            <meshStandardMaterial
+              color="#f0f4f8"
+              metalness={0.88}
+              roughness={0.15}
+              envMapIntensity={2.2}
+            />
+          </Text3D>
+        </Center>
+      </group>
+    </Float>
   );
 }
 
