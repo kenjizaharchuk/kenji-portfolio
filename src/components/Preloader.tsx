@@ -49,6 +49,17 @@ const generateCloud = (): CloudPoint[] => {
   return points;
 };
 
+// Get the letter for a specific ring based on cascade delay
+const getLetterForRing = (ring: number, currentIndex: number): string | null => {
+  // Ring 1 is 1 step behind center, Ring 2 is 2 steps behind, etc.
+  const letterIndex = currentIndex - ring;
+  
+  // If letterIndex is negative, this ring hasn't "received" a letter yet
+  if (letterIndex < 0) return null;
+  
+  return LETTERS[letterIndex];
+};
+
 export const Preloader = ({ onComplete }: PreloaderProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const centerLetterRef = useRef<HTMLDivElement>(null);
@@ -75,10 +86,10 @@ export const Preloader = ({ onComplete }: PreloaderProps) => {
         );
       });
 
-      const implosionStart = LETTERS.length * BEAT_DURATION + 0.2;
+      const implosionStart = LETTERS.length * BEAT_DURATION + 0.3;
 
-      // Phase 2: Implosion - fade rings from outside to inside
-      for (let ring = RING_COUNT; ring >= 1; ring--) {
+      // Phase 2: Implosion - fade rings from INSIDE to OUTSIDE (center disappears first)
+      for (let ring = 1; ring <= RING_COUNT; ring++) {
         timeline.to(
           `.ring-${ring}`,
           {
@@ -87,11 +98,11 @@ export const Preloader = ({ onComplete }: PreloaderProps) => {
             duration: 0.12,
             ease: 'power2.out',
           },
-          implosionStart + (RING_COUNT - ring) * 0.06
+          implosionStart + (ring - 1) * 0.08
         );
       }
 
-      const portalStart = implosionStart + RING_COUNT * 0.06 + 0.1;
+      const portalStart = implosionStart + RING_COUNT * 0.08 + 0.15;
 
       // Phase 3: Portal zoom + background fade SIMULTANEOUSLY
       timeline.to(
@@ -130,7 +141,9 @@ export const Preloader = ({ onComplete }: PreloaderProps) => {
       {/* Cloud of letters */}
       <div ref={cloudRef} className="absolute inset-0">
         {cloudPoints.map((point) => {
-          const isVisible = point.ring <= visibleRing;
+          // Get the cascaded letter for this ring
+          const ringLetter = getLetterForRing(point.ring, currentLetterIndex);
+          const isVisible = ringLetter !== null && point.ring <= visibleRing;
           // Opacity fades toward edges
           const baseOpacity = Math.max(0.15, 0.5 - point.distance * 0.008);
 
@@ -153,7 +166,7 @@ export const Preloader = ({ onComplete }: PreloaderProps) => {
                   backgroundClip: 'text',
                 }}
               >
-                {currentLetter}
+                {ringLetter}
               </span>
             </div>
           );
