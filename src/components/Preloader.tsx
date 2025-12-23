@@ -79,6 +79,7 @@ export const Preloader = ({ onComplete }: PreloaderProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const centerLetterRef = useRef<HTMLDivElement>(null);
   const cloudRef = useRef<HTMLDivElement>(null);
+  const portalRingRef = useRef<HTMLDivElement>(null);
   const [currentLetterIndex, setCurrentLetterIndex] = useState(-1); // Start blank
   const [visibleRing, setVisibleRing] = useState(0);
   const [cloudPoints] = useState<CloudPoint[]>(generateOrganizedRings);
@@ -102,41 +103,54 @@ export const Preloader = ({ onComplete }: PreloaderProps) => {
         );
       }
 
-      const portalStart = INITIAL_DELAY + TOTAL_BEATS * BEAT_DURATION + 0.4;
+      const portalStart = INITIAL_DELAY + TOTAL_BEATS * BEAT_DURATION + 0.3;
 
-      // Phase 3: K pulses then zooms cinematically
+      // Phase 3: Portal ring expands from behind K
       timeline.to(
-        centerLetterRef.current,
+        portalRingRef.current,
         {
-          scale: 1.15,
-          duration: 0.15,
-          ease: 'power2.out',
+          opacity: 1,
+          scale: 50,
+          duration: 0.8,
+          ease: 'power2.in',
         },
         portalStart
       );
 
+      // K gently recedes as if we're flying past it
       timeline.to(
         centerLetterRef.current,
         {
-          scale: 80,
+          scale: 0.5,
           opacity: 0,
-          duration: 1.0,
-          ease: 'power3.in',
+          duration: 0.6,
+          ease: 'power2.in',
           transformOrigin: 'center center',
         },
-        portalStart + 0.15
+        portalStart + 0.2
       );
 
-      // Background fades after K starts moving
+      // Flash to white (entering the light)
+      timeline.to(
+        containerRef.current,
+        {
+          backgroundColor: 'rgba(255, 255, 255, 1)',
+          duration: 0.5,
+          ease: 'power2.in',
+        },
+        portalStart + 0.4
+      );
+
+      // Fade out to homepage
       timeline.to(
         containerRef.current,
         {
           opacity: 0,
-          duration: 0.8,
-          ease: 'power2.in',
+          duration: 0.3,
+          ease: 'power1.out',
           onComplete: onComplete,
         },
-        portalStart + 0.35
+        portalStart + 0.7
       );
     },
     { scope: containerRef }
@@ -179,6 +193,21 @@ export const Preloader = ({ onComplete }: PreloaderProps) => {
           );
         })}
       </div>
+
+      {/* Portal ring - expands from behind K */}
+      <div
+        ref={portalRingRef}
+        className="absolute rounded-full"
+        style={{
+          width: '100px',
+          height: '100px',
+          border: '3px solid rgba(255, 255, 255, 0.8)',
+          opacity: 0,
+          transform: 'translate(-50%, -50%)',
+          left: '50%',
+          top: '50%',
+        }}
+      />
 
       {/* Center letter - the focus */}
       <div
