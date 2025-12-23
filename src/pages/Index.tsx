@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { StarField } from '@/components/StarField';
 import { Hero3D } from '@/components/Hero3D';
 import { ProjectsCarousel } from '@/components/ProjectsCarousel';
@@ -6,6 +6,13 @@ import { Preloader } from '@/components/Preloader';
 
 const Index = () => {
   const [showPreloader, setShowPreloader] = useState(true);
+
+  useEffect(() => {
+    document.body.style.overflow = showPreloader ? 'hidden' : 'auto';
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, [showPreloader]);
 
   return (
     <main className="relative overflow-x-hidden">

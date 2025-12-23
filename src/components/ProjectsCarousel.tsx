@@ -1,10 +1,9 @@
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { EffectCoverflow, Pagination, Navigation } from 'swiper/modules';
+import { EffectCoverflow, Pagination, Mousewheel } from 'swiper/modules';
 
 import 'swiper/css';
 import 'swiper/css/effect-coverflow';
 import 'swiper/css/pagination';
-import 'swiper/css/navigation';
 
 const projects = [
   {
@@ -44,7 +43,7 @@ export function ProjectsCarousel() {
     <section className="relative min-h-screen py-20 flex flex-col items-center justify-center">
       {/* Section Header */}
       <div className="text-center mb-8">
-        <h2 className="text-4xl md:text-5xl font-bold text-foreground">
+        <h2 className="text-4xl md:text-5xl font-bold text-stroke-glow animate-float">
           Things I've Made
         </h2>
       </div>
@@ -65,11 +64,14 @@ export function ProjectsCarousel() {
             slideShadows: false,
           }}
           loop={true}
+          slideToClickedSlide={true}
+          mousewheel={{
+            forceToAxis: true,
+          }}
           pagination={{
             clickable: true,
           }}
-          navigation={true}
-          modules={[EffectCoverflow, Pagination, Navigation]}
+          modules={[EffectCoverflow, Pagination, Mousewheel]}
           className="projects-carousel w-full max-w-7xl"
         >
           {projects.map((project) => (
