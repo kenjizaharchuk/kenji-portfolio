@@ -41,19 +41,16 @@ const projects = [
 
 export function ProjectsCarousel() {
   return (
-    <section className="relative min-h-screen py-20">
+    <section className="relative min-h-screen py-20 flex flex-col items-center justify-center">
       {/* Section Header */}
-      <div className="absolute top-8 left-8 z-10">
-        <p className="text-muted-foreground text-sm tracking-widest uppercase mb-2">
-          Selected Work
-        </p>
+      <div className="text-center mb-8">
         <h2 className="text-4xl md:text-5xl font-bold text-foreground">
-          Projects
+          Things I've Made
         </h2>
       </div>
 
       {/* Carousel Container */}
-      <div className="flex items-center justify-center min-h-screen pt-20">
+      <div className="w-full">
         <Swiper
           effect="coverflow"
           grabCursor={true}
@@ -62,7 +59,7 @@ export function ProjectsCarousel() {
           initialSlide={2}
           coverflowEffect={{
             rotate: 25,
-            stretch: 50,
+            stretch: -50,
             depth: -150,
             modifier: 1.2,
             slideShadows: false,
