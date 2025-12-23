@@ -123,7 +123,7 @@ export const Preloader = ({ onComplete }: PreloaderProps) => {
         {
           opacity: 0,
           duration: 3,
-          ease: 'power2.out',
+          ease: 'linear',
           onComplete: onComplete,
         },
         portalStart + 2 // K shrink (1s) + pause (1s)
