@@ -79,7 +79,6 @@ export const Preloader = ({ onComplete }: PreloaderProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const centerLetterRef = useRef<HTMLDivElement>(null);
   const cloudRef = useRef<HTMLDivElement>(null);
-  const portalRingRef = useRef<HTMLDivElement>(null);
   const [currentLetterIndex, setCurrentLetterIndex] = useState(-1); // Start blank
   const [visibleRing, setVisibleRing] = useState(0);
   const [cloudPoints] = useState<CloudPoint[]>(generateOrganizedRings);
@@ -105,52 +104,29 @@ export const Preloader = ({ onComplete }: PreloaderProps) => {
 
       const portalStart = INITIAL_DELAY + TOTAL_BEATS * BEAT_DURATION + 0.3;
 
-      // Phase 3: Portal ring expands from behind K
+      // K zooms towards camera - perfectly centered
       timeline.to(
-        portalRingRef.current,
+        centerLetterRef.current,
         {
-          opacity: 1,
-          scale: 50,
-          duration: 0.8,
+          scale: 60,
+          opacity: 0,
+          duration: 0.7,
           ease: 'power2.in',
+          transformOrigin: 'center center',
         },
         portalStart
       );
 
-      // K gently recedes as if we're flying past it
-      timeline.to(
-        centerLetterRef.current,
-        {
-          scale: 0.5,
-          opacity: 0,
-          duration: 0.6,
-          ease: 'power2.in',
-          transformOrigin: 'center center',
-        },
-        portalStart + 0.2
-      );
-
-      // Flash to white (entering the light)
+      // Background fades out slightly after K starts
       timeline.to(
         containerRef.current,
         {
-          backgroundColor: 'rgba(255, 255, 255, 1)',
+          opacity: 0,
           duration: 0.5,
-          ease: 'power2.in',
-        },
-        portalStart + 0.4
-      );
-
-      // Fade out to homepage
-      timeline.to(
-        containerRef.current,
-        {
-          opacity: 0,
-          duration: 0.3,
-          ease: 'power1.out',
+          ease: 'power2.out',
           onComplete: onComplete,
         },
-        portalStart + 0.7
+        portalStart + 0.3
       );
     },
     { scope: containerRef }
@@ -194,25 +170,15 @@ export const Preloader = ({ onComplete }: PreloaderProps) => {
         })}
       </div>
 
-      {/* Portal ring - expands from behind K */}
-      <div
-        ref={portalRingRef}
-        className="absolute rounded-full"
-        style={{
-          width: '100px',
-          height: '100px',
-          border: '3px solid rgba(255, 255, 255, 0.8)',
-          opacity: 0,
-          transform: 'translate(-50%, -50%)',
-          left: '50%',
-          top: '50%',
-        }}
-      />
-
-      {/* Center letter - the focus */}
+      {/* Center letter - the focus, absolutely positioned for true center zoom */}
       <div
         ref={centerLetterRef}
-        className="relative z-10 flex items-center justify-center"
+        className="absolute z-10 flex items-center justify-center"
+        style={{
+          left: '50%',
+          top: '50%',
+          transform: 'translate(-50%, -50%)',
+        }}
       >
         {currentLetter && (
           <span className="font-sans font-bold text-5xl md:text-6xl lg:text-7xl text-white">
