@@ -1,5 +1,5 @@
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { EffectCoverflow, Pagination, Mousewheel } from 'swiper/modules';
+import { EffectCoverflow, Pagination, Mousewheel, FreeMode } from 'swiper/modules';
 
 import 'swiper/css';
 import 'swiper/css/effect-coverflow';
@@ -56,12 +56,19 @@ export function ProjectsCarousel() {
           centeredSlides={true}
           slidesPerView="auto"
           initialSlide={2}
+          speed={700}
           coverflowEffect={{
             rotate: 25,
             stretch: -50,
             depth: -150,
             modifier: 1.2,
             slideShadows: false,
+          }}
+          freeMode={{
+            enabled: true,
+            sticky: true,
+            momentumRatio: 0.5,
+            momentumBounce: false,
           }}
           loop={true}
           slideToClickedSlide={true}
@@ -71,7 +78,7 @@ export function ProjectsCarousel() {
           pagination={{
             clickable: true,
           }}
-          modules={[EffectCoverflow, Pagination, Mousewheel]}
+          modules={[EffectCoverflow, Pagination, Mousewheel, FreeMode]}
           className="projects-carousel w-full max-w-7xl"
         >
           {projects.map((project) => (

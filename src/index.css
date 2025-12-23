@@ -76,14 +76,28 @@
   }
 
   .text-stroke-glow {
+    /* Transparent fill - shows background through text */
     color: transparent;
     -webkit-text-fill-color: transparent;
-    -webkit-text-stroke: 2px hsl(var(--foreground) / 0.9);
+    
+    /* Thin base stroke */
+    -webkit-text-stroke: 1px rgba(180, 180, 180, 0.9);
+    
+    /* Layered metallic shadows to simulate chrome/metal edge */
     text-shadow: 
-      0 0 10px hsl(var(--foreground) / 0.5),
-      0 0 20px hsl(var(--foreground) / 0.3),
-      0 0 40px hsl(var(--foreground) / 0.2),
-      0 0 80px hsl(var(--foreground) / 0.1);
+      /* Top highlight (bright) */
+      0 -1px 0 #ffffff,
+      0 -2px 1px rgba(255, 255, 255, 0.3),
+      /* Bottom shadow (dark) */
+      0 1px 0 #5a5a5a,
+      0 2px 1px rgba(0, 0, 0, 0.2),
+      /* Side highlights */
+      1px 0 0 #b0b0b0,
+      -1px 0 0 #e0e0e0,
+      /* Outer metallic glow */
+      0 0 10px rgba(255, 255, 255, 0.4),
+      0 0 20px rgba(200, 200, 200, 0.3),
+      0 0 40px rgba(255, 255, 255, 0.15);
   }
 
   .card-glow {
