@@ -292,7 +292,16 @@
 
 /* Swiper Carousel Styles */
 .projects-carousel {
-  padding: 60px 0;
+  padding: 60px 100px;
+  overflow: visible !important;
+}
+
+.projects-carousel .swiper-wrapper {
+  overflow: visible;
+}
+
+section:has(.projects-carousel) {
+  overflow-x: clip;
 }
 
 .projects-carousel .swiper-slide-custom {

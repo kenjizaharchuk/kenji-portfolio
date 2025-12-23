@@ -62,11 +62,12 @@ export function ProjectsCarousel() {
           initialSlide={2}
           coverflowEffect={{
             rotate: 25,
-            stretch: 0,
+            stretch: 50,
             depth: -150,
             modifier: 1.2,
             slideShadows: false,
           }}
+          loop={true}
           pagination={{
             clickable: true,
           }}
@@ -97,10 +98,6 @@ export function ProjectsCarousel() {
         </Swiper>
       </div>
 
-      {/* Navigation hint */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-muted-foreground text-sm">
-        Drag or use arrows to navigate
-      </div>
     </section>
   );
 }
