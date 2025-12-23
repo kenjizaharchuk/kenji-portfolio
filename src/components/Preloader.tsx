@@ -117,12 +117,12 @@ export const Preloader = ({ onComplete }: PreloaderProps) => {
         portalStart
       );
 
-      // After K disappears + 1 second pause, fade preloader over 2 seconds
+      // After K disappears + 1 second pause, fade preloader over 3 seconds
       timeline.to(
         containerRef.current,
         {
           opacity: 0,
-          duration: 2,
+          duration: 3,
           ease: 'power2.out',
           onComplete: onComplete,
         },
