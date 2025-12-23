@@ -117,16 +117,16 @@ export const Preloader = ({ onComplete }: PreloaderProps) => {
         portalStart
       );
 
-      // Fade out while K is still zooming for seamless overlap
+      // Fade out immediately when K starts zooming
       timeline.to(
         containerRef.current,
         {
           opacity: 0,
-          duration: 0.6,
+          duration: 0.8,
           ease: 'power2.out',
           onComplete: onComplete,
         },
-        portalStart + 0.5
+        portalStart
       );
     },
     { scope: containerRef }

@@ -19,7 +19,7 @@ const Index = () => {
         <Preloader onComplete={handlePreloaderComplete} />
       )}
       <div 
-        className={`transition-opacity duration-1000 ease-out ${
+        className={`transition-opacity duration-[1500ms] ease-out ${
           contentVisible ? 'opacity-100' : 'opacity-0'
         }`}
       >
