@@ -15,7 +15,7 @@ interface CloudPoint {
 }
 
 const LETTERS = ['K', 'E', 'N', 'J', 'I', 'Z', 'A', 'H', 'A', 'R', 'C', 'H', 'U', 'K'];
-const BEAT_DURATION = 0.32; // Slower for visible wave effect
+const BEAT_DURATION = 0.24; // 240ms per beat
 const RING_COUNT = 7;
 const INITIAL_DELAY = 0.5; // Start blank for half a second
 
@@ -66,11 +66,13 @@ const generateOrganizedRings = (): CloudPoint[] => {
 
 // Get the letter for a specific ring based on cascade delay
 const getLetterForRing = (ring: number, currentIndex: number): string | null => {
-  // Ring 1 is 1 step behind center, Ring 2 is 2 steps behind, etc.
   const letterIndex = currentIndex - ring;
   
-  // If letterIndex is negative, this ring hasn't "received" a letter yet
+  // Not yet visible (wave hasn't reached this ring)
   if (letterIndex < 0) return null;
+  
+  // Past the last letter - this ring should disappear (wave has passed)
+  if (letterIndex >= LETTERS.length) return null;
   
   return LETTERS[letterIndex];
 };
@@ -87,37 +89,22 @@ export const Preloader = ({ onComplete }: PreloaderProps) => {
     () => {
       const timeline = gsap.timeline();
 
-      // Phase 1: Letter cycling with synchronized ring expansion
-      LETTERS.forEach((_, index) => {
+      // Total beats: letters + rings (so every ring shows K then disappears)
+      const TOTAL_BEATS = LETTERS.length + RING_COUNT;
+
+      // Continuous wave: letters appear, then disappear ring by ring
+      for (let index = 0; index < TOTAL_BEATS; index++) {
         timeline.call(
           () => {
             setCurrentLetterIndex(index);
-            // Ring 1 appears when index=1 (center shows E, ring shows K)
-            // Ring 2 appears when index=2, etc. Cap at RING_COUNT
             setVisibleRing(Math.min(index, RING_COUNT));
           },
           [],
           INITIAL_DELAY + index * BEAT_DURATION
         );
-      });
-
-      const implosionStart = INITIAL_DELAY + LETTERS.length * BEAT_DURATION + 0.3;
-
-      // Phase 2: Implosion - same rhythm as expansion
-      for (let ring = 1; ring <= RING_COUNT; ring++) {
-        timeline.to(
-          `.ring-${ring}`,
-          {
-            opacity: 0,
-            scale: 0.9,
-            duration: BEAT_DURATION * 0.8,
-            ease: 'power2.out',
-          },
-          implosionStart + (ring - 1) * (BEAT_DURATION * 0.6)
-        );
       }
 
-      const portalStart = implosionStart + RING_COUNT * 0.08 + 0.15;
+      const portalStart = INITIAL_DELAY + TOTAL_BEATS * BEAT_DURATION + 0.2;
 
       // Phase 3: Portal zoom + background fade SIMULTANEOUSLY
       timeline.to(
@@ -145,7 +132,9 @@ export const Preloader = ({ onComplete }: PreloaderProps) => {
     { scope: containerRef }
   );
 
-  const currentLetter = LETTERS[currentLetterIndex];
+  const currentLetter = currentLetterIndex >= 0 && currentLetterIndex < LETTERS.length 
+    ? LETTERS[currentLetterIndex] 
+    : null;
 
   return (
     <div
@@ -197,7 +186,7 @@ export const Preloader = ({ onComplete }: PreloaderProps) => {
         ref={centerLetterRef}
         className="relative z-10 flex items-center justify-center"
       >
-        {currentLetterIndex >= 0 && (
+        {currentLetter && (
           <span
             className="font-sans font-bold text-7xl md:text-8xl lg:text-9xl"
             style={{
