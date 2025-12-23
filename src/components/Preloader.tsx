@@ -38,8 +38,11 @@ const generateOrganizedRings = (): CloudPoint[] => {
     ? window.innerWidth / window.innerHeight 
     : 1.5;
   
-  const scaleX = aspectRatio > 1 ? aspectRatio * 0.7 : 1;
-  const scaleY = aspectRatio < 1 ? (1 / aspectRatio) * 0.7 : 1;
+  // Cap aspect ratio to prevent over-stretching on ultrawide screens
+  const cappedAspectRatio = Math.min(Math.max(aspectRatio, 0.7), 1.4);
+  
+  const scaleX = cappedAspectRatio > 1 ? cappedAspectRatio * 0.8 : 1;
+  const scaleY = cappedAspectRatio < 1 ? (1 / cappedAspectRatio) * 0.8 : 1;
   
   ringConfig.forEach((config, ringIndex) => {
     const ring = ringIndex + 1;
@@ -116,6 +119,7 @@ export const Preloader = ({ onComplete }: PreloaderProps) => {
           opacity: 0,
           duration: 0.7,
           ease: 'power2.in',
+          transformOrigin: 'center center',
         },
         portalStart
       );
@@ -151,32 +155,20 @@ export const Preloader = ({ onComplete }: PreloaderProps) => {
           // Get the cascaded letter for this ring
           const ringLetter = getLetterForRing(point.ring, currentLetterIndex);
           const isVisible = ringLetter !== null && point.ring <= visibleRing;
-          // Opacity fades toward edges
-          const baseOpacity = Math.max(0.3, 0.8 - point.distance * 0.01);
+          // Solid visibility when shown
+          const baseOpacity = 1;
 
           return (
             <div
               key={point.id}
-              className={`ring-${point.ring} absolute transform -translate-x-1/2 -translate-y-1/2`}
+              className="absolute transform -translate-x-1/2 -translate-y-1/2"
               style={{
                 left: `${point.x}%`,
                 top: `${point.y}%`,
                 opacity: isVisible ? baseOpacity : 0,
               }}
             >
-              <span
-                className="font-sans font-bold text-xs md:text-sm lg:text-base"
-                style={{
-                  background: 'linear-gradient(180deg, #ffffff 0%, #c0c0c0 50%, #808080 100%)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text',
-                  color: 'transparent',
-                  WebkitBoxDecorationBreak: 'clone',
-                  boxDecorationBreak: 'clone' as const,
-                  padding: '0 1px',
-                }}
-              >
+              <span className="font-sans font-bold text-xs md:text-sm lg:text-base text-white">
                 {ringLetter}
               </span>
             </div>
@@ -190,15 +182,7 @@ export const Preloader = ({ onComplete }: PreloaderProps) => {
         className="relative z-10 flex items-center justify-center"
       >
         {currentLetter && (
-          <span
-            className="font-sans font-bold text-5xl md:text-6xl lg:text-7xl"
-            style={{
-              background: 'linear-gradient(180deg, #ffffff 0%, #d0d0d0 30%, #a0a0a0 60%, #707070 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-            }}
-          >
+          <span className="font-sans font-bold text-5xl md:text-6xl lg:text-7xl text-white">
             {currentLetter}
           </span>
         )}
