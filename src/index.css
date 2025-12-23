@@ -289,3 +289,59 @@
   .animation-delay-400 { animation-delay: 400ms; }
   .animation-delay-500 { animation-delay: 500ms; }
 }
+
+/* Swiper Carousel Styles */
+.projects-carousel {
+  padding: 60px 0;
+}
+
+.projects-carousel .swiper-slide-custom {
+  width: auto;
+  transition: filter 0.4s ease, opacity 0.4s ease, transform 0.4s ease;
+}
+
+/* Inactive slides - blurred and faded */
+.projects-carousel .swiper-slide:not(.swiper-slide-active) {
+  filter: blur(4px);
+  opacity: 0.5;
+}
+
+/* Adjacent slides - less blur */
+.projects-carousel .swiper-slide-prev,
+.projects-carousel .swiper-slide-next {
+  filter: blur(2px);
+  opacity: 0.7;
+}
+
+/* Active slide - sharp and prominent */
+.projects-carousel .swiper-slide-active {
+  filter: blur(0);
+  opacity: 1;
+  transform: scale(1.02);
+}
+
+/* Navigation arrows */
+.projects-carousel .swiper-button-next,
+.projects-carousel .swiper-button-prev {
+  color: hsl(var(--primary));
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
+}
+
+.projects-carousel .swiper-button-next:hover,
+.projects-carousel .swiper-button-prev:hover {
+  opacity: 1;
+}
+
+/* Pagination dots */
+.projects-carousel .swiper-pagination-bullet {
+  background: hsl(var(--muted-foreground));
+  opacity: 0.5;
+  transition: all 0.3s ease;
+}
+
+.projects-carousel .swiper-pagination-bullet-active {
+  background: hsl(var(--primary));
+  opacity: 1;
+  transform: scale(1.2);
+}

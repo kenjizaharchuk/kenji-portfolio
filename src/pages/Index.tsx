@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { StarField } from '@/components/StarField';
 import { Hero3D } from '@/components/Hero3D';
-import { Carousel3D } from '@/components/Carousel3D';
+import { ProjectsCarousel } from '@/components/ProjectsCarousel';
 import { Preloader } from '@/components/Preloader';
 
 const Index = () => {
@@ -14,7 +14,7 @@ const Index = () => {
       )}
       <StarField />
       <Hero3D />
-      <Carousel3D />
+      <ProjectsCarousel />
     </main>
   );
 };
