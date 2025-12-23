@@ -117,16 +117,16 @@ export const Preloader = ({ onComplete }: PreloaderProps) => {
         portalStart
       );
 
-      // Background fades out slightly after K starts
+      // Hold black for a beat, then fade out
       timeline.to(
         containerRef.current,
         {
           opacity: 0,
-          duration: 0.5,
+          duration: 0.4,
           ease: 'power2.out',
           onComplete: onComplete,
         },
-        portalStart + 0.3
+        portalStart + 1.1
       );
     },
     { scope: containerRef }
@@ -170,11 +170,13 @@ export const Preloader = ({ onComplete }: PreloaderProps) => {
         })}
       </div>
 
-      {/* Center letter - the focus, absolutely positioned for true center zoom */}
+      {/* Center letter - grid ensures perfect centering for symmetrical scaling */}
       <div
         ref={centerLetterRef}
-        className="absolute z-10 flex items-center justify-center"
+        className="absolute z-10 grid place-items-center"
         style={{
+          width: '200px',
+          height: '200px',
           left: '50%',
           top: '50%',
           transform: 'translate(-50%, -50%)',
