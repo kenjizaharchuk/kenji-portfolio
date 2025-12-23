@@ -44,9 +44,11 @@ const generateOrganizedRings = (): CloudPoint[] => {
   ringConfig.forEach((config, ringIndex) => {
     const ring = ringIndex + 1;
     
+    // Stagger each ring by half the angle between letters - fills gaps
+    const angleOffset = (ringIndex % 2) * (Math.PI / config.count);
+    
     for (let i = 0; i < config.count; i++) {
-      // Perfect even spacing - NO jitter
-      const angle = (i / config.count) * Math.PI * 2;
+      const angle = angleOffset + (i / config.count) * Math.PI * 2;
       
       const x = 50 + Math.cos(angle) * config.radius * scaleX;
       const y = 50 + Math.sin(angle) * config.radius * scaleY;
@@ -132,8 +134,9 @@ export const Preloader = ({ onComplete }: PreloaderProps) => {
     { scope: containerRef }
   );
 
-  const currentLetter = currentLetterIndex >= 0 && currentLetterIndex < LETTERS.length 
-    ? LETTERS[currentLetterIndex] 
+  // Keep center letter on "K" during despawn for the portal zoom effect
+  const currentLetter = currentLetterIndex >= 0 
+    ? LETTERS[Math.min(currentLetterIndex, LETTERS.length - 1)] 
     : null;
 
   return (
@@ -188,13 +191,12 @@ export const Preloader = ({ onComplete }: PreloaderProps) => {
       >
         {currentLetter && (
           <span
-            className="font-sans font-bold text-7xl md:text-8xl lg:text-9xl"
+            className="font-sans font-bold text-5xl md:text-6xl lg:text-7xl"
             style={{
               background: 'linear-gradient(180deg, #ffffff 0%, #d0d0d0 30%, #a0a0a0 60%, #707070 100%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               backgroundClip: 'text',
-              textShadow: '0 0 40px rgba(255,255,255,0.25)',
             }}
           >
             {currentLetter}
