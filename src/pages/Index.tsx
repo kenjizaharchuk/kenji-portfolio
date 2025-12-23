@@ -6,30 +6,15 @@ import { Preloader } from '@/components/Preloader';
 
 const Index = () => {
   const [showPreloader, setShowPreloader] = useState(true);
-  const [contentVisible, setContentVisible] = useState(false);
-
-  const handlePreloaderComplete = () => {
-    setShowPreloader(false);
-    setContentVisible(true);
-  };
 
   return (
     <main className="relative overflow-x-hidden">
       {showPreloader && (
-        <Preloader onComplete={handlePreloaderComplete} />
+        <Preloader onComplete={() => setShowPreloader(false)} />
       )}
-      <div 
-        className={`transition-all duration-[2000ms] ease-out ${
-          contentVisible ? 'opacity-100' : 'opacity-0'
-        }`}
-        style={{
-          backgroundColor: contentVisible ? 'transparent' : 'hsl(240 10% 3.9%)'
-        }}
-      >
-        <StarField />
-        <Hero3D />
-        <Projects3DSection />
-      </div>
+      <StarField />
+      <Hero3D />
+      <Projects3DSection />
     </main>
   );
 };
