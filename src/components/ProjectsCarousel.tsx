@@ -41,7 +41,7 @@ const projects = [
 
 export function ProjectsCarousel() {
   return (
-    <section className="relative min-h-screen bg-background py-20">
+    <section className="relative min-h-screen py-20">
       {/* Section Header */}
       <div className="absolute top-8 left-8 z-10">
         <p className="text-muted-foreground text-sm tracking-widest uppercase mb-2">
@@ -61,11 +61,11 @@ export function ProjectsCarousel() {
           slidesPerView="auto"
           initialSlide={2}
           coverflowEffect={{
-            rotate: 35,
+            rotate: 25,
             stretch: 0,
-            depth: 200,
-            modifier: 1,
-            slideShadows: true,
+            depth: -150,
+            modifier: 1.2,
+            slideShadows: false,
           }}
           pagination={{
             clickable: true,
@@ -77,18 +77,14 @@ export function ProjectsCarousel() {
           {projects.map((project) => (
             <SwiperSlide key={project.id} className="swiper-slide-custom">
               <div
-                className={`relative w-[320px] md:w-[450px] h-[400px] md:h-[500px] rounded-2xl bg-gradient-to-br ${project.gradient} p-8 flex flex-col justify-end overflow-hidden group cursor-pointer`}
+                className={`relative w-[340px] md:w-[600px] h-[220px] md:h-[380px] rounded-3xl bg-gradient-to-br ${project.gradient} p-6 md:p-8 flex flex-col justify-end overflow-hidden group cursor-pointer`}
               >
-                {/* Decorative elements */}
-                <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-                <div className="absolute bottom-0 left-0 w-32 h-32 bg-black/20 rounded-full blur-2xl translate-y-1/2 -translate-x-1/2" />
-
                 {/* Content */}
                 <div className="relative z-10">
                   <p className="text-white/70 text-sm tracking-wide uppercase mb-2">
                     {project.subtitle}
                   </p>
-                  <h3 className="text-white text-2xl md:text-3xl font-bold">
+                  <h3 className="text-white text-xl md:text-2xl font-bold">
                     {project.title}
                   </h3>
                 </div>
