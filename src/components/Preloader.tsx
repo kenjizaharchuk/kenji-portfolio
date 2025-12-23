@@ -104,29 +104,29 @@ export const Preloader = ({ onComplete }: PreloaderProps) => {
 
       const portalStart = INITIAL_DELAY + TOTAL_BEATS * BEAT_DURATION + 0.3;
 
-      // K zooms towards camera - perfectly centered
+      // K shrinks and fades away over 1 second
       timeline.to(
         centerLetterRef.current,
         {
-          scale: 60,
+          scale: 0,
           opacity: 0,
-          duration: 0.7,
+          duration: 1,
           ease: 'power2.in',
           transformOrigin: 'center center',
         },
         portalStart
       );
 
-      // Fade out immediately when K starts zooming
+      // After K disappears + 1 second pause, fade preloader over 2 seconds
       timeline.to(
         containerRef.current,
         {
           opacity: 0,
-          duration: 0.8,
+          duration: 2,
           ease: 'power2.out',
           onComplete: onComplete,
         },
-        portalStart
+        portalStart + 2 // K shrink (1s) + pause (1s)
       );
     },
     { scope: containerRef }
