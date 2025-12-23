@@ -19,9 +19,12 @@ const Index = () => {
         <Preloader onComplete={handlePreloaderComplete} />
       )}
       <div 
-        className={`transition-opacity duration-[2000ms] ease-out ${
+        className={`transition-all duration-[2000ms] ease-out ${
           contentVisible ? 'opacity-100' : 'opacity-0'
         }`}
+        style={{
+          backgroundColor: contentVisible ? 'transparent' : 'hsl(240 10% 3.9%)'
+        }}
       >
         <StarField />
         <Hero3D />
