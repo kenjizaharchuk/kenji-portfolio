@@ -10,7 +10,7 @@ const Index = () => {
 
   const handlePreloaderComplete = () => {
     setShowPreloader(false);
-    setTimeout(() => setContentVisible(true), 50);
+    setContentVisible(true);
   };
 
   return (
@@ -19,7 +19,7 @@ const Index = () => {
         <Preloader onComplete={handlePreloaderComplete} />
       )}
       <div 
-        className={`transition-opacity duration-[1500ms] ease-out ${
+        className={`transition-opacity duration-[2000ms] ease-out ${
           contentVisible ? 'opacity-100' : 'opacity-0'
         }`}
       >
