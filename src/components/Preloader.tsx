@@ -33,16 +33,9 @@ const generateOrganizedRings = (): CloudPoint[] => {
     { radius: 92, count: 42 },  // Ring 7 - extends past edges
   ];
   
-  // Get aspect ratio for ellipse scaling
-  const aspectRatio = typeof window !== 'undefined' 
-    ? window.innerWidth / window.innerHeight 
-    : 1.5;
-  
-  // Cap aspect ratio to prevent over-stretching on ultrawide screens
-  const cappedAspectRatio = Math.min(Math.max(aspectRatio, 0.7), 1.4);
-  
-  const scaleX = cappedAspectRatio > 1 ? cappedAspectRatio * 0.8 : 1;
-  const scaleY = cappedAspectRatio < 1 ? (1 / cappedAspectRatio) * 0.8 : 1;
+  // Fixed scaling for consistent look across all devices
+  const scaleX = 1.3;
+  const scaleY = 1.0;
   
   ringConfig.forEach((config, ringIndex) => {
     const ring = ringIndex + 1;
@@ -109,30 +102,41 @@ export const Preloader = ({ onComplete }: PreloaderProps) => {
         );
       }
 
-      const portalStart = INITIAL_DELAY + TOTAL_BEATS * BEAT_DURATION + 0.2;
+      const portalStart = INITIAL_DELAY + TOTAL_BEATS * BEAT_DURATION + 0.4;
 
-      // Phase 3: Portal zoom + background fade SIMULTANEOUSLY
+      // Phase 3: K pulses then zooms cinematically
       timeline.to(
         centerLetterRef.current,
         {
-          scale: 60,
-          opacity: 0,
-          duration: 0.7,
-          ease: 'power2.in',
-          transformOrigin: 'center center',
+          scale: 1.15,
+          duration: 0.15,
+          ease: 'power2.out',
         },
         portalStart
       );
 
       timeline.to(
+        centerLetterRef.current,
+        {
+          scale: 80,
+          opacity: 0,
+          duration: 1.0,
+          ease: 'power3.in',
+          transformOrigin: 'center center',
+        },
+        portalStart + 0.15
+      );
+
+      // Background fades after K starts moving
+      timeline.to(
         containerRef.current,
         {
           opacity: 0,
-          duration: 0.7,
+          duration: 0.8,
           ease: 'power2.in',
           onComplete: onComplete,
         },
-        portalStart // Same timestamp - happens together!
+        portalStart + 0.35
       );
     },
     { scope: containerRef }
