@@ -5,6 +5,9 @@ import 'swiper/css';
 import 'swiper/css/effect-coverflow';
 import 'swiper/css/pagination';
 
+import randomSculpture from '@/assets/random-sculpture.jpeg';
+import silverPendant from '@/assets/silver-pendant.jpeg';
+
 const projects = [
   {
     id: 1,
@@ -26,15 +29,17 @@ const projects = [
   },
   {
     id: 4,
-    title: 'Project Delta',
-    subtitle: '3D Experience Design',
+    title: 'Random Sculpture',
+    subtitle: 'Sculpture',
     gradient: 'from-amber-600 to-orange-800',
+    image: randomSculpture,
   },
   {
     id: 5,
-    title: 'Project Epsilon',
-    subtitle: 'Creative Direction',
+    title: 'Silver Pendant',
+    subtitle: 'Jewelry Design',
     gradient: 'from-cyan-600 to-blue-800',
+    image: silverPendant,
   },
 ];
 
@@ -84,10 +89,22 @@ export function ProjectsCarousel() {
           {projects.map((project) => (
             <SwiperSlide key={project.id} className="swiper-slide-custom">
               <div
-                className={`relative w-[340px] md:w-[600px] h-[220px] md:h-[380px] rounded-3xl bg-gradient-to-br ${project.gradient} p-6 md:p-8 flex flex-col justify-end overflow-hidden group cursor-pointer`}
+                className={`relative w-[340px] md:w-[600px] h-[220px] md:h-[380px] rounded-3xl overflow-hidden group cursor-pointer ${!project.image ? `bg-gradient-to-br ${project.gradient}` : ''}`}
               >
+                {/* Background Image */}
+                {project.image && (
+                  <img
+                    src={project.image}
+                    alt={project.title}
+                    className="absolute inset-0 w-full h-full object-cover"
+                  />
+                )}
+                
+                {/* Gradient overlay for text readability */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                
                 {/* Content */}
-                <div className="relative z-10">
+                <div className="relative z-10 h-full p-6 md:p-8 flex flex-col justify-end">
                   <p className="text-white/70 text-sm tracking-wide uppercase mb-2">
                     {project.subtitle}
                   </p>
