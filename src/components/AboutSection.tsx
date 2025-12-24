@@ -1,139 +1,56 @@
-import { useRef, useEffect, useState } from 'react';
-import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import * as THREE from 'three';
+import { useRef, useEffect } from 'react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import patagoniaPhoto from '@/assets/patagonia-photo.jpg';
 
-// Glowing rectangular frame component
-const GlowingFrame = ({ opacity }: { opacity: number }) => {
-  const frameRef = useRef<THREE.Group>(null);
-  
-  // Frame dimensions (aspect ratio roughly 16:9 to match content)
-  const width = 8;
-  const height = 4.5;
-  
-  // Create the rectangle outline points as Float32Array for BufferAttribute
-  const points = new Float32Array([
-    -width / 2, height / 2, 0,
-    width / 2, height / 2, 0,
-    width / 2, -height / 2, 0,
-    -width / 2, -height / 2, 0,
-    -width / 2, height / 2, 0, // Close the rectangle
-  ]);
-  
-  return (
-    <group ref={frameRef}>
-      <primitive object={new THREE.Line(
-        new THREE.BufferGeometry().setAttribute('position', new THREE.Float32BufferAttribute(points, 3)),
-        new THREE.LineBasicMaterial({ color: '#ffffff', transparent: true, opacity: opacity * 0.8 })
-      )} />
-      {/* Inner glow line (slightly smaller, more transparent) */}
-      <primitive object={new THREE.Line(
-        new THREE.BufferGeometry().setAttribute('position', new THREE.Float32BufferAttribute(points.map((v, i) => i % 3 === 2 ? v : v * 0.98), 3)),
-        new THREE.LineBasicMaterial({ color: '#ffffff', transparent: true, opacity: opacity * 0.3 })
-      )} />
-    </group>
-  );
-};
-
-// Camera controller that responds to scroll
-const CameraController = ({ scrollProgress }: { scrollProgress: number }) => {
-  const { camera } = useThree();
-  const targetZ = useRef(15);
-  
-  useFrame(() => {
-    // Map scroll progress to camera Z position (15 -> 3)
-    const startZ = 15;
-    const endZ = 3.5;
-    targetZ.current = startZ - (startZ - endZ) * scrollProgress;
-    
-    // Smooth easing toward target
-    camera.position.z = THREE.MathUtils.lerp(camera.position.z, targetZ.current, 0.08);
-  });
-  
-  return null;
-};
-
-// Main 3D scene
-const Scene = ({ scrollProgress }: { scrollProgress: number }) => {
-  // Calculate opacity based on scroll progress (fade in as we approach)
-  const frameOpacity = Math.min(1, scrollProgress * 1.5);
-  
-  return (
-    <>
-      <ambientLight intensity={0.3} />
-      <CameraController scrollProgress={scrollProgress} />
-      <GlowingFrame opacity={frameOpacity} />
-    </>
-  );
-};
+gsap.registerPlugin(ScrollTrigger);
 
 export const AboutSection = () => {
   const sectionRef = useRef<HTMLElement>(null);
-  const [scrollProgress, setScrollProgress] = useState(0);
+  const cardRef = useRef<HTMLDivElement>(null);
   
   useEffect(() => {
-    const handleScroll = () => {
-      if (!sectionRef.current) return;
-      
-      const rect = sectionRef.current.getBoundingClientRect();
-      const windowHeight = window.innerHeight;
-      
-      // Calculate how far into the section we've scrolled
-      // 0 = section just entering viewport from bottom
-      // 1 = section fully in view (top of section at top of viewport)
-      const progress = Math.max(0, Math.min(1, 
-        1 - (rect.top / windowHeight)
-      ));
-      
-      setScrollProgress(progress);
+    const card = cardRef.current;
+    const section = sectionRef.current;
+    
+    if (!card || !section) return;
+    
+    // Initial state: extremely small
+    gsap.set(card, { scale: 0.01 });
+    
+    // ScrollTrigger: pin and scrub the scale animation
+    const trigger = gsap.to(card, {
+      scale: 1,
+      ease: "none", // Linear for scrub, the scrub itself provides smoothing
+      scrollTrigger: {
+        trigger: section,
+        start: "top top",
+        end: "+=100%",
+        pin: true,
+        scrub: 1,
+        anticipatePin: 1,
+      }
+    });
+    
+    return () => {
+      trigger.scrollTrigger?.kill();
+      trigger.kill();
     };
-    
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll(); // Initial calculation
-    
-    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-  
-  // Calculate content opacity and scale based on scroll progress
-  const contentOpacity = Math.max(0, (scrollProgress - 0.3) / 0.7);
-  const contentScale = 0.8 + (0.2 * Math.min(1, scrollProgress / 0.8));
   
   return (
     <section 
       ref={sectionRef}
-      className="relative min-h-screen flex items-center justify-center"
+      className="h-screen flex items-center justify-center relative"
       style={{ zIndex: 10 }}
     >
-      {/* 3D Canvas for the glowing frame */}
-      <div className="absolute inset-0 pointer-events-none">
-        <Canvas
-          camera={{ position: [0, 0, 15], fov: 50 }}
-          style={{ background: 'transparent' }}
-          gl={{ alpha: true }}
-        >
-          <Scene scrollProgress={scrollProgress} />
-        </Canvas>
-      </div>
-      
-      {/* CSS Glow effect overlay for the frame */}
+      {/* About Card - always opacity 1, only scale changes */}
       <div 
-        className="absolute inset-0 flex items-center justify-center pointer-events-none"
-        style={{ opacity: contentOpacity }}
-      >
-        <div 
-          className="w-[85vw] max-w-5xl aspect-video border border-white/40 rounded-sm"
-          style={{
-            boxShadow: '0 0 30px rgba(255,255,255,0.15), 0 0 60px rgba(255,255,255,0.1), inset 0 0 30px rgba(255,255,255,0.05)',
-          }}
-        />
-      </div>
-      
-      {/* HTML Content Overlay */}
-      <div 
-        className="relative z-10 w-[85vw] max-w-5xl mx-auto px-8 md:px-12 py-12 transition-all duration-300"
-        style={{ 
-          opacity: contentOpacity,
-          transform: `scale(${contentScale})`,
+        ref={cardRef}
+        className="w-[85vw] max-w-5xl border border-white/40 rounded-sm px-8 md:px-12 py-12"
+        style={{
+          boxShadow: '0 0 30px rgba(255,255,255,0.15), 0 0 60px rgba(255,255,255,0.1), inset 0 0 30px rgba(255,255,255,0.05)',
+          transformOrigin: 'center center',
         }}
       >
         <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12">
