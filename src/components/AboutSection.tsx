@@ -18,23 +18,34 @@ export const AboutSection = () => {
     // Initial state: extremely small
     gsap.set(card, { scale: 0.01 });
     
-    // ScrollTrigger: pin and scrub the scale animation
-    const trigger = gsap.to(card, {
-      scale: 1,
-      ease: "none", // Linear for scrub, the scrub itself provides smoothing
+    // Create timeline with ScrollTrigger
+    const tl = gsap.timeline({
       scrollTrigger: {
         trigger: section,
         start: "top top",
-        end: "+=100%",
+        end: "+=200%", // Double the scroll distance for slower growth
         pin: true,
         scrub: 1,
         anticipatePin: 1,
       }
     });
     
+    // Scale animation takes first 70% of scroll distance
+    tl.to(card, {
+      scale: 1,
+      duration: 0.7,
+      ease: "power2.out",
+    });
+    
+    // Hold at full scale for remaining 30% (momentum buffer)
+    tl.to(card, {
+      scale: 1,
+      duration: 0.3,
+    });
+    
     return () => {
-      trigger.scrollTrigger?.kill();
-      trigger.kill();
+      tl.scrollTrigger?.kill();
+      tl.kill();
     };
   }, []);
   
