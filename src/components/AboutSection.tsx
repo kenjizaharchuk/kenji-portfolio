@@ -23,24 +23,24 @@ export const AboutSection = () => {
       scrollTrigger: {
         trigger: section,
         start: "top top",
-        end: "+=200%", // Double the scroll distance for slower growth
+        end: "+=250%", // 2.5 viewport heights for slower growth
         pin: true,
         scrub: 1,
         anticipatePin: 1,
       }
     });
     
-    // Scale animation takes first 70% of scroll distance
+    // Scale animation takes first 85% of scroll distance (slower growth)
     tl.to(card, {
       scale: 1,
-      duration: 0.7,
+      duration: 0.85,
       ease: "power2.out",
     });
     
-    // Hold at full scale for remaining 30% (momentum buffer)
+    // Hold at full scale for remaining 15% (half the previous stickiness)
     tl.to(card, {
       scale: 1,
-      duration: 0.3,
+      duration: 0.15,
     });
     
     return () => {
