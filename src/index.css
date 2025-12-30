@@ -43,8 +43,8 @@
     --gradient-space: linear-gradient(180deg, hsl(222 47% 2%) 0%, hsl(222 47% 6%) 50%, hsl(240 30% 8%) 100%);
     
     /* Mediums section colors */
-    --mediums-bg: 0 6% 56%;
-    --mediums-gold: 43 72% 47%;
+    --mediums-bg: 354 10% 58%;
+    --mediums-gold: 43 65% 52%;
   }
 }
 
@@ -381,15 +381,19 @@ section:has(.projects-carousel) {
   fill: hsl(var(--mediums-bg));
 }
 
+.fill-background-dark {
+  fill: hsl(var(--background));
+}
+
 .stroke-mediums-gold {
   stroke: hsl(var(--mediums-gold));
 }
 
 /* Medium card shapes */
 .medium-card-rect {
-  border-radius: 1rem;
+  border-radius: 1.5rem;
 }
 
 .medium-card-arch {
-  border-radius: 50% 50% 1rem 1rem;
+  border-radius: 9999px 9999px 1.5rem 1.5rem;
 }
