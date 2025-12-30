@@ -373,23 +373,52 @@ section:has(.projects-carousel) {
 }
 
 /* Mediums Section Styles */
+.mediums-section {
+  position: relative;
+  background-color: hsl(var(--mediums-bg));
+  /* Clip path creates the wavy top edge */
+  clip-path: polygon(
+    0% 8%,
+    5% 6%,
+    15% 3%,
+    30% 1%,
+    50% 0%,
+    70% 2%,
+    85% 5%,
+    100% 4%,
+    100% 100%,
+    0% 100%
+  );
+}
+
+/* Gold border stroke effect via pseudo-element */
+.mediums-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background: hsl(var(--mediums-gold));
+  clip-path: polygon(
+    0% 100%,
+    5% 75%,
+    15% 37%,
+    30% 12%,
+    50% 0%,
+    70% 25%,
+    85% 62%,
+    100% 50%,
+    100% 100%,
+    0% 100%
+  );
+}
+
 .bg-mediums-bg {
   background-color: hsl(var(--mediums-bg));
 }
 
-.fill-mediums-bg {
-  fill: hsl(var(--mediums-bg));
-}
-
-.fill-background-dark {
-  fill: hsl(var(--background));
-}
-
-.stroke-mediums-gold {
-  stroke: hsl(var(--mediums-gold));
-}
-
-/* Medium card shapes */
+/* Medium card shapes - all same height, shape via clip/radius */
 .medium-card-rect {
   border-radius: 1.5rem;
 }
