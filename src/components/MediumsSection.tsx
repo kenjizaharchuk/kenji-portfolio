@@ -23,39 +23,41 @@ const mediums = [
 
 export const MediumsSection = () => {
   return (
-    <section className="relative">
-      {/* Top Wave Divider */}
+    <section className="relative mt-32 md:mt-48 mb-32 md:mb-48">
+      {/* Top Wave Divider - Black dips into pink */}
       <div className="absolute top-0 left-0 right-0 -translate-y-full pointer-events-none">
         <svg
-          viewBox="0 0 1440 120"
+          viewBox="0 0 1440 200"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
           className="w-full h-auto"
           preserveAspectRatio="none"
         >
+          {/* Black fill area that dips down into the pink */}
           <path
-            d="M0 120V80C240 20 480 0 720 20C960 40 1200 80 1440 60V120H0Z"
-            className="fill-mediums-bg"
+            d="M0 0V180C200 200 500 180 800 140C1100 100 1300 70 1440 90V0H0Z"
+            className="fill-background-dark"
           />
+          {/* Gold stroke following the wave edge */}
           <path
-            d="M0 80C240 20 480 0 720 20C960 40 1200 80 1440 60"
+            d="M0 180C200 200 500 180 800 140C1100 100 1300 70 1440 90"
             className="stroke-mediums-gold"
-            strokeWidth="3"
+            strokeWidth="5"
             fill="none"
           />
         </svg>
       </div>
 
       {/* Main Section Content */}
-      <div className="bg-mediums-bg py-24 md:py-32">
+      <div className="bg-mediums-bg py-32 md:py-40">
         <div className="container mx-auto px-6">
           {/* Title */}
-          <h2 className="text-3xl md:text-4xl font-light italic text-white mb-16 md:mb-20">
+          <h2 className="text-3xl md:text-4xl font-light italic text-white mb-20 md:mb-24">
             Explore My Mediums
           </h2>
 
-          {/* Cards Grid */}
-          <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-12 lg:gap-16">
+          {/* Cards Grid - Bottom aligned */}
+          <div className="flex flex-col md:flex-row items-end justify-center gap-12 md:gap-16 lg:gap-24">
             {mediums.map((medium) => (
               <Link
                 key={medium.path}
@@ -66,8 +68,10 @@ export const MediumsSection = () => {
                 <div
                   className={`
                     relative overflow-hidden
-                    w-64 md:w-56 lg:w-64
-                    ${medium.shape === 'arch' ? 'medium-card-arch h-80 md:h-72 lg:h-80' : 'medium-card-rect h-72 md:h-64 lg:h-72'}
+                    ${medium.shape === 'arch' 
+                      ? 'medium-card-arch w-72 h-96 md:w-80 md:h-[28rem]' 
+                      : 'medium-card-rect w-72 h-72 md:w-80 md:h-80'
+                    }
                   `}
                 >
                   {/* Placeholder gradient as image substitute */}
@@ -85,7 +89,7 @@ export const MediumsSection = () => {
                 </div>
 
                 {/* Label */}
-                <span className="mt-4 text-white text-lg font-medium tracking-wide">
+                <span className="mt-6 text-white text-xl font-medium tracking-wide">
                   {medium.title}
                 </span>
               </Link>
@@ -94,23 +98,23 @@ export const MediumsSection = () => {
         </div>
       </div>
 
-      {/* Bottom Lip Divider */}
+      {/* Bottom Lip Divider - Nearly flat */}
       <div className="absolute bottom-0 left-0 right-0 translate-y-full pointer-events-none z-10">
         <svg
-          viewBox="0 0 1440 80"
+          viewBox="0 0 1440 60"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
           className="w-full h-auto"
           preserveAspectRatio="none"
         >
           <path
-            d="M0 0V40C360 60 720 50 1080 40C1260 35 1380 30 1440 25V0H0Z"
+            d="M0 0H1440V45C1200 50 720 55 0 48V0Z"
             className="fill-mediums-bg"
           />
           <path
-            d="M0 40C360 60 720 50 1080 40C1260 35 1380 30 1440 25"
+            d="M0 48C720 55 1200 50 1440 45"
             className="stroke-mediums-gold"
-            strokeWidth="3"
+            strokeWidth="5"
             fill="none"
           />
         </svg>
