@@ -24,41 +24,59 @@ const mediums = [
   },
 ];
 
-// Smooth Bézier wave path - single curve for consistent top/bottom dividers
-const wavePath = "M0,80 C360,120 720,40 1080,80 C1260,100 1380,60 1440,70";
+// Generate a true mathematical sine wave path
+// y(x) = mid + amp * sin(2π * x / W)
+// Peak at 1/4 width, trough at 3/4 width
+const generateSineWavePath = (width: number, mid: number, amp: number, segments = 100): string => {
+  let path = `M0,${mid}`;
+  for (let i = 1; i <= segments; i++) {
+    const x = (i / segments) * width;
+    // Standard sine: sin(2π * x / W) starts at 0, peaks at W/4, returns to 0 at W/2, troughs at 3W/4
+    const y = mid + amp * Math.sin((2 * Math.PI * x) / width);
+    path += ` L${x.toFixed(2)},${y.toFixed(2)}`;
+  }
+  return path;
+};
+
+const WAVE_WIDTH = 1440;
+const WAVE_MID = 60;
+const WAVE_AMP = 35;
+const sineWavePath = generateSineWavePath(WAVE_WIDTH, WAVE_MID, WAVE_AMP);
 
 export const MediumsSection = () => {
   return (
-    <section className="relative">
-      {/* Top Wave Divider - mauve fill with gold stroke */}
+    <section id="mediums" className="relative">
+      {/* Top Wave Divider - mathematical sine wave with gold stroke */}
       <div className="relative w-full overflow-hidden leading-none">
         <svg 
-          className="block w-full h-[100px] md:h-[120px]" 
-          viewBox="0 0 1440 120" 
+          className="block w-full h-[80px] md:h-[100px]" 
+          viewBox={`0 0 ${WAVE_WIDTH} 120`}
           preserveAspectRatio="none"
         >
           {/* Mauve fill - creates the wave shape */}
           <path 
-            d={`${wavePath} L1440,120 L0,120 Z`}
+            d={`${sineWavePath} L${WAVE_WIDTH},120 L0,120 Z`}
             fill="hsl(0 12% 60%)"
           />
-          {/* Gold stroke - traces the wave edge */}
+          {/* Gold stroke - traces the wave edge with smooth caps */}
           <path 
-            d={wavePath}
+            d={sineWavePath}
             fill="none" 
             stroke="#C9A035"
             strokeWidth="5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           />
         </svg>
       </div>
 
-      {/* Main Section - Full bleed mauve background */}
-      <div className="bg-[hsl(0_12%_60%)] py-16 md:py-24">
+      {/* Main Section - Full bleed mauve background, tighter padding */}
+      <div className="bg-[hsl(0_12%_60%)] pt-6 pb-10 md:pt-10 md:pb-14">
         {/* Content Container - constrained width, consistent padding */}
         <div className="max-w-[1200px] mx-auto px-6 md:px-10">
           
-          {/* Heading - LEFT aligned, bold, not italic */}
-          <h2 className="font-acumin text-3xl md:text-4xl font-bold text-white text-left mb-12">
+          {/* Heading - LEFT aligned, bold, uses heading font */}
+          <h2 className="font-heading text-3xl md:text-4xl font-bold text-white text-left mb-8">
             Explore My Mediums
           </h2>
 
@@ -105,24 +123,26 @@ export const MediumsSection = () => {
         </div>
       </div>
 
-      {/* Bottom Wave Divider - same wave, vertically flipped */}
+      {/* Bottom Wave Divider - same sine wave, vertically flipped */}
       <div className="relative w-full overflow-hidden leading-none bg-background">
         <svg 
-          className="block w-full h-[100px] md:h-[120px] transform rotate-180" 
-          viewBox="0 0 1440 120" 
+          className="block w-full h-[80px] md:h-[100px] transform rotate-180" 
+          viewBox={`0 0 ${WAVE_WIDTH} 120`}
           preserveAspectRatio="none"
         >
           {/* Mauve fill */}
           <path 
-            d={`${wavePath} L1440,120 L0,120 Z`}
+            d={`${sineWavePath} L${WAVE_WIDTH},120 L0,120 Z`}
             fill="hsl(0 12% 60%)"
           />
-          {/* Gold stroke */}
+          {/* Gold stroke with smooth caps */}
           <path 
-            d={wavePath}
+            d={sineWavePath}
             fill="none" 
             stroke="#C9A035"
             strokeWidth="5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           />
         </svg>
       </div>

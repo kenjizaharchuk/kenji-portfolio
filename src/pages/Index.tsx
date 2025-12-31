@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
 import { StarField } from '@/components/StarField';
 import { Hero3D } from '@/components/Hero3D';
+import { HeroSidebar } from '@/components/HeroSidebar';
 import { AboutSection } from '@/components/AboutSection';
 import { MediumsSection } from '@/components/MediumsSection';
 import { ProjectsCarousel } from '@/components/ProjectsCarousel';
+import { ContactSection } from '@/components/ContactSection';
 import { Preloader } from '@/components/Preloader';
 
 const Index = () => {
@@ -31,10 +33,12 @@ const Index = () => {
         <Preloader onComplete={handlePreloaderComplete} />
       )}
       <StarField />
+      <HeroSidebar />
       <Hero3D />
       <AboutSection />
       <MediumsSection />
       <ProjectsCarousel />
+      <ContactSection />
     </main>
   );
 };
