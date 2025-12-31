@@ -51,6 +51,7 @@ export const AboutSection = () => {
   
   return (
     <section 
+      id="about"
       ref={sectionRef}
       className="h-screen flex items-center justify-center relative"
       style={{ zIndex: 10 }}

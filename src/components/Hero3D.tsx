@@ -242,7 +242,7 @@ export function Hero3D() {
       : 'cursor-default';
 
   return (
-    <section className="h-screen w-full relative flex items-center justify-center overflow-hidden">
+    <section id="landing" className="h-screen w-full relative flex items-center justify-center overflow-hidden">
       <Canvas
         camera={{ position: [0, 0, 10], fov: 45 }}
         className={cursorClass}
