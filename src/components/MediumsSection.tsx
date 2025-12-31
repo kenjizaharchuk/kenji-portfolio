@@ -83,15 +83,12 @@ export const MediumsSection = () => {
                   <img 
                     src={medium.image}
                     alt={medium.title}
-                    className={`
-                      absolute inset-0 w-full h-full
+                    className="
+                      absolute inset-0 w-full h-full object-cover object-center
                       transition-all duration-1000 ease-out
                       grayscale group-hover:grayscale-0
                       scale-100 group-hover:scale-110
-                      ${medium.shape === 'arch' 
-                        ? 'object-contain object-bottom' 
-                        : 'object-cover object-center'}
-                    `}
+                    "
                   />
                   
                   {/* Subtle overlay for depth */}
