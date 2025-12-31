@@ -382,11 +382,11 @@ section:has(.projects-carousel) {
   font-family: "acumin-pro", "Inter", system-ui, sans-serif;
 }
 
-/* Medium card shapes - 2:3 aspect ratio */
+/* Medium card shapes - 1:1 square aspect ratio */
 .medium-card-rect {
-  border-radius: 1.5rem;
+  border-radius: 48px;
 }
 
 .medium-card-arch {
-  border-radius: 9999px 9999px 1.5rem 1.5rem;
+  border-radius: 999px 999px 0 0;
 }

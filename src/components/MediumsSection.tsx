@@ -21,16 +21,16 @@ const mediums = [
   },
 ];
 
-// SVG wave path - single path for both fill and stroke
-const wavePath = "M0,60 C180,100 360,20 540,50 C720,80 900,30 1080,55 C1260,80 1380,45 1440,60";
+// Smooth Bézier wave path - single curve for consistent top/bottom dividers
+const wavePath = "M0,80 C360,120 720,40 1080,80 C1260,100 1380,60 1440,70";
 
 export const MediumsSection = () => {
   return (
     <section className="relative">
-      {/* SVG Wave Divider - mauve fill with gold stroke */}
-      <div className="relative w-full overflow-hidden">
+      {/* Top Wave Divider - mauve fill with gold stroke */}
+      <div className="relative w-full overflow-hidden leading-none">
         <svg 
-          className="block w-full h-[80px] md:h-[120px]" 
+          className="block w-full h-[100px] md:h-[120px]" 
           viewBox="0 0 1440 120" 
           preserveAspectRatio="none"
         >
@@ -39,39 +39,41 @@ export const MediumsSection = () => {
             d={`${wavePath} L1440,120 L0,120 Z`}
             fill="hsl(0 12% 60%)"
           />
-          {/* Gold stroke - traces the exact same wave edge */}
+          {/* Gold stroke - traces the wave edge */}
           <path 
             d={wavePath}
             fill="none" 
-            stroke="hsl(43 56% 50%)"
+            stroke="#C9A035"
             strokeWidth="5"
           />
         </svg>
       </div>
 
       {/* Main Section - Full bleed mauve background */}
-      <div className="mediums-section-content pb-16 md:pb-24">
+      <div className="bg-[hsl(0_12%_60%)] py-16 md:py-24">
         {/* Content Container - constrained width, consistent padding */}
-        <div className="max-w-6xl mx-auto px-6 md:px-10">
+        <div className="max-w-[1200px] mx-auto px-6 md:px-10">
           
-          {/* Heading - LEFT aligned with first tile */}
-          <h2 className="font-acumin text-3xl md:text-4xl font-light italic text-white text-left mb-10 md:mb-14">
+          {/* Heading - LEFT aligned, bold, not italic */}
+          <h2 className="font-acumin text-3xl md:text-4xl font-bold text-white text-left mb-12">
             Explore My Mediums
           </h2>
 
-          {/* Tiles Grid - 2:3 aspect ratio, consistent gaps */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10 lg:gap-14">
+          {/* Tiles Grid - 1:1 square aspect ratio, responsive gaps */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-[clamp(32px,6vw,96px)]">
             {mediums.map((medium) => (
               <Link 
                 key={medium.path} 
                 to={medium.path} 
-                className="group flex flex-col items-center md:items-stretch"
+                className="group flex flex-col"
               >
-                {/* Tile Container - 2:3 ratio, shape via border-radius */}
+                {/* Tile Container - square ratio, shape via border-radius */}
                 <div 
                   className={`
-                    relative overflow-hidden aspect-[2/3] w-full max-w-[280px] md:max-w-none
-                    ${medium.shape === 'arch' ? 'medium-card-arch' : 'medium-card-rect'}
+                    relative overflow-hidden aspect-square w-full
+                    ${medium.shape === 'arch' 
+                      ? 'rounded-t-[999px] rounded-b-none' 
+                      : 'rounded-[48px]'}
                   `}
                 >
                   {/* Gradient placeholder */}
@@ -88,8 +90,8 @@ export const MediumsSection = () => {
                   <div className="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition-all duration-1000" />
                 </div>
                 
-                {/* Label - consistent baseline */}
-                <span className="mt-4 text-white text-lg font-medium tracking-wide text-center">
+                {/* Label - consistent spacing below tile */}
+                <span className="mt-6 text-white text-lg font-medium tracking-wide text-center">
                   {medium.title}
                 </span>
               </Link>
@@ -98,23 +100,23 @@ export const MediumsSection = () => {
         </div>
       </div>
 
-      {/* Bottom wave - subtle gold edge */}
-      <div className="relative w-full overflow-hidden bg-background">
+      {/* Bottom Wave Divider - same wave, vertically flipped */}
+      <div className="relative w-full overflow-hidden leading-none bg-background">
         <svg 
-          className="block w-full h-[40px] md:h-[60px]" 
-          viewBox="0 0 1440 60" 
+          className="block w-full h-[100px] md:h-[120px] transform rotate-180" 
+          viewBox="0 0 1440 120" 
           preserveAspectRatio="none"
         >
-          {/* Mauve fill for bottom edge */}
+          {/* Mauve fill */}
           <path 
-            d="M0,0 L1440,0 L1440,20 C1200,35 720,40 0,25 Z"
+            d={`${wavePath} L1440,120 L0,120 Z`}
             fill="hsl(0 12% 60%)"
           />
-          {/* Gold stroke on bottom edge */}
+          {/* Gold stroke */}
           <path 
-            d="M0,25 C720,40 1200,35 1440,20"
+            d={wavePath}
             fill="none" 
-            stroke="hsl(43 56% 50%)"
+            stroke="#C9A035"
             strokeWidth="5"
           />
         </svg>
