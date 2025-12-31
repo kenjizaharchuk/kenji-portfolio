@@ -7,7 +7,16 @@ import { ProjectsCarousel } from '@/components/ProjectsCarousel';
 import { Preloader } from '@/components/Preloader';
 
 const Index = () => {
-  const [showPreloader, setShowPreloader] = useState(true);
+  // Only show preloader on first visit this session
+  const [showPreloader, setShowPreloader] = useState(() => {
+    const hasSeenPreloader = sessionStorage.getItem('preloaderShown');
+    return !hasSeenPreloader;
+  });
+
+  const handlePreloaderComplete = () => {
+    sessionStorage.setItem('preloaderShown', 'true');
+    setShowPreloader(false);
+  };
 
   useEffect(() => {
     document.body.style.overflow = showPreloader ? 'hidden' : 'auto';
@@ -19,7 +28,7 @@ const Index = () => {
   return (
     <main className="relative overflow-x-hidden">
       {showPreloader && (
-        <Preloader onComplete={() => setShowPreloader(false)} />
+        <Preloader onComplete={handlePreloaderComplete} />
       )}
       <StarField />
       <Hero3D />
