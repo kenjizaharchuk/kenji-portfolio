@@ -1,23 +1,26 @@
 import { Link } from 'react-router-dom';
+import physicalDesignImg from '@/assets/physical-design.jpg';
+import digitalDesignImg from '@/assets/digital-design.png';
+import artImg from '@/assets/art-sculpture.jpg';
 
 const mediums = [
   {
     title: 'Physical Design',
     path: '/physical-design',
     shape: 'rect' as const,
-    gradient: 'from-amber-700 via-orange-600 to-yellow-500',
+    image: physicalDesignImg,
   },
   {
     title: 'Digital Design',
     path: '/digital-design',
     shape: 'arch' as const,
-    gradient: 'from-blue-700 via-cyan-600 to-teal-500',
+    image: digitalDesignImg,
   },
   {
     title: 'Art',
     path: '/art',
     shape: 'rect' as const,
-    gradient: 'from-purple-700 via-pink-600 to-rose-500',
+    image: artImg,
   },
 ];
 
@@ -76,14 +79,16 @@ export const MediumsSection = () => {
                       : 'rounded-[48px]'}
                   `}
                 >
-                  {/* Gradient placeholder */}
-                  <div 
-                    className={`
-                      absolute inset-0 bg-gradient-to-br ${medium.gradient}
+                  {/* Image - full bleed with object-cover framing */}
+                  <img 
+                    src={medium.image}
+                    alt={medium.title}
+                    className="
+                      absolute inset-0 w-full h-full object-cover object-center
                       transition-all duration-1000 ease-out
                       grayscale group-hover:grayscale-0
                       scale-100 group-hover:scale-110
-                    `} 
+                    "
                   />
                   
                   {/* Subtle overlay for depth */}
