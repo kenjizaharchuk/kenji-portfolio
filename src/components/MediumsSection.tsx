@@ -73,9 +73,9 @@ export const MediumsSection = () => {
                 {/* Tile Container - square ratio, shape via border-radius */}
                 <div 
                   className={`
-                    relative overflow-hidden aspect-square w-full
+                    relative overflow-hidden aspect-square w-full transition-colors duration-1000
                     ${medium.shape === 'arch' 
-                      ? 'rounded-t-[999px] rounded-b-none' 
+                      ? 'rounded-t-[999px] rounded-b-none bg-[hsl(0_0%_70%)] group-hover:bg-[#C9A035]' 
                       : 'rounded-[48px]'}
                   `}
                 >
@@ -83,12 +83,15 @@ export const MediumsSection = () => {
                   <img 
                     src={medium.image}
                     alt={medium.title}
-                    className="
-                      absolute inset-0 w-full h-full object-cover object-center
+                    className={`
+                      absolute inset-0 w-full h-full
                       transition-all duration-1000 ease-out
                       grayscale group-hover:grayscale-0
                       scale-100 group-hover:scale-110
-                    "
+                      ${medium.shape === 'arch' 
+                        ? 'object-contain object-bottom' 
+                        : 'object-cover object-center'}
+                    `}
                   />
                   
                   {/* Subtle overlay for depth */}
