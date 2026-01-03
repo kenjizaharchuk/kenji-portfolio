@@ -3,16 +3,17 @@ import { StarField } from '@/components/StarField';
 import { Hero3D } from '@/components/Hero3D';
 import { HeroSidebar } from '@/components/HeroSidebar';
 import { AboutSection } from '@/components/AboutSection';
-import { MediumsSection } from '@/components/MediumsSection';
 import { ProjectsCarousel } from '@/components/ProjectsCarousel';
 import { ContactSection } from '@/components/ContactSection';
 import { Preloader } from '@/components/Preloader';
 
 const Index = () => {
-  // Only show preloader on first visit this session
+  // Show preloader on first visit OR hard refresh
   const [showPreloader, setShowPreloader] = useState(() => {
+    const navEntries = performance.getEntriesByType('navigation') as PerformanceNavigationTiming[];
+    const isHardRefresh = navEntries.length > 0 && navEntries[0].type === 'reload';
     const hasSeenPreloader = sessionStorage.getItem('preloaderShown');
-    return !hasSeenPreloader;
+    return !hasSeenPreloader || isHardRefresh;
   });
 
   const handlePreloaderComplete = () => {
@@ -33,10 +34,9 @@ const Index = () => {
         <Preloader onComplete={handlePreloaderComplete} />
       )}
       <StarField />
-      <HeroSidebar />
+      <HeroSidebar isPreloaderActive={showPreloader} />
       <Hero3D />
       <AboutSection />
-      <MediumsSection />
       <ProjectsCarousel />
       <ContactSection />
     </main>

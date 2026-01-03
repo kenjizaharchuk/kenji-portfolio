@@ -8,12 +8,15 @@ interface NavItem {
 const navItems: NavItem[] = [
   { label: 'Landing Page', sectionId: 'landing' },
   { label: 'About Me', sectionId: 'about' },
-  { label: 'Explore Mediums', sectionId: 'mediums' },
   { label: 'Things I\'ve Made', sectionId: 'things' },
   { label: 'Contact', sectionId: 'contact' },
 ];
 
-export function HeroSidebar() {
+interface HeroSidebarProps {
+  isPreloaderActive?: boolean;
+}
+
+export function HeroSidebar({ isPreloaderActive = false }: HeroSidebarProps) {
   const [isVisible, setIsVisible] = useState(true);
   const [isHovered, setIsHovered] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
@@ -82,7 +85,7 @@ export function HeroSidebar() {
         fixed left-6 md:left-10 lg:left-14 top-1/2 -translate-y-1/2 z-50
         hidden md:flex flex-col gap-3
         transition-opacity duration-500
-        ${isVisible ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}
+        ${isVisible && !isPreloaderActive ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}
       `}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => {
