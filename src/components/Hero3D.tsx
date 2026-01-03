@@ -16,11 +16,11 @@ function Name3D() {
   const currentRotation = useRef({ x: 0, y: 0 });
   const introProgress = useRef(0);
   
-  // Continuous responsive scaling - shrinks smoothly as viewport narrows
-  const scale = THREE.MathUtils.clamp(viewport.width / 16, 0.35, 0.85);
+  // Continuous responsive scaling - 10% smaller overall
+  const scale = THREE.MathUtils.clamp(viewport.width / 16, 0.315, 0.765);
   
-  // Fixed offset - shift name rightward for better centering with sidebar
-  const xOffset = 0.65;
+  // Fixed offset - shift name rightward for better centering with sidebar (5% more right)
+  const xOffset = 0.75;
 
   const handlePointerDown = useCallback((e: ThreeEvent<PointerEvent>) => {
     e.stopPropagation();
