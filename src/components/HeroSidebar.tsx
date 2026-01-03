@@ -107,7 +107,7 @@ export function HeroSidebar() {
           {!isCompact && (
             <span
               className={`
-                font-body text-sm text-white/80 whitespace-nowrap
+                font-body text-base text-white/80 whitespace-nowrap
                 transition-all duration-300 ease-out
                 ${hoveredIndex === index && isHovered
                   ? 'opacity-100 translate-x-0'
