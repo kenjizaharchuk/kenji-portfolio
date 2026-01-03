@@ -37,7 +37,7 @@ export function ContactSection() {
               <img 
                 src={spotifyIcon} 
                 alt="Spotify" 
-                className="w-6 h-6"
+                className="w-[29px] h-[29px]"
                 style={{ filter: 'brightness(0) invert(1)', opacity: 0.7 }}
                 onMouseEnter={(e) => e.currentTarget.style.opacity = '1'}
                 onMouseLeave={(e) => e.currentTarget.style.opacity = '0.7'}
@@ -90,7 +90,7 @@ export function ContactSection() {
               <img 
                 src={spotifyIcon} 
                 alt="Spotify" 
-                className="w-6 h-6"
+                className="w-[29px] h-[29px]"
                 style={{ filter: 'brightness(0) invert(1)', opacity: 0.7 }}
               />
             </a>
