@@ -16,8 +16,11 @@ function Name3D() {
   const currentRotation = useRef({ x: 0, y: 0 });
   const introProgress = useRef(0);
   
-  // Larger on desktop, responsive scaling
-  const scale = Math.min(viewport.width / 14, 0.85);
+  // Continuous responsive scaling - shrinks smoothly as viewport narrows
+  const scale = THREE.MathUtils.clamp(viewport.width / 16, 0.35, 0.85);
+  
+  // Responsive x-offset - shift name right on narrower screens to avoid sidebar
+  const xOffset = THREE.MathUtils.clamp(0.6 - viewport.width * 0.03, 0.2, 0.5);
 
   const handlePointerDown = useCallback((e: ThreeEvent<PointerEvent>) => {
     e.stopPropagation();
@@ -132,7 +135,7 @@ function Name3D() {
         onPointerUp={handlePointerUp}
         onPointerLeave={handlePointerUp}
       >
-        <Center position={[0.2, 0, 0]}>
+        <Center position={[xOffset, 0, 0]}>
           <Text3D
             font="/fonts/helvetiker_bold.typeface.json"
             size={1}

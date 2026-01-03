@@ -17,6 +17,15 @@ export function HeroSidebar() {
   const [isVisible, setIsVisible] = useState(true);
   const [isHovered, setIsHovered] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [isCompact, setIsCompact] = useState(false);
+
+  // Responsive compact mode for smaller screens
+  useEffect(() => {
+    const checkWidth = () => setIsCompact(window.innerWidth < 1100);
+    checkWidth();
+    window.addEventListener('resize', checkWidth);
+    return () => window.removeEventListener('resize', checkWidth);
+  }, []);
 
   useEffect(() => {
     const landingSection = document.getElementById('landing');
@@ -49,8 +58,8 @@ export function HeroSidebar() {
 
   // Calculate wave-like widths based on distance from hovered item
   const getLineWidth = (index: number): number => {
-    const baseWidth = 30;
-    const maxWidth = 100;
+    const baseWidth = isCompact ? 20 : 30;
+    const maxWidth = isCompact ? 60 : 100;
     const amplitude = maxWidth - baseWidth;
 
     if (!isHovered || hoveredIndex === null) {
@@ -94,18 +103,20 @@ export function HeroSidebar() {
             style={{ width: `${getLineWidth(index)}px` }}
           />
           
-          {/* The label - only shows when this item is hovered */}
-          <span
-            className={`
-              font-body text-sm text-white/80 whitespace-nowrap
-              transition-all duration-300 ease-out
-              ${hoveredIndex === index && isHovered
-                ? 'opacity-100 translate-x-0'
-                : 'opacity-0 -translate-x-2 pointer-events-none'}
-            `}
-          >
-            {item.label}
-          </span>
+          {/* The label - only shows when this item is hovered (hidden in compact mode) */}
+          {!isCompact && (
+            <span
+              className={`
+                font-body text-sm text-white/80 whitespace-nowrap
+                transition-all duration-300 ease-out
+                ${hoveredIndex === index && isHovered
+                  ? 'opacity-100 translate-x-0'
+                  : 'opacity-0 -translate-x-2 pointer-events-none'}
+              `}
+            >
+              {item.label}
+            </span>
+          )}
         </button>
       ))}
     </nav>

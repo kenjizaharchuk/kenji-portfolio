@@ -105,10 +105,9 @@ export const MediumsSection = () => {
                       absolute inset-0 w-full h-full object-cover
                       transition-all duration-1000 ease-out
                       grayscale group-hover:grayscale-0
-                      group-hover:scale-110
                       ${medium.shape === 'arch' 
-                        ? 'scale-110 object-[center_52%]' 
-                        : 'scale-100 object-center'}
+                        ? 'scale-[1.25] object-[center_55%] group-hover:scale-[1.35]' 
+                        : 'scale-100 object-center group-hover:scale-110'}
                     `}
                   />
                   
