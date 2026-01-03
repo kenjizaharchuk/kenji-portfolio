@@ -20,7 +20,7 @@ function Name3D() {
   const scale = THREE.MathUtils.clamp(viewport.width / 16, 0.35, 0.85);
   
   // Fixed offset - shift name rightward for better centering with sidebar
-  const xOffset = 0.4;
+  const xOffset = 0.65;
 
   const handlePointerDown = useCallback((e: ThreeEvent<PointerEvent>) => {
     e.stopPropagation();
