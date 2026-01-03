@@ -36,13 +36,21 @@ export function HeroSidebar() {
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
-    element?.scrollIntoView({ behavior: 'smooth' });
+    if (!element) return;
+    
+    // Special case for About - scroll past the GSAP zoom animation to the readable state
+    if (sectionId === 'about') {
+      const targetY = element.offsetTop + (window.innerHeight * 2.5);
+      window.scrollTo({ top: targetY, behavior: 'smooth' });
+    } else {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   // Calculate wave-like widths based on distance from hovered item
   const getLineWidth = (index: number): number => {
-    const baseWidth = 40;
-    const maxWidth = 120;
+    const baseWidth = 30;
+    const maxWidth = 100;
     const amplitude = maxWidth - baseWidth;
 
     if (!isHovered || hoveredIndex === null) {
@@ -62,8 +70,8 @@ export function HeroSidebar() {
   return (
     <nav
       className={`
-        fixed left-6 top-1/2 -translate-y-1/2 z-50
-        flex flex-col gap-4
+        fixed left-4 md:left-6 lg:left-8 top-1/2 -translate-y-1/2 z-50
+        hidden md:flex flex-col gap-3
         transition-opacity duration-500
         ${isVisible ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}
       `}
@@ -82,7 +90,7 @@ export function HeroSidebar() {
         >
           {/* The line */}
           <div
-            className="h-[2px] bg-white/40 transition-all duration-300 ease-out group-hover:bg-white/80"
+            className="h-[3px] bg-white/40 transition-all duration-300 ease-out group-hover:bg-white/80"
             style={{ width: `${getLineWidth(index)}px` }}
           />
           

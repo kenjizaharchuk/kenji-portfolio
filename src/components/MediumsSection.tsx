@@ -47,9 +47,9 @@ export const MediumsSection = () => {
   return (
     <section id="mediums" className="relative">
       {/* Top Wave Divider - mathematical sine wave with gold stroke */}
-      <div className="relative w-full overflow-hidden leading-none">
+      <div className="relative z-30 w-full overflow-hidden leading-none mt-8 md:mt-12 lg:mt-16">
         <svg 
-          className="block w-full h-[80px] md:h-[100px]" 
+          className="block w-full h-[40px] md:h-[60px]" 
           viewBox={`0 0 ${WAVE_WIDTH} 120`}
           preserveAspectRatio="none"
         >
@@ -101,12 +101,15 @@ export const MediumsSection = () => {
                   <img 
                     src={medium.image}
                     alt={medium.title}
-                    className="
-                      absolute inset-0 w-full h-full object-cover object-center
+                    className={`
+                      absolute inset-0 w-full h-full object-cover
                       transition-all duration-1000 ease-out
                       grayscale group-hover:grayscale-0
-                      scale-100 group-hover:scale-110
-                    "
+                      group-hover:scale-110
+                      ${medium.shape === 'arch' 
+                        ? 'scale-110 object-[center_52%]' 
+                        : 'scale-100 object-center'}
+                    `}
                   />
                   
                   {/* Subtle overlay for depth */}
@@ -114,7 +117,7 @@ export const MediumsSection = () => {
                 </div>
                 
                 {/* Label - consistent spacing below tile */}
-                <span className="mt-6 text-white text-lg font-medium tracking-wide text-center">
+                <span className="mt-6 text-white text-2xl md:text-3xl font-medium tracking-wide text-center">
                   {medium.title}
                 </span>
               </Link>
