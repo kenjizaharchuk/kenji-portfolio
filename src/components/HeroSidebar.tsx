@@ -79,7 +79,7 @@ export function HeroSidebar() {
   return (
     <nav
       className={`
-        fixed left-4 md:left-6 lg:left-8 top-1/2 -translate-y-1/2 z-50
+        fixed left-6 md:left-10 lg:left-14 top-1/2 -translate-y-1/2 z-50
         hidden md:flex flex-col gap-3
         transition-opacity duration-500
         ${isVisible ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}
