@@ -19,8 +19,8 @@ function Name3D() {
   // Continuous responsive scaling - shrinks smoothly as viewport narrows
   const scale = THREE.MathUtils.clamp(viewport.width / 16, 0.35, 0.85);
   
-  // Responsive x-offset - shift name right on narrower screens to avoid sidebar
-  const xOffset = THREE.MathUtils.clamp(0.6 - viewport.width * 0.03, 0.2, 0.5);
+  // Fixed offset - shift name rightward for better centering with sidebar
+  const xOffset = 0.4;
 
   const handlePointerDown = useCallback((e: ThreeEvent<PointerEvent>) => {
     e.stopPropagation();
