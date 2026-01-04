@@ -13,7 +13,7 @@ export function ContactSection() {
           {/* Phone - right-aligned toward center */}
           <a 
             href="tel:650-878-7237"
-            className="font-body text-lg text-white/90 hover:text-white transition-colors justify-self-end"
+            className="font-body text-lg text-white/90 hover:text-white transition-colors justify-self-end mr-[20%]"
           >
             650-878-7237
           </a>
@@ -57,7 +57,7 @@ export function ContactSection() {
           {/* Email - left-aligned toward center */}
           <a 
             href="mailto:kgzaharchuk@stanford.edu"
-            className="font-body text-lg text-white/90 hover:text-white transition-colors justify-self-start"
+            className="font-body text-lg text-white/90 hover:text-white transition-colors justify-self-start ml-[10%]"
           >
             kgzaharchuk@stanford.edu
           </a>

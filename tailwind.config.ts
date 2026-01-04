@@ -18,6 +18,7 @@ export default {
         mono: ["JetBrains Mono", "monospace"],
         heading: ["var(--font-heading)"],
         body: ["var(--font-body)"],
+        display: ['"Cormorant Garamond"', 'serif'],
       },
       colors: {
         border: "hsl(var(--border))",

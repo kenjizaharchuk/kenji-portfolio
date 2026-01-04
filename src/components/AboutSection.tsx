@@ -1,7 +1,7 @@
 import { useRef, useEffect } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import patagoniaPhoto from '@/assets/patagonia-photo.jpg';
+import kenjiPhoto from '@/assets/kenji-photo.png';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -61,25 +61,24 @@ export const AboutSection = () => {
         ref={cardRef}
         className="w-[85vw] max-w-5xl border border-white/40 rounded-sm px-8 md:px-12 py-12"
         style={{
-          boxShadow: '0 0 30px rgba(255,255,255,0.15), 0 0 60px rgba(255,255,255,0.1), inset 0 0 30px rgba(255,255,255,0.05)',
           transformOrigin: 'center center',
         }}
       >
         <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12">
           {/* Left - Text Content */}
           <div className="flex-1 text-center md:text-left">
-            <h2 className="text-3xl md:text-5xl font-bold text-foreground mb-4">
+            <h2 className="text-3xl md:text-5xl font-bold text-foreground mb-4 font-display">
               I'm Kenji
             </h2>
-            <h3 className="text-xl md:text-2xl text-foreground/80 mb-6">
+            <h3 className="text-xl md:text-2xl text-foreground/80 mb-6 font-display">
               Welcome to my website!
             </h3>
-            <p className="text-foreground/60 text-base md:text-lg leading-relaxed">
+            <p className="text-foreground/60 text-base md:text-lg leading-relaxed font-display">
               I'm a creative developer passionate about building immersive digital experiences. 
               With a background in design and technology, I love exploring the intersection of 
               art and code to create memorable, interactive projects.
             </p>
-            <p className="text-foreground/60 text-base md:text-lg leading-relaxed mt-4">
+            <p className="text-foreground/60 text-base md:text-lg leading-relaxed mt-4 font-display">
               When I'm not coding, you'll find me exploring mountains, experimenting with 
               new creative tools, or working on personal projects that push the boundaries 
               of what's possible on the web.
@@ -90,9 +89,9 @@ export const AboutSection = () => {
           <div className="flex-1 flex justify-center md:justify-end">
             <div className="relative">
               <img 
-                src={patagoniaPhoto} 
-                alt="Kenji in Patagonia mountains"
-                className="w-64 md:w-80 h-auto rounded-2xl object-cover"
+                src={kenjiPhoto} 
+                alt="Kenji"
+                className="w-64 md:w-80 h-auto rounded-sm object-cover"
                 style={{
                   boxShadow: '0 20px 50px rgba(0,0,0,0.4), 0 0 30px rgba(255,255,255,0.1)',
                 }}
