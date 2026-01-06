@@ -195,9 +195,16 @@ const projects: Project[] = [
 
 export function ProjectsCarousel() {
   const [activeFilters, setActiveFilters] = useState<FilterCategory[]>([]);
-  const [currentProjectId, setCurrentProjectId] = useState<number>(projects[2].id); // Start at middle
+  const [currentProjectId, setCurrentProjectId] = useState<number>(projects[2].id);
   const swiperRef = useRef<SwiperType | null>(null);
   const isInitialMount = useRef(true);
+  const currentProjectIdRef = useRef<number>(projects[2].id);
+  const isFilterTransitioning = useRef(false);
+
+  // Keep ref in sync with state
+  useEffect(() => {
+    currentProjectIdRef.current = currentProjectId;
+  }, [currentProjectId]);
 
   // Filter projects based on active filters (OR logic)
   const filteredProjects = useMemo(() => {
@@ -216,17 +223,21 @@ export function ProjectsCarousel() {
 
     if (!swiperRef.current || filteredProjects.length === 0) return;
 
-    // Check if current project is still in filtered list
-    const currentIndexInFiltered = filteredProjects.findIndex(p => p.id === currentProjectId);
+    const currentId = currentProjectIdRef.current;
+    const currentIndexInFiltered = filteredProjects.findIndex(p => p.id === currentId);
+
+    isFilterTransitioning.current = true;
 
     if (currentIndexInFiltered !== -1) {
-      // Current card still valid - slide to its new position
+      // Current card still valid - slide to its new position instantly
       swiperRef.current.slideTo(currentIndexInFiltered, 0);
+      setTimeout(() => {
+        isFilterTransitioning.current = false;
+      }, 50);
     } else {
       // Current card filtered out - find nearest valid project
-      const currentOriginalIndex = projects.findIndex(p => p.id === currentProjectId);
+      const currentOriginalIndex = projects.findIndex(p => p.id === currentId);
       
-      // Find the closest project in filtered list by original index
       let nearestProject = filteredProjects[0];
       let minDistance = Infinity;
       
@@ -240,10 +251,15 @@ export function ProjectsCarousel() {
       }
 
       const targetIndex = filteredProjects.findIndex(p => p.id === nearestProject.id);
+      currentProjectIdRef.current = nearestProject.id;
       setCurrentProjectId(nearestProject.id);
       swiperRef.current.slideTo(targetIndex, 300);
+      
+      setTimeout(() => {
+        isFilterTransitioning.current = false;
+      }, 350);
     }
-  }, [activeFilters, filteredProjects, currentProjectId]);
+  }, [activeFilters, filteredProjects]);
 
   // Toggle filter on/off
   const toggleFilter = (filter: FilterCategory) => {
@@ -256,6 +272,8 @@ export function ProjectsCarousel() {
 
   // Handle slide change
   const handleSlideChange = (swiper: SwiperType) => {
+    if (isFilterTransitioning.current) return;
+    
     const realIndex = swiper.realIndex;
     if (filteredProjects[realIndex]) {
       setCurrentProjectId(filteredProjects[realIndex].id);
@@ -285,7 +303,7 @@ export function ProjectsCarousel() {
           </div>
         ) : (
           <Swiper
-            key={`swiper-${filteredProjects.length >= 3 ? 'loop' : 'no-loop'}-${filteredProjects.map(p => p.id).join('-')}`}
+            key={filteredProjects.length >= 3 ? 'loop' : 'no-loop'}
             onSwiper={(swiper) => { swiperRef.current = swiper; }}
             onSlideChange={handleSlideChange}
             effect="coverflow"
