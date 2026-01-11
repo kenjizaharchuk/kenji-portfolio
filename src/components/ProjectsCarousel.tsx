@@ -9,6 +9,8 @@ import 'swiper/css/pagination';
 
 import randomSculpture from '@/assets/random-sculpture.jpeg';
 import silverPendant from '@/assets/silver-pendant.jpeg';
+import discordBooth from '@/assets/discord-booth.png';
+import spotifyFeature from '@/assets/spotify-feature.png';
 
 // Filter categories
 const FILTER_CATEGORIES = [
@@ -33,11 +35,11 @@ interface Project {
 const projects: Project[] = [
   {
     id: 1,
-    title: 'Silver Pendant',
-    subtitle: 'Jewelry Design',
+    title: 'Hand Pendant',
+    subtitle: 'Silversmithing',
     image: silverPendant,
-    tags: ['CAD', 'Lost Wax Casting', 'Sterling Silver'],
-    categories: ['Physical Design', 'Art'],
+    tags: ['CAD', 'Form 4 SLA Printing', 'Investment Casting', 'Sterling Silver', 'LiDAR 3D Scanning', 'Blender'],
+    categories: ['Physical Design'],
   },
   {
     id: 2,
@@ -49,42 +51,42 @@ const projects: Project[] = [
   },
   {
     id: 3,
-    title: 'Project Alpha',
-    subtitle: 'Brand Identity',
-    gradient: 'from-violet-600 to-indigo-800',
-    tags: ['Figma', 'Branding', 'UI/UX'],
-    categories: ['Digital Design', 'Work Experience'],
-  },
-  {
-    id: 4,
-    title: 'Project Beta',
-    subtitle: 'Mobile App',
-    gradient: 'from-rose-600 to-pink-800',
-    tags: ['React Native', 'TypeScript'],
-    categories: ['Digital Design'],
-  },
-  {
-    id: 5,
-    title: 'Project Gamma',
-    subtitle: 'E-commerce Platform',
-    gradient: 'from-emerald-600 to-teal-800',
-    tags: ['React', 'Node.js', 'Stripe'],
-    categories: ['Digital Design', 'Work Experience'],
-  },
-  {
-    id: 6,
-    title: 'Project 06',
-    subtitle: 'Coming Soon',
-    gradient: 'from-amber-600 to-orange-800',
-    tags: ['Placeholder'],
+    title: 'North Star Pendant',
+    subtitle: 'Silversmithing',
+    gradient: 'from-slate-400 to-zinc-600',
+    tags: ['CAD', 'Form 4 SLA Printing', 'Investment Casting', 'Sterling Silver'],
     categories: ['Physical Design'],
   },
   {
+    id: 4,
+    title: 'Up House',
+    subtitle: 'Model Fabrication',
+    gradient: 'from-sky-500 to-blue-700',
+    tags: ['3D Printing', 'Laser Cutting', 'Scale Modeling'],
+    categories: ['Physical Design'],
+  },
+  {
+    id: 5,
+    title: 'Wooden Clock',
+    subtitle: 'Functional Art',
+    gradient: 'from-amber-600 to-orange-800',
+    tags: ['Laser Cutting', 'Mechanical Design', 'Woodworking'],
+    categories: ['Physical Design'],
+  },
+  {
+    id: 6,
+    title: 'Discord Booth -- Tokyo Game Show 2024',
+    subtitle: 'Creative Intern, UltraSuperNew Inc.',
+    image: discordBooth,
+    tags: ['Experience Design', 'Concept Development', 'Client Presentation', 'Vendor Coordination'],
+    categories: ['Physical Design', 'Digital Design', 'Work Experience'],
+  },
+  {
     id: 7,
-    title: 'Project 07',
-    subtitle: 'Coming Soon',
-    gradient: 'from-cyan-600 to-blue-800',
-    tags: ['Placeholder'],
+    title: 'New Spotify Feature',
+    subtitle: 'Product Feature Concept',
+    image: spotifyFeature,
+    tags: ['Figma', 'UI/UX Design', 'Design System Consistency'],
     categories: ['Digital Design'],
   },
   {
