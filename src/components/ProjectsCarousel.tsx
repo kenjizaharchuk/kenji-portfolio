@@ -11,6 +11,14 @@ import randomSculpture from '@/assets/random-sculpture.jpeg';
 import silverPendant from '@/assets/silver-pendant.jpeg';
 import discordBooth from '@/assets/discord-booth.png';
 import spotifyFeature from '@/assets/spotify-feature.png';
+import woodenClock from '@/assets/wooden-clock.jpg';
+import upHouse from '@/assets/up-house.jpeg';
+import geniusRedesign from '@/assets/genius-redesign.png';
+import spiberProject from '@/assets/spiber-project.png';
+import skynProject from '@/assets/skyn-project.png';
+import planetMoney from '@/assets/planet-money.png';
+import objectsOfHome from '@/assets/objects-of-home.jpg';
+import photogramImages from '@/assets/photogram-images.jpg';
 
 // Filter categories
 const FILTER_CATEGORIES = [
@@ -61,22 +69,22 @@ const projects: Project[] = [
     id: 4,
     title: 'Up House',
     subtitle: 'Model Fabrication',
-    gradient: 'from-sky-500 to-blue-700',
-    tags: ['3D Printing', 'Laser Cutting', 'Scale Modeling'],
+    image: upHouse,
+    tags: ['CAD', '3D Printing', 'Laser Cutting'],
     categories: ['Physical Design'],
   },
   {
     id: 5,
     title: 'Wooden Clock',
     subtitle: 'Functional Art',
-    gradient: 'from-amber-600 to-orange-800',
-    tags: ['Laser Cutting', 'Mechanical Design', 'Woodworking'],
-    categories: ['Physical Design'],
+    image: woodenClock,
+    tags: ['Wood Working', 'Sculptural Aesthetics', 'Hardware Integration'],
+    categories: ['Physical Design', 'Art'],
   },
   {
     id: 6,
     title: 'Discord Booth -- Tokyo Game Show 2024',
-    subtitle: 'Creative Intern, UltraSuperNew Inc.',
+    subtitle: 'Creative Intern · UltraSuperNew Inc.',
     image: discordBooth,
     tags: ['Experience Design', 'Concept Development', 'Client Presentation', 'Vendor Coordination'],
     categories: ['Physical Design', 'Digital Design', 'Work Experience'],
@@ -91,107 +99,51 @@ const projects: Project[] = [
   },
   {
     id: 8,
-    title: 'Project 08',
-    subtitle: 'Coming Soon',
-    gradient: 'from-fuchsia-600 to-purple-800',
-    tags: ['Placeholder'],
-    categories: ['Art'],
-  },
-  {
-    id: 9,
-    title: 'Project 09',
-    subtitle: 'Coming Soon',
-    gradient: 'from-lime-600 to-green-800',
-    tags: ['Placeholder'],
-    categories: ['Work Experience'],
-  },
-  {
-    id: 10,
-    title: 'Project 10',
-    subtitle: 'Coming Soon',
-    gradient: 'from-red-600 to-rose-800',
-    tags: ['Placeholder'],
-    categories: ['Physical Design', 'Art'],
-  },
-  {
-    id: 11,
-    title: 'Project 11',
-    subtitle: 'Coming Soon',
-    gradient: 'from-sky-600 to-indigo-800',
-    tags: ['Placeholder'],
+    title: 'Genius Lyrics Redesign',
+    subtitle: 'Creative Brand Expansion',
+    image: geniusRedesign,
+    tags: ['Figma', 'UI/UX Design', 'Opportunity Mapping', 'Visual Systems'],
     categories: ['Digital Design'],
   },
   {
+    id: 9,
+    title: 'Spiber Brewed Protein',
+    subtitle: 'Creative Intern · UltraSuperNew Inc.',
+    image: spiberProject,
+    tags: ['Wireframing', 'Interface Design', 'Figma'],
+    categories: ['Digital Design', 'Work Experience'],
+  },
+  {
+    id: 10,
+    title: 'SKYN',
+    subtitle: 'Creative Intern · UltraSuperNew Inc.',
+    image: skynProject,
+    tags: ['Digital Design', 'Concept Development', 'Brand Consistency', 'Figma'],
+    categories: ['Digital Design', 'Work Experience'],
+  },
+  {
+    id: 11,
+    title: 'Planet Money Bot',
+    subtitle: 'Lead Designer',
+    image: planetMoney,
+    tags: ['User Research', 'Brand Development', 'UI/UX', 'A/B Testing', 'Figma'],
+    categories: ['Digital Design', 'Work Experience'],
+  },
+  {
     id: 12,
-    title: 'Project 12',
-    subtitle: 'Coming Soon',
-    gradient: 'from-orange-600 to-amber-800',
-    tags: ['Placeholder'],
+    title: 'Photography · Objects of Home',
+    subtitle: 'Personal Exploration',
+    image: objectsOfHome,
+    tags: ['DSLR Photography', 'Visual Study', 'Canon T4i'],
     categories: ['Art'],
   },
   {
     id: 13,
-    title: 'Project 13',
-    subtitle: 'Coming Soon',
-    gradient: 'from-teal-600 to-cyan-800',
-    tags: ['Placeholder'],
-    categories: ['Work Experience'],
-  },
-  {
-    id: 14,
-    title: 'Project 14',
-    subtitle: 'Coming Soon',
-    gradient: 'from-pink-600 to-fuchsia-800',
-    tags: ['Placeholder'],
-    categories: ['Physical Design'],
-  },
-  {
-    id: 15,
-    title: 'Project 15',
-    subtitle: 'Coming Soon',
-    gradient: 'from-indigo-600 to-violet-800',
-    tags: ['Placeholder'],
-    categories: ['Digital Design', 'Work Experience'],
-  },
-  {
-    id: 16,
-    title: 'Project 16',
-    subtitle: 'Coming Soon',
-    gradient: 'from-green-600 to-emerald-800',
-    tags: ['Placeholder'],
+    title: 'Photogram Images',
+    subtitle: 'Darkroom Photography',
+    image: photogramImages,
+    tags: ['Analog Technique', 'Material Exploration', 'Form and Shadow'],
     categories: ['Art'],
-  },
-  {
-    id: 17,
-    title: 'Project 17',
-    subtitle: 'Coming Soon',
-    gradient: 'from-purple-600 to-indigo-800',
-    tags: ['Placeholder'],
-    categories: ['Physical Design', 'Art'],
-  },
-  {
-    id: 18,
-    title: 'Project 18',
-    subtitle: 'Coming Soon',
-    gradient: 'from-blue-600 to-sky-800',
-    tags: ['Placeholder'],
-    categories: ['Digital Design'],
-  },
-  {
-    id: 19,
-    title: 'Project 19',
-    subtitle: 'Coming Soon',
-    gradient: 'from-yellow-600 to-orange-800',
-    tags: ['Placeholder'],
-    categories: ['Work Experience'],
-  },
-  {
-    id: 20,
-    title: 'Project 20',
-    subtitle: 'Coming Soon',
-    gradient: 'from-slate-600 to-gray-800',
-    tags: ['Placeholder'],
-    categories: ['Physical Design', 'Digital Design'],
   },
 ];
 
