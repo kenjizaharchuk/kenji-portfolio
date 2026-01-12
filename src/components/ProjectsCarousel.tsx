@@ -19,6 +19,9 @@ import skynProject from '@/assets/skyn-project.png';
 import planetMoney from '@/assets/planet-money.png';
 import objectsOfHome from '@/assets/objects-of-home.jpg';
 import photogramImages from '@/assets/photogram-images.jpg';
+import artSculpture from '@/assets/art-sculpture.jpg';
+import frenchFryWhistle from '@/assets/french-fry-whistle.jpg';
+import mapleLeafPunch from '@/assets/maple-leaf-punch.jpg';
 
 // Filter categories
 const FILTER_CATEGORIES = [
@@ -36,6 +39,7 @@ interface Project {
   subtitle: string;
   gradient?: string;
   image?: string;
+  imagePosition?: string;
   tags: string[];
   categories: FilterCategory[];
 }
@@ -86,7 +90,7 @@ const projects: Project[] = [
     title: 'Discord Booth -- Tokyo Game Show 2024',
     subtitle: 'Creative Intern · UltraSuperNew Inc.',
     image: discordBooth,
-    tags: ['Experience Design', 'Concept Development', 'Client Presentation', 'Vendor Coordination'],
+    tags: ['Experience Design', 'Concept Development', 'Client Presentation'],
     categories: ['Physical Design', 'Digital Design', 'Work Experience'],
   },
   {
@@ -102,6 +106,7 @@ const projects: Project[] = [
     title: 'Genius Lyrics Redesign',
     subtitle: 'Creative Brand Expansion',
     image: geniusRedesign,
+    imagePosition: 'center 30%',
     tags: ['Figma', 'UI/UX Design', 'Opportunity Mapping', 'Visual Systems'],
     categories: ['Digital Design'],
   },
@@ -131,10 +136,10 @@ const projects: Project[] = [
   },
   {
     id: 12,
-    title: 'Photography · Objects of Home',
+    title: 'Objects of Home',
     subtitle: 'Personal Exploration',
     image: objectsOfHome,
-    tags: ['DSLR Photography', 'Visual Study', 'Canon T4i'],
+    tags: ['DSLR Photography', 'Canon T4i'],
     categories: ['Art'],
   },
   {
@@ -144,6 +149,38 @@ const projects: Project[] = [
     image: photogramImages,
     tags: ['Analog Technique', 'Material Exploration', 'Form and Shadow'],
     categories: ['Art'],
+  },
+  {
+    id: 14,
+    title: 'Metal Forrest Sculpture',
+    subtitle: 'Multimaterial Fabrication',
+    image: artSculpture,
+    tags: ['MIG Welding', 'Plasma Cutting', 'Sand Casting', 'Ceramics'],
+    categories: ['Art'],
+  },
+  {
+    id: 15,
+    title: 'French Fry Whistle',
+    subtitle: 'Advanced Machining',
+    image: frenchFryWhistle,
+    tags: ['CNC', 'CAD', 'CAM'],
+    categories: ['Physical Design'],
+  },
+  {
+    id: 16,
+    title: 'Maple Leaf Paper Punch',
+    subtitle: 'Advanced Machining',
+    image: mapleLeafPunch,
+    tags: ['CNC', 'CAD', 'CAM', 'Mechanical Assembly'],
+    categories: ['Physical Design'],
+  },
+  {
+    id: 17,
+    title: 'Airan Lab',
+    subtitle: 'Product & Mechanical Research',
+    gradient: 'from-emerald-400 to-teal-600',
+    tags: ['Rapid Prototyping', 'CAD', '3D Printing', 'Design Iteration'],
+    categories: ['Physical Design', 'Work Experience'],
   },
 ];
 
@@ -301,6 +338,7 @@ export function ProjectsCarousel() {
                       src={project.image}
                       alt={project.title}
                       className="absolute inset-0 w-full h-full object-cover"
+                      style={{ objectPosition: project.imagePosition || 'center' }}
                     />
                   )}
 
