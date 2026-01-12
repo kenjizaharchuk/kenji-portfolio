@@ -87,7 +87,7 @@ const projects: Project[] = [
   },
   {
     id: 6,
-    title: 'Discord Booth -- Tokyo Game Show 2024',
+    title: 'Discord Tokyo Game Show Booth',
     subtitle: 'Creative Intern · UltraSuperNew Inc.',
     image: discordBooth,
     tags: ['Experience Design', 'Concept Development', 'Client Presentation'],
@@ -106,7 +106,7 @@ const projects: Project[] = [
     title: 'Genius Lyrics Redesign',
     subtitle: 'Creative Brand Expansion',
     image: geniusRedesign,
-    imagePosition: 'center 30%',
+    imagePosition: 'center 70%',
     tags: ['Figma', 'UI/UX Design', 'Opportunity Mapping', 'Visual Systems'],
     categories: ['Digital Design'],
   },
