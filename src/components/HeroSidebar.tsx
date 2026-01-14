@@ -32,18 +32,53 @@ export function HeroSidebar({ isPreloaderActive = false }: HeroSidebarProps) {
 
   useEffect(() => {
     const landingSection = document.getElementById('landing');
-    if (!landingSection) return;
+    const aboutSection = document.getElementById('about');
+    const thingsSection = document.getElementById('things');
+    
+    if (!landingSection || !aboutSection || !thingsSection) return;
 
-    const observer = new IntersectionObserver(
+    let isInLanding = false;
+    let isInAbout = false;
+    let isInThings = false;
+
+    const updateVisibility = () => {
+      // Visible when in Landing or About, but NOT when Things is visible
+      setIsVisible((isInLanding || isInAbout) && !isInThings);
+    };
+
+    const landingObserver = new IntersectionObserver(
       ([entry]) => {
-        // Visible when landing section is at least 10% in view
-        setIsVisible(entry.intersectionRatio > 0.1);
+        isInLanding = entry.intersectionRatio > 0.1;
+        updateVisibility();
       },
       { threshold: [0, 0.1, 0.5, 1] }
     );
 
-    observer.observe(landingSection);
-    return () => observer.disconnect();
+    const aboutObserver = new IntersectionObserver(
+      ([entry]) => {
+        isInAbout = entry.intersectionRatio > 0.1;
+        updateVisibility();
+      },
+      { threshold: [0, 0.1, 0.5, 1] }
+    );
+
+    const thingsObserver = new IntersectionObserver(
+      ([entry]) => {
+        isInThings = entry.intersectionRatio > 0.05;
+        updateVisibility();
+      },
+      { threshold: [0, 0.05, 0.1] }
+    );
+
+    landingObserver.observe(landingSection);
+    aboutObserver.observe(aboutSection);
+    thingsObserver.observe(thingsSection);
+
+    return () => {
+      landingObserver.disconnect();
+      aboutObserver.disconnect();
+      thingsObserver.disconnect();
+    };
   }, []);
 
   const scrollToSection = (sectionId: string) => {

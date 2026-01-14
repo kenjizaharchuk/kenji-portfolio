@@ -22,6 +22,8 @@ import photogramImages from '@/assets/photogram-images.jpg';
 import artSculpture from '@/assets/art-sculpture.jpg';
 import frenchFryWhistle from '@/assets/french-fry-whistle.jpg';
 import mapleLeafPunch from '@/assets/maple-leaf-punch.jpg';
+import northStarPendant from '@/assets/north-star-pendant.png';
+import airanLab from '@/assets/airan-lab.png';
 
 // Filter categories
 const FILTER_CATEGORIES = [
@@ -65,7 +67,7 @@ const projects: Project[] = [
     id: 3,
     title: 'North Star Pendant',
     subtitle: 'Silversmithing',
-    gradient: 'from-slate-400 to-zinc-600',
+    image: northStarPendant,
     tags: ['CAD', 'Form 4 SLA Printing', 'Investment Casting', 'Sterling Silver'],
     categories: ['Physical Design'],
   },
@@ -180,7 +182,7 @@ const projects: Project[] = [
     id: 17,
     title: 'Airan Lab',
     subtitle: 'Product & Mechanical Research',
-    gradient: 'from-emerald-400 to-teal-600',
+    image: airanLab,
     tags: ['Rapid Prototyping', 'CAD', '3D Printing', 'Design Iteration'],
     categories: ['Physical Design', 'Work Experience'],
   },
@@ -276,8 +278,8 @@ export function ProjectsCarousel() {
   return (
     <section id="things" className="relative min-h-screen pt-12 pb-16 md:pt-16 md:pb-20 flex flex-col items-center justify-center">
       {/* Section Header */}
-      <div className="text-center mb-8">
-        <h2 className="font-display text-4xl md:text-5xl font-bold text-stroke-glow animate-float">
+      <div className="text-center mb-4">
+        <h2 className="font-display text-4xl md:text-5xl font-bold text-white/90">
           Things I've Made
         </h2>
       </div>
@@ -379,7 +381,7 @@ export function ProjectsCarousel() {
       </div>
 
       {/* Filter Chips */}
-      <div className="flex flex-wrap justify-center gap-3 mt-10 px-4">
+      <div className="flex flex-wrap justify-center gap-3 mt-5 px-4">
         {FILTER_CATEGORIES.map((filter) => (
           <button
             key={filter}
