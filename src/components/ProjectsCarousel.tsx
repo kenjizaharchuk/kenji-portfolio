@@ -279,7 +279,7 @@ export function ProjectsCarousel() {
   return (
     <section id="things" className="relative min-h-screen pt-12 pb-16 md:pt-16 md:pb-20 flex flex-col items-center justify-center">
       {/* Section Header */}
-      <div className="text-center mb-0 mt-16">
+      <div className="text-center mb-6 mt-8">
         <h2 className="font-display text-4xl md:text-5xl font-bold text-white/90">
           Things I've Made
         </h2>
