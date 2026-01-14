@@ -57,17 +57,18 @@ const projects: Project[] = [
   },
   {
     id: 2,
-    title: 'Random Sculpture',
+    title: 'Mountain Sculpture',
     subtitle: 'Sculpture',
     image: randomSculpture,
-    tags: ['Plaster', 'Hand Sculpting'],
-    categories: ['Physical Design', 'Art'],
+    tags: ['Paper Mache', 'Plaster', 'Hand Sculpting'],
+    categories: ['Art'],
   },
   {
     id: 3,
     title: 'North Star Pendant',
     subtitle: 'Silversmithing',
     image: northStarPendant,
+    imagePosition: '40% 30%',
     tags: ['CAD', 'Form 4 SLA Printing', 'Investment Casting', 'Sterling Silver'],
     categories: ['Physical Design'],
   },
@@ -165,7 +166,7 @@ const projects: Project[] = [
     title: 'French Fry Whistle',
     subtitle: 'Advanced Machining',
     image: frenchFryWhistle,
-    imagePosition: 'center 65%',
+    imagePosition: 'center 50%',
     tags: ['CNC', 'CAD', 'CAM'],
     categories: ['Physical Design'],
   },
@@ -174,7 +175,7 @@ const projects: Project[] = [
     title: 'Maple Leaf Paper Punch',
     subtitle: 'Advanced Machining',
     image: mapleLeafPunch,
-    imagePosition: 'center 65%',
+    imagePosition: 'center 50%',
     tags: ['CNC', 'CAD', 'CAM', 'Mechanical Assembly'],
     categories: ['Physical Design'],
   },
@@ -278,7 +279,7 @@ export function ProjectsCarousel() {
   return (
     <section id="things" className="relative min-h-screen pt-12 pb-16 md:pt-16 md:pb-20 flex flex-col items-center justify-center">
       {/* Section Header */}
-      <div className="text-center mb-4">
+      <div className="text-center mb-4 mt-12">
         <h2 className="font-display text-4xl md:text-5xl font-bold text-white/90">
           Things I've Made
         </h2>

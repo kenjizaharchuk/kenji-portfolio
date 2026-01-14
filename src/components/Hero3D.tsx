@@ -165,6 +165,7 @@ function Name3D() {
 function ScrollChevron() {
   const groupRef = useRef<THREE.Group>(null);
   const { viewport } = useThree();
+  const [isHovered, setIsHovered] = useState(false);
   
   // Position at bottom of viewport
   const yPosition = -viewport.height / 2 + 0.8;
@@ -174,6 +175,15 @@ function ScrollChevron() {
     // Slow, subtle vertical bobbing motion
     groupRef.current.position.y = yPosition + Math.sin(state.clock.elapsedTime * 0.8) * 0.12;
   });
+
+  // Scroll to About section on click (same logic as HeroSidebar)
+  const handleClick = () => {
+    const aboutSection = document.getElementById('about');
+    if (aboutSection) {
+      const offset = aboutSection.offsetTop + window.innerHeight * 2.5;
+      window.scrollTo({ top: offset, behavior: 'smooth' });
+    }
+  };
 
   // Create chevron shape
   const chevronShape = new THREE.Shape();
@@ -200,13 +210,23 @@ function ScrollChevron() {
 
   return (
     <group ref={groupRef} position={[0, yPosition, 0]} rotation={[0.15, 0, 0]}>
-      <mesh>
+      <mesh
+        onClick={handleClick}
+        onPointerOver={() => {
+          setIsHovered(true);
+          document.body.style.cursor = 'pointer';
+        }}
+        onPointerOut={() => {
+          setIsHovered(false);
+          document.body.style.cursor = 'default';
+        }}
+      >
         <extrudeGeometry args={[chevronShape, extrudeSettings]} />
         <meshStandardMaterial
-          color="#d0dce8"
+          color={isHovered ? "#ffffff" : "#d0dce8"}
           metalness={0.9}
           roughness={0.18}
-          envMapIntensity={2.0}
+          envMapIntensity={isHovered ? 2.5 : 2.0}
         />
       </mesh>
     </group>
