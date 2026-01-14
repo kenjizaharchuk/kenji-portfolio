@@ -329,8 +329,13 @@
 
 /* Swiper Carousel Styles */
 .projects-carousel {
-  padding: 60px 100px;
+  padding: 40px 100px;
   overflow: visible !important;
+}
+
+.projects-carousel .swiper-pagination {
+  position: relative;
+  margin-top: 40px;
 }
 
 .projects-carousel .swiper-wrapper {

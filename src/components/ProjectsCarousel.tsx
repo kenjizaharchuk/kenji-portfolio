@@ -68,7 +68,7 @@ const projects: Project[] = [
     title: 'North Star Pendant',
     subtitle: 'Silversmithing',
     image: northStarPendant,
-    imagePosition: '40% 30%',
+    imagePosition: '40% 15%',
     tags: ['CAD', 'Form 4 SLA Printing', 'Investment Casting', 'Sterling Silver'],
     categories: ['Physical Design'],
   },
@@ -166,7 +166,7 @@ const projects: Project[] = [
     title: 'French Fry Whistle',
     subtitle: 'Advanced Machining',
     image: frenchFryWhistle,
-    imagePosition: 'center 50%',
+    imagePosition: 'center 30%',
     tags: ['CNC', 'CAD', 'CAM'],
     categories: ['Physical Design'],
   },
@@ -175,7 +175,7 @@ const projects: Project[] = [
     title: 'Maple Leaf Paper Punch',
     subtitle: 'Advanced Machining',
     image: mapleLeafPunch,
-    imagePosition: 'center 50%',
+    imagePosition: 'center 30%',
     tags: ['CNC', 'CAD', 'CAM', 'Mechanical Assembly'],
     categories: ['Physical Design'],
   },
@@ -279,7 +279,7 @@ export function ProjectsCarousel() {
   return (
     <section id="things" className="relative min-h-screen pt-12 pb-16 md:pt-16 md:pb-20 flex flex-col items-center justify-center">
       {/* Section Header */}
-      <div className="text-center mb-4 mt-12">
+      <div className="text-center mb-0 mt-16">
         <h2 className="font-display text-4xl md:text-5xl font-bold text-white/90">
           Things I've Made
         </h2>
@@ -382,7 +382,7 @@ export function ProjectsCarousel() {
       </div>
 
       {/* Filter Chips */}
-      <div className="flex flex-wrap justify-center gap-3 mt-5 px-4">
+      <div className="flex flex-wrap justify-center gap-3 mt-10 px-4">
         {FILTER_CATEGORIES.map((filter) => (
           <button
             key={filter}
