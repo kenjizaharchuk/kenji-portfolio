@@ -1,4 +1,4 @@
-import { Linkedin } from 'lucide-react';
+import { Linkedin, Mail, Phone, MapPin } from 'lucide-react';
 import spotifyIcon from '@/assets/spotify-icon.png';
 import contactPhoto from '@/assets/contact-photo.png';
 
@@ -31,63 +31,60 @@ export function ContactSection() {
   return (
     <section 
       id="contact"
-      className="relative py-20 px-6 min-h-[600px]"
+      className="relative py-24 px-6 min-h-[550px]"
     >
-      {/* No overlay - stars show through naturally */}
-      
-      <div className="relative z-10 max-w-6xl mx-auto">
+      <div className="relative z-10 max-w-5xl mx-auto">
         {/* Staggered Layout Container */}
-        <div className="relative flex flex-col lg:flex-row gap-8 lg:gap-0">
+        <div className="relative flex flex-col lg:flex-row lg:items-start gap-10 lg:gap-16">
           
           {/* Left Column - Photo (positioned higher) */}
-          <div className="lg:w-[45%] lg:relative lg:z-20">
+          <div className="lg:w-[40%] lg:relative lg:z-20">
             <img 
               src={contactPhoto}
               alt="Sunset silhouette"
-              className="w-full h-[400px] lg:h-[450px] object-cover"
+              className="w-full h-[320px] lg:h-[380px] object-cover"
             />
           </div>
 
-          {/* Title - positioned in upper-left negative space on desktop */}
-          <h2 className="font-display text-5xl md:text-6xl font-bold text-white lg:absolute lg:top-0 lg:right-0 lg:w-[55%] lg:text-left lg:pl-8 order-first lg:order-none mb-8 lg:mb-0">
-            Contact Me
+          {/* Title - positioned centered above the panel */}
+          <h2 className="font-display text-5xl md:text-6xl font-bold text-white lg:absolute lg:top-0 lg:right-0 lg:w-[60%] lg:text-center lg:-mr-6 order-first lg:order-none mb-6 lg:mb-0">
+            Contact Me!
           </h2>
 
-          {/* Right Column - Contact Panel (bleeds off right and bottom) */}
-          <div className="lg:absolute lg:right-0 lg:top-24 lg:bottom-0 lg:w-[55%] lg:-mr-6 lg:-mb-20">
-            <div className="h-full bg-black/20 backdrop-blur-sm rounded-tl-2xl lg:rounded-tr-none lg:rounded-br-none rounded-bl-2xl lg:rounded-bl-none border-t border-l border-white/20 lg:border-r-0 lg:border-b-0 p-8 md:p-12 flex flex-col justify-center lg:pl-8 lg:pt-20">
+          {/* Right Column - Contact Panel (bleeds off right edge) */}
+          <div className="lg:absolute lg:right-0 lg:top-20 lg:w-[55%] lg:-mr-6">
+            <div className="bg-black/10 backdrop-blur-sm rounded-l-2xl border-t border-l border-white/15 p-8 md:p-10 lg:pl-10 lg:pr-16 lg:py-12">
               {/* Tagline */}
-              <div className="mb-8">
-                <p className="font-body text-xl md:text-2xl text-white/80 italic leading-relaxed">
-                  I'm always interested in getting to know new people
+              <div className="mb-10">
+                <p className="font-body text-lg md:text-xl text-white/80 italic leading-relaxed">
+                  I'm always interested in getting to know new people.
                 </p>
               </div>
 
-              {/* Contact Info */}
-              <div className="space-y-4 mb-8">
+              {/* Contact Info with icons */}
+              <div className="space-y-5 mb-10">
                 <a 
                   href="mailto:kgzaharchuk@stanford.edu"
-                  className="block font-body text-lg md:text-xl text-white hover:text-white/80 transition-colors"
+                  className="flex items-center gap-3 font-body text-base md:text-lg text-white hover:text-white/80 transition-colors"
                 >
+                  <Mail className="w-5 h-5 text-white/70" />
                   kgzaharchuk@stanford.edu
                 </a>
                 <a 
                   href="tel:650-878-7237"
-                  className="block font-body text-lg md:text-xl text-white hover:text-white/80 transition-colors"
+                  className="flex items-center gap-3 font-body text-base md:text-lg text-white hover:text-white/80 transition-colors"
                 >
+                  <Phone className="w-5 h-5 text-white/70" />
                   650-878-7237
                 </a>
-              </div>
-
-              {/* Location */}
-              <div className="mb-8">
-                <p className="font-body text-white/70 text-lg">
+                <div className="flex items-center gap-3 font-body text-base md:text-lg text-white">
+                  <MapPin className="w-5 h-5 text-white/70" />
                   Stanford, California
-                </p>
+                </div>
               </div>
 
-              {/* Social Icons - in a small black rounded container */}
-              <div className="inline-flex items-center gap-4 bg-black/60 rounded-lg px-4 py-3 w-fit">
+              {/* Social Icons - no background, floating directly */}
+              <div className="flex items-center gap-5">
                 <a 
                   href="https://vsco.co/kenjizaharchuk/gallery"
                   target="_blank"
