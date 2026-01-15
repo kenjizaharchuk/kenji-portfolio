@@ -44,8 +44,9 @@ export function HeroSidebar({ isPreloaderActive = false }: HeroSidebarProps) {
     let isInContact = false;
 
     const updateVisibility = () => {
-      // Visible when in Landing, About, or Contact, but NOT when Things is visible
-      setIsVisible((isInLanding || isInAbout || isInContact) && !isInThings);
+      // Show sidebar when Things section is NOT the dominant view
+      // This ensures smooth transitions without conflicting states
+      setIsVisible(!isInThings);
     };
 
     const landingObserver = new IntersectionObserver(

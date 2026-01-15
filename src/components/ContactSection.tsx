@@ -34,30 +34,30 @@ export function ContactSection() {
       className="relative py-24 px-6 min-h-[550px] overflow-visible"
     >
       {/* Main layout - 50/50 split */}
-      <div className="relative z-10 flex flex-col lg:flex-row lg:items-start gap-10 lg:gap-12 max-w-6xl mx-auto">
+      <div className="relative z-10 flex flex-col lg:flex-row lg:items-start gap-12 lg:gap-16 max-w-6xl mx-auto">
         
-        {/* Left Column - Photo (positioned higher, 50% width) */}
-        <div className="lg:w-1/2 lg:relative lg:z-20">
+        {/* Left Column - Photo (positioned higher, 50% width, 25% smaller and moved up) */}
+        <div className="lg:w-1/2 lg:relative lg:z-20 lg:-mt-12">
           <img 
             src={contactPhoto}
             alt="Sunset silhouette"
-            className="w-full h-[320px] lg:h-[400px] object-cover"
+            className="w-full h-[240px] lg:h-[300px] object-cover"
           />
         </div>
 
         {/* Right Column - Title + Panel Container (50% width, bleeds off right) */}
         <div className="lg:w-1/2 lg:relative">
-          {/* Title - centered above panel, moved up 24px */}
-          <h2 className="font-display text-5xl md:text-6xl font-bold text-white text-center mb-6 lg:mb-0 lg:absolute lg:-top-6 lg:left-0 lg:right-0 lg:pr-[calc(100vw-100%)]">
+          {/* Title - centered above panel, moved up 24px, single line */}
+          <h2 className="font-display text-5xl md:text-6xl font-bold text-white text-center whitespace-nowrap mb-6 lg:mb-0 lg:absolute lg:-top-6 lg:left-0 lg:right-0">
             Contact Me!
           </h2>
 
           {/* Contact Panel - bleeds off right AND bottom edges */}
           <div className="lg:absolute lg:top-16 lg:left-0 lg:right-[calc(-50vw+50%)] lg:min-h-[400px]">
-            <div className="bg-black/10 rounded-tl-2xl border-t border-l border-white/10 p-8 md:p-10 lg:pl-10 lg:pr-20 lg:py-12 lg:pb-24 lg:h-full">
+            <div className="bg-black/20 rounded-tl-2xl border-t border-l border-white/10 p-8 md:p-10 lg:pl-10 lg:pr-20 lg:py-12 lg:pb-24 lg:h-full">
               {/* Tagline - Cormorant Garamond to match About section */}
               <div className="mb-10">
-                <p className="font-display text-lg md:text-xl text-white/80 italic leading-relaxed">
+                <p className="font-display text-xl md:text-2xl font-medium text-white/80 italic leading-relaxed">
                   I'm always interested in getting to know new people.
                 </p>
               </div>
@@ -66,19 +66,19 @@ export function ContactSection() {
               <div className="space-y-5 mb-10">
                 <a 
                   href="mailto:kgzaharchuk@stanford.edu"
-                  className="flex items-center gap-3 font-display text-base md:text-lg text-white hover:text-white/80 transition-colors"
+                  className="flex items-center gap-3 font-display text-lg md:text-xl font-medium text-white hover:text-white/80 transition-colors"
                 >
                   <Mail className="w-5 h-5 text-white/70" />
                   kgzaharchuk@stanford.edu
                 </a>
                 <a 
                   href="tel:650-878-7237"
-                  className="flex items-center gap-3 font-display text-base md:text-lg text-white hover:text-white/80 transition-colors"
+                  className="flex items-center gap-3 font-display text-lg md:text-xl font-medium text-white hover:text-white/80 transition-colors"
                 >
                   <Phone className="w-5 h-5 text-white/70" />
                   650-878-7237
                 </a>
-                <div className="flex items-center gap-3 font-display text-base md:text-lg text-white">
+                <div className="flex items-center gap-3 font-display text-lg md:text-xl font-medium text-white">
                   <MapPin className="w-5 h-5 text-white/70" />
                   Stanford, California
                 </div>
@@ -86,6 +86,15 @@ export function ContactSection() {
 
               {/* Social Icons - no background, floating directly */}
               <div className="flex items-center gap-5">
+                <a 
+                  href="https://www.linkedin.com/in/kenjizaharchuk/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-white/70 hover:text-white hover:scale-110 transition-all duration-200"
+                  aria-label="LinkedIn"
+                >
+                  <Linkedin className="w-6 h-6" />
+                </a>
                 <a 
                   href="https://vsco.co/kenjizaharchuk/gallery"
                   target="_blank"
@@ -110,15 +119,6 @@ export function ContactSection() {
                     onMouseEnter={(e) => e.currentTarget.style.opacity = '1'}
                     onMouseLeave={(e) => e.currentTarget.style.opacity = '0.7'}
                   />
-                </a>
-                <a 
-                  href="https://www.linkedin.com/in/kenjizaharchuk/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-white/70 hover:text-white hover:scale-110 transition-all duration-200"
-                  aria-label="LinkedIn"
-                >
-                  <Linkedin className="w-6 h-6" />
                 </a>
               </div>
             </div>
