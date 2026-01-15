@@ -31,7 +31,7 @@ export function ContactSection() {
   return (
     <section 
       id="contact"
-      className="relative py-24 px-6 min-h-[550px] overflow-visible"
+      className="relative pt-48 pb-12 px-6 min-h-[550px] overflow-visible"
     >
       {/* Main layout - 50/50 split */}
       <div className="relative z-10 flex flex-col lg:flex-row lg:items-start gap-12 lg:gap-16 max-w-6xl mx-auto lg:ml-24">
@@ -41,14 +41,14 @@ export function ContactSection() {
           <img 
             src={contactPhoto}
             alt="Sunset silhouette"
-            className="w-full h-auto object-cover rounded-sm"
+            className="w-[90%] h-auto object-cover rounded-sm"
           />
         </div>
 
         {/* Right Column - Title + Panel Container (50% width, bleeds off right) */}
         <div className="lg:w-1/2 lg:relative">
           {/* Title - centered above panel, moved up 24px, single line */}
-          <h2 className="font-display text-5xl md:text-6xl font-bold text-white text-center whitespace-nowrap mb-6 lg:mb-0 lg:absolute lg:-top-6 lg:left-0 lg:right-0">
+          <h2 className="font-display text-5xl md:text-6xl font-bold text-white text-center whitespace-nowrap mb-6 lg:mb-0 lg:absolute lg:-top-12 lg:left-0 lg:right-0">
             Contact Me!
           </h2>
 
@@ -56,7 +56,7 @@ export function ContactSection() {
           <div className="lg:absolute lg:top-16 lg:left-0 lg:right-[calc(-50vw+50%)] lg:min-h-[400px]">
             <div className="bg-black/20 rounded-tl-2xl border-t border-l border-white/40 p-8 md:p-10 lg:pl-10 lg:pr-20 lg:py-12 lg:pb-24 lg:h-full">
               {/* Tagline - Cormorant Garamond to match About section */}
-              <div className="mb-10">
+              <div className="mb-10 max-w-sm lg:max-w-md">
                 <p className="font-display text-xl md:text-2xl font-medium text-white/80 italic leading-relaxed">
                   I'm always interested in getting to know new people.
                 </p>
@@ -99,7 +99,7 @@ export function ContactSection() {
                   href="https://vsco.co/kenjizaharchuk/gallery"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-white/70 hover:text-white hover:scale-110 transition-all duration-200"
+                  className="text-white/70 hover:text-white hover:scale-110 transition-all duration-200 ml-2"
                   aria-label="VSCO"
                 >
                   <VscoIcon className="w-6 h-6" />
