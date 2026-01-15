@@ -325,6 +325,8 @@ export function ProjectsCarousel() {
             slideToClickedSlide={true}
             mousewheel={{
               forceToAxis: true,
+              releaseOnEdges: true,
+              sensitivity: 0.6,
             }}
             pagination={{
               clickable: true,

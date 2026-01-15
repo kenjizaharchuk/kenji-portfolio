@@ -37,12 +37,14 @@ export function ContactSection() {
       <div className="relative z-10 flex flex-col lg:flex-row lg:items-start gap-8 lg:gap-0 max-w-6xl mx-auto lg:ml-24">
         
         {/* Left Column - Photo (with left margin for sidebar clearance) */}
-        <div className="lg:w-1/2 lg:relative lg:z-20 flex justify-end">
-          <img 
-            src={contactPhoto}
-            alt="Sunset silhouette"
-            className="w-full max-w-[450px] max-h-[350px] object-cover rounded-sm lg:mr-24"
-          />
+        <div className="lg:w-1/2 lg:relative lg:z-20 flex justify-end shrink-0">
+          <div className="w-full max-w-[405px] h-[clamp(240px,28vw,350px)] overflow-hidden rounded-sm lg:mr-[60px]">
+            <img 
+              src={contactPhoto}
+              alt="Sunset silhouette"
+              className="w-full h-full object-cover"
+            />
+          </div>
         </div>
 
         {/* Right Column - Title + Panel Container (50% width, bleeds off right) */}
@@ -54,10 +56,10 @@ export function ContactSection() {
 
           {/* Contact Panel - bleeds off right AND bottom edges */}
           <div className="lg:absolute lg:top-16 lg:left-0 lg:right-[calc(-50vw+50%)] lg:min-h-[400px]">
-            <div className="bg-black/20 rounded-tl-2xl border-t border-l border-white/40 p-8 md:p-10 lg:pl-10 lg:pr-20 lg:py-12 lg:pb-24 lg:h-full">
+            <div className="bg-black/20 rounded-tl-2xl border-t border-l border-white/40 p-8 md:p-10 lg:pl-10 lg:pr-20 lg:py-8 lg:pb-12 lg:h-full">
               {/* Tagline - Cormorant Garamond to match About section */}
-              <div className="mb-10 max-w-full lg:max-w-lg xl:max-w-xl">
-                <p className="font-display text-lg md:text-xl lg:text-2xl font-medium text-white/80 italic leading-relaxed">
+              <div className="mb-10">
+                <p className="font-display text-[clamp(1.05rem,1.35vw,1.6rem)] font-medium text-white/80 italic leading-relaxed whitespace-normal">
                   I'm always interested in getting to know new people.
                 </p>
               </div>

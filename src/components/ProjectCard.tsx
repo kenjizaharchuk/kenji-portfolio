@@ -30,33 +30,44 @@ export function ProjectCard({ title, description, image, index }: ProjectCardPro
   }, [index]);
 
   useEffect(() => {
+    let rafId: number | null = null;
+    let lastProgress = 0;
+
     const handleScroll = () => {
-      if (!cardRef.current) return;
+      if (rafId !== null) return; // Already scheduled
       
-      const rect = cardRef.current.getBoundingClientRect();
-      const windowHeight = window.innerHeight;
-      
-      // Calculate progress: starts when card enters viewport, completes when fully visible
-      // Slow reveal - takes more scroll distance
-      const startPoint = windowHeight * 1.1;
-      const endPoint = windowHeight * 0.25;
-      
-      const cardCenter = rect.top + rect.height / 2;
-      
-      // Stagger effect - each card starts animation slightly later
-      const staggerOffset = variations.staggerDelay * windowHeight * 0.15;
-      const adjustedCardCenter = cardCenter + staggerOffset;
-      
-      let rawProgress = (startPoint - adjustedCardCenter) / (startPoint - endPoint);
-      rawProgress = Math.max(0, Math.min(1, rawProgress));
-      
-      setProgress(rawProgress);
+      rafId = requestAnimationFrame(() => {
+        rafId = null;
+        if (!cardRef.current) return;
+        
+        const rect = cardRef.current.getBoundingClientRect();
+        const windowHeight = window.innerHeight;
+        
+        const startPoint = windowHeight * 1.1;
+        const endPoint = windowHeight * 0.25;
+        
+        const cardCenter = rect.top + rect.height / 2;
+        const staggerOffset = variations.staggerDelay * windowHeight * 0.15;
+        const adjustedCardCenter = cardCenter + staggerOffset;
+        
+        let rawProgress = (startPoint - adjustedCardCenter) / (startPoint - endPoint);
+        rawProgress = Math.max(0, Math.min(1, rawProgress));
+        
+        // Only update if change is meaningful (>1%)
+        if (Math.abs(rawProgress - lastProgress) > 0.01) {
+          lastProgress = rawProgress;
+          setProgress(rawProgress);
+        }
+      });
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     handleScroll();
     
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (rafId !== null) cancelAnimationFrame(rafId);
+    };
   }, [variations.staggerDelay]);
 
   // Smooth easing function for cinematic feel
