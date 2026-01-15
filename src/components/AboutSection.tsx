@@ -59,7 +59,7 @@ export const AboutSection = () => {
       {/* About Card - always opacity 1, only scale changes */}
       <div 
         ref={cardRef}
-        className="w-[85vw] max-w-5xl border border-white/40 rounded-sm px-8 md:px-12 py-12"
+        className="w-[85vw] max-w-5xl border border-white/40 rounded-sm px-8 md:px-12 py-12 ml-8 lg:ml-16"
         style={{
           transformOrigin: 'center center',
         }}

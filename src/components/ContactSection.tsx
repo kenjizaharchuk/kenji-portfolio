@@ -34,14 +34,14 @@ export function ContactSection() {
       className="relative py-24 px-6 min-h-[550px] overflow-visible"
     >
       {/* Main layout - 50/50 split */}
-      <div className="relative z-10 flex flex-col lg:flex-row lg:items-start gap-12 lg:gap-16 max-w-6xl mx-auto">
+      <div className="relative z-10 flex flex-col lg:flex-row lg:items-start gap-12 lg:gap-16 max-w-6xl mx-auto lg:ml-24">
         
-        {/* Left Column - Photo (positioned higher, 50% width, 25% smaller and moved up) */}
-        <div className="lg:w-1/2 lg:relative lg:z-20 lg:-mt-12">
+        {/* Left Column - Photo (with left margin for sidebar clearance) */}
+        <div className="lg:w-1/2 lg:relative lg:z-20">
           <img 
             src={contactPhoto}
             alt="Sunset silhouette"
-            className="w-full h-[240px] lg:h-[300px] object-cover"
+            className="w-full h-auto object-cover rounded-sm"
           />
         </div>
 
@@ -54,7 +54,7 @@ export function ContactSection() {
 
           {/* Contact Panel - bleeds off right AND bottom edges */}
           <div className="lg:absolute lg:top-16 lg:left-0 lg:right-[calc(-50vw+50%)] lg:min-h-[400px]">
-            <div className="bg-black/20 rounded-tl-2xl border-t border-l border-white/10 p-8 md:p-10 lg:pl-10 lg:pr-20 lg:py-12 lg:pb-24 lg:h-full">
+            <div className="bg-black/20 rounded-tl-2xl border-t border-l border-white/40 p-8 md:p-10 lg:pl-10 lg:pr-20 lg:py-12 lg:pb-24 lg:h-full">
               {/* Tagline - Cormorant Garamond to match About section */}
               <div className="mb-10">
                 <p className="font-display text-xl md:text-2xl font-medium text-white/80 italic leading-relaxed">
@@ -62,8 +62,8 @@ export function ContactSection() {
                 </p>
               </div>
 
-              {/* Contact Info with icons - Cormorant Garamond to match About section */}
-              <div className="space-y-5 mb-10">
+              {/* Contact Info with icons - indented 24px like bullet points */}
+              <div className="space-y-5 mb-10 pl-6">
                 <a 
                   href="mailto:kgzaharchuk@stanford.edu"
                   className="flex items-center gap-3 font-display text-lg md:text-xl font-medium text-white hover:text-white/80 transition-colors"
