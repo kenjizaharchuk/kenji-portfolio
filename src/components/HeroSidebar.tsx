@@ -34,16 +34,18 @@ export function HeroSidebar({ isPreloaderActive = false }: HeroSidebarProps) {
     const landingSection = document.getElementById('landing');
     const aboutSection = document.getElementById('about');
     const thingsSection = document.getElementById('things');
+    const contactSection = document.getElementById('contact');
     
     if (!landingSection || !aboutSection || !thingsSection) return;
 
     let isInLanding = false;
     let isInAbout = false;
     let isInThings = false;
+    let isInContact = false;
 
     const updateVisibility = () => {
-      // Visible when in Landing or About, but NOT when Things is visible
-      setIsVisible((isInLanding || isInAbout) && !isInThings);
+      // Visible when in Landing, About, or Contact, but NOT when Things is visible
+      setIsVisible((isInLanding || isInAbout || isInContact) && !isInThings);
     };
 
     const landingObserver = new IntersectionObserver(
@@ -70,14 +72,24 @@ export function HeroSidebar({ isPreloaderActive = false }: HeroSidebarProps) {
       { threshold: [0, 0.05, 0.1] }
     );
 
+    const contactObserver = new IntersectionObserver(
+      ([entry]) => {
+        isInContact = entry.intersectionRatio > 0.1;
+        updateVisibility();
+      },
+      { threshold: [0, 0.1, 0.5, 1] }
+    );
+
     landingObserver.observe(landingSection);
     aboutObserver.observe(aboutSection);
     thingsObserver.observe(thingsSection);
+    if (contactSection) contactObserver.observe(contactSection);
 
     return () => {
       landingObserver.disconnect();
       aboutObserver.disconnect();
       thingsObserver.disconnect();
+      contactObserver.disconnect();
     };
   }, []);
 
