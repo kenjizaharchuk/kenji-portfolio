@@ -30,14 +30,14 @@ export function ContactSection() {
   return (
     <section 
       id="contact"
-      className="relative pt-24 pb-0 px-6 overflow-hidden"
+      className="relative pt-48 pb-0 px-6 overflow-hidden"
     >
       {/* Two-column layout: 40% image / 60% panel area */}
       <div 
         className="relative max-w-7xl mx-auto"
         style={{
           display: 'grid',
-          gridTemplateColumns: '40% 60%',
+          gridTemplateColumns: '55% 45%',
           columnGap: 'clamp(32px, 4vw, 64px)',
         }}
       >
@@ -68,10 +68,10 @@ export function ContactSection() {
         >
           {/* Title - centered over the panel, offset upward */}
           <h2 
-            className="font-display text-5xl md:text-6xl font-bold text-white text-center mb-6"
+            className="font-display text-5xl md:text-6xl font-bold text-white text-center"
             style={{ 
               marginLeft: 'clamp(-40px, -2vw, -16px)', /* Shift left slightly to center over panel visually */
-              marginTop: '-96px' /* Move heading upward */
+              marginBottom: '96px' /* Gap between heading and panel */
             }}
           >
             Contact Me!
