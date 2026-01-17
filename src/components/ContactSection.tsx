@@ -44,7 +44,7 @@ export function ContactSection() {
         {/* Left Column - Image with 15% left clearance for sidebar */}
         <div 
           className="flex items-start"
-          style={{ marginTop: '-24px', paddingLeft: '15vw' }} /* 15vw left clearance for nav lines */
+          style={{ marginTop: '24px', paddingLeft: '8vw' }} /* 8vw left clearance for nav lines */
         >
           <div 
             className="overflow-hidden rounded-sm flex-1"
