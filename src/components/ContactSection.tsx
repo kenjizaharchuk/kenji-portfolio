@@ -66,10 +66,13 @@ export function ContactSection() {
           className="flex flex-col"
           style={{ marginRight: 'clamp(-60px, -4vw, -20px)' }} /* Bleed right */
         >
-          {/* Title - centered over the panel */}
+          {/* Title - centered over the panel, offset upward */}
           <h2 
             className="font-display text-5xl md:text-6xl font-bold text-white text-center mb-6"
-            style={{ marginLeft: 'clamp(-40px, -2vw, -16px)' }} /* Shift left slightly to center over panel visually */
+            style={{ 
+              marginLeft: 'clamp(-40px, -2vw, -16px)', /* Shift left slightly to center over panel visually */
+              marginTop: '-96px' /* Move heading upward */
+            }}
           >
             Contact Me!
           </h2>
@@ -163,7 +166,7 @@ export function ContactSection() {
         </div>
       </div>
 
-      {/* Mobile Layout Override - stacked cleanly */}
+      {/* Mobile Layout Override - stacked cleanly with heading first */}
       <style>{`
         @media (max-width: 900px) {
           #contact > div:first-of-type {
@@ -172,22 +175,74 @@ export function ContactSection() {
             gap: 24px !important;
             padding: 0 16px !important;
           }
+          /* Reorder: heading column (right) comes first */
+          #contact > div:first-of-type > div:last-child {
+            order: -1 !important;
+            margin-right: 0 !important;
+          }
+          #contact > div:first-of-type > div:last-child h2 {
+            margin-left: 0 !important;
+            margin-top: 0 !important;
+            text-align: center !important;
+            margin-bottom: 16px !important;
+          }
+          /* Hide the panel on mobile when in first position, only show heading */
+          #contact > div:first-of-type > div:last-child > div:last-child {
+            display: none !important;
+          }
+          /* Image column */
           #contact > div:first-of-type > div:first-child {
+            order: 0 !important;
             justify-content: center !important;
             margin-top: 0 !important;
           }
           #contact > div:first-of-type > div:first-child > div {
             width: min(320px, 90vw) !important;
           }
-          #contact > div:first-of-type > div:last-child {
-            margin-right: 0 !important;
-          }
-          #contact > div:first-of-type > div:last-child h2 {
-            margin-left: 0 !important;
-            text-align: center !important;
-          }
         }
       `}</style>
+      
+      {/* Mobile-only panel (appears after image) */}
+      <div className="hidden max-[900px]:block px-4 mt-6">
+        <div 
+          className="bg-black/20 rounded-2xl border border-white/30"
+          style={{ padding: 'clamp(24px, 4vw, 32px)' }}
+        >
+          <div className="mb-6">
+            <p 
+              className="font-display font-medium text-white/80 italic leading-relaxed"
+              style={{ fontSize: 'clamp(1.1rem, 4vw, 1.35rem)' }}
+            >
+              I'm always interested in getting to know new people.
+            </p>
+          </div>
+          <div className="space-y-3 mb-6" style={{ fontSize: 'clamp(0.95rem, 3.5vw, 1.1rem)' }}>
+            <a href="mailto:kgzaharchuk@stanford.edu" className="flex items-center gap-3 font-display font-medium text-white hover:text-white/80 transition-colors">
+              <Mail className="w-5 h-5 text-white/70 shrink-0" />
+              kgzaharchuk@stanford.edu
+            </a>
+            <a href="tel:650-878-7237" className="flex items-center gap-3 font-display font-medium text-white hover:text-white/80 transition-colors">
+              <Phone className="w-5 h-5 text-white/70 shrink-0" />
+              650-878-7237
+            </a>
+            <div className="flex items-center gap-3 font-display font-medium text-white">
+              <MapPin className="w-5 h-5 text-white/70 shrink-0" />
+              Stanford, California
+            </div>
+          </div>
+          <div className="flex items-center gap-5">
+            <a href="https://www.linkedin.com/in/kenjizaharchuk/" target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-white transition-all" aria-label="LinkedIn">
+              <Linkedin className="w-6 h-6" />
+            </a>
+            <a href="https://vsco.co/kenjizaharchuk/gallery" target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-white transition-all ml-2" aria-label="VSCO">
+              <VscoIcon className="w-6 h-6" />
+            </a>
+            <a href="https://open.spotify.com/user/kenjiz?si=1dcb2bcf6c374a9a" target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-white transition-all" aria-label="Spotify">
+              <img src={spotifyIcon} alt="Spotify" className="w-9 h-9" style={{ filter: 'brightness(0) invert(1)', opacity: 0.7 }} />
+            </a>
+          </div>
+        </div>
+      </div>
     </section>
   );
 }
