@@ -30,27 +30,26 @@ export function ContactSection() {
   return (
     <section 
       id="contact"
-      className="relative pt-32 pb-0 px-6 overflow-hidden"
+      className="relative pt-24 pb-0 px-6 overflow-hidden"
     >
-      {/* Title - centered above everything */}
-      <h2 className="font-display text-5xl md:text-6xl font-bold text-white text-center mb-8">
-        Contact Me!
-      </h2>
-
-      {/* CSS Grid Layout - prevents overlap, scales properly */}
+      {/* Two-column layout: 40% image / 60% panel area */}
       <div 
-        className="relative grid gap-6 lg:gap-0 max-w-7xl mx-auto"
+        className="relative max-w-7xl mx-auto"
         style={{
-          gridTemplateColumns: 'minmax(280px, 1fr) minmax(340px, 1.2fr)',
-          columnGap: 'clamp(24px, 5vw, 80px)',
+          display: 'grid',
+          gridTemplateColumns: '40% 60%',
+          columnGap: 'clamp(32px, 4vw, 64px)',
         }}
       >
-        {/* Left Column - Photo */}
-        <div className="flex justify-end items-start pl-16 lg:pl-24">
+        {/* Left Column - Image (offset upward relative to panel) */}
+        <div 
+          className="flex justify-end items-start"
+          style={{ marginTop: '-24px' }} /* Vertical stagger: image starts above panel */
+        >
           <div 
-            className="w-full overflow-hidden rounded-sm"
+            className="overflow-hidden rounded-sm shrink-0"
             style={{
-              maxWidth: 'clamp(280px, 30vw, 420px)',
+              width: 'clamp(260px, 28vw, 380px)',
               aspectRatio: '4 / 3',
             }}
           >
@@ -62,27 +61,34 @@ export function ContactSection() {
           </div>
         </div>
 
-        {/* Right Column - Panel (bleeds right with negative margin) */}
+        {/* Right Column - Heading + Panel */}
         <div 
-          className="justify-self-end w-full"
-          style={{
-            marginRight: 'clamp(-40px, -3vw, -12px)',
-          }}
+          className="flex flex-col"
+          style={{ marginRight: 'clamp(-60px, -4vw, -20px)' }} /* Bleed right */
         >
+          {/* Title - centered over the panel */}
+          <h2 
+            className="font-display text-5xl md:text-6xl font-bold text-white text-center mb-6"
+            style={{ marginLeft: 'clamp(-40px, -2vw, -16px)' }} /* Shift left slightly to center over panel visually */
+          >
+            Contact Me!
+          </h2>
+
+          {/* Contact Panel */}
           <div 
-            className="bg-black/20 rounded-tl-2xl border-t border-l border-white/40 h-full"
+            className="bg-black/20 rounded-tl-2xl rounded-bl-lg border-t border-l border-white/30 flex-1"
             style={{
-              padding: 'clamp(24px, 3vw, 40px)',
-              paddingRight: 'clamp(32px, 5vw, 80px)',
-              paddingBottom: 'clamp(28px, 3vw, 36px)',
+              padding: 'clamp(28px, 3.5vw, 48px)',
+              paddingRight: 'clamp(40px, 6vw, 100px)',
+              paddingBottom: 'clamp(32px, 3vw, 44px)',
             }}
           >
-            {/* Tagline - responsive font, natural wrapping */}
+            {/* Tagline - larger font, natural wrapping */}
             <div className="mb-8">
               <p 
-                className="font-display font-medium text-white/80 italic leading-relaxed"
+                className="font-display font-medium text-white/80 italic leading-relaxed whitespace-normal"
                 style={{
-                  fontSize: 'clamp(1.25rem, 1.8vw, 1.75rem)',
+                  fontSize: 'clamp(1.35rem, 2vw, 1.85rem)', /* +6-8px larger */
                 }}
               >
                 I'm always interested in getting to know new people.
@@ -93,7 +99,7 @@ export function ContactSection() {
             <div 
               className="space-y-4 mb-8 pl-4"
               style={{
-                fontSize: 'clamp(1rem, 1.2vw, 1.25rem)',
+                fontSize: 'clamp(1rem, 1.3vw, 1.3rem)',
               }}
             >
               <a 
@@ -160,19 +166,25 @@ export function ContactSection() {
       {/* Mobile Layout Override - stacked cleanly */}
       <style>{`
         @media (max-width: 900px) {
-          #contact > div:last-of-type:not(style) {
+          #contact > div:first-of-type {
             display: flex !important;
             flex-direction: column !important;
             gap: 24px !important;
-            padding-left: 16px !important;
-            padding-right: 16px !important;
+            padding: 0 16px !important;
           }
-          #contact > div:last-of-type > div:first-child {
+          #contact > div:first-of-type > div:first-child {
             justify-content: center !important;
-            padding-left: 0 !important;
+            margin-top: 0 !important;
           }
-          #contact > div:last-of-type > div:last-child {
+          #contact > div:first-of-type > div:first-child > div {
+            width: min(320px, 90vw) !important;
+          }
+          #contact > div:first-of-type > div:last-child {
             margin-right: 0 !important;
+          }
+          #contact > div:first-of-type > div:last-child h2 {
+            margin-left: 0 !important;
+            text-align: center !important;
           }
         }
       `}</style>
