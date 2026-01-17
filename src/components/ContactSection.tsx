@@ -47,9 +47,8 @@ export function ContactSection() {
           style={{ marginTop: '24px', paddingLeft: '8vw' }} /* 8vw left clearance for nav lines */
         >
           <div 
-            className="overflow-hidden rounded-sm flex-1"
+            className="overflow-hidden rounded-sm w-full"
             style={{
-              maxWidth: '420px',
               aspectRatio: '4 / 3',
             }}
           >
