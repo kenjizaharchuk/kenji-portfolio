@@ -37,19 +37,19 @@ export function ContactSection() {
         className="relative max-w-7xl mx-auto"
         style={{
           display: 'grid',
-          gridTemplateColumns: '55% 45%',
+          gridTemplateColumns: '50% 50%',
           columnGap: 'clamp(32px, 4vw, 64px)',
         }}
       >
-        {/* Left Column - Image (offset upward relative to panel) */}
+        {/* Left Column - Image with 15% left clearance for sidebar */}
         <div 
-          className="flex justify-end items-start"
-          style={{ marginTop: '-24px' }} /* Vertical stagger: image starts above panel */
+          className="flex items-start"
+          style={{ marginTop: '-24px', paddingLeft: '15vw' }} /* 15vw left clearance for nav lines */
         >
           <div 
-            className="overflow-hidden rounded-sm shrink-0"
+            className="overflow-hidden rounded-sm flex-1"
             style={{
-              width: 'clamp(260px, 28vw, 380px)',
+              maxWidth: '420px',
               aspectRatio: '4 / 3',
             }}
           >
@@ -71,7 +71,7 @@ export function ContactSection() {
             className="font-display text-5xl md:text-6xl font-bold text-white text-center"
             style={{ 
               marginLeft: 'clamp(-40px, -2vw, -16px)', /* Shift left slightly to center over panel visually */
-              marginBottom: '96px' /* Gap between heading and panel */
+              marginBottom: '48px' /* Gap between heading and panel */
             }}
           >
             Contact Me!
