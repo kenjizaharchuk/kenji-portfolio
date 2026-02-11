@@ -279,7 +279,7 @@ export function ProjectsCarousel() {
   return (
     <section id="things" className="relative min-h-screen pt-12 pb-16 md:pt-16 md:pb-20 flex flex-col items-center justify-center">
       {/* Section Header */}
-      <div className="text-center mb-12 mt-8">
+      <div className="text-center mb-8 mt-8">
         <h2 className="font-display text-5xl md:text-6xl font-bold text-white/90">
           Projects
         </h2>
@@ -381,7 +381,7 @@ export function ProjectsCarousel() {
       </div>
 
       {/* Filter Chips */}
-      <div className="flex flex-wrap justify-center gap-3 mt-5 px-4">
+      <div className="flex flex-wrap justify-center gap-3 mt-8 px-4">
         {FILTER_CATEGORIES.map((filter) => (
           <button
             key={filter}
