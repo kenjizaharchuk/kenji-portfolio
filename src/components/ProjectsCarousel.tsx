@@ -279,9 +279,9 @@ export function ProjectsCarousel() {
   return (
     <section id="things" className="relative min-h-screen pt-12 pb-16 md:pt-16 md:pb-20 flex flex-col items-center justify-center">
       {/* Section Header */}
-      <div className="text-center mb-8 mt-8">
+      <div className="text-center mb-9 mt-8">
         <h2 className="font-display text-5xl md:text-6xl font-bold text-white/90">
-          Projects
+          Things I've Made
         </h2>
       </div>
 
@@ -289,7 +289,7 @@ export function ProjectsCarousel() {
       <div className="w-full">
         {filteredProjects.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">
-            <p className="font-display text-white/70 text-lg mb-4">No projects match these filters</p>
+            <p className="font-display text-white/70 text-xl mb-4">No projects match these filters</p>
             <button
               onClick={() => setActiveFilters([])}
               className="font-display px-6 py-2 rounded-full border border-white/40 text-white/80 hover:bg-white/10 transition-colors"
@@ -351,10 +351,10 @@ export function ProjectsCarousel() {
 
                   {/* Content */}
                   <div className="relative z-10 h-full p-6 md:p-8 flex flex-col justify-end">
-                    <p className="font-display text-white/70 text-sm tracking-wide uppercase mb-2">
+                    <p className="font-display text-white/70 text-base font-semibold tracking-wide uppercase mb-2">
                       {project.subtitle}
                     </p>
-                    <h3 className="font-display text-white text-xl md:text-2xl font-bold mb-3">
+                    <h3 className="font-display text-white text-2xl md:text-3xl font-bold mb-3">
                       {project.title}
                     </h3>
                     
@@ -363,7 +363,7 @@ export function ProjectsCarousel() {
                       {project.tags.map((tag) => (
                         <span
                           key={tag}
-                          className="font-display px-3 py-1 text-xs rounded-full border border-white/30 text-white/80 bg-white/10 backdrop-blur-sm"
+                          className="font-display px-3 py-1 text-sm font-medium rounded-full border border-white/30 text-white/80 bg-white/10 backdrop-blur-sm"
                         >
                           {tag}
                         </span>
@@ -387,7 +387,7 @@ export function ProjectsCarousel() {
             key={filter}
             onClick={() => toggleFilter(filter)}
             className={`
-              font-display px-5 py-2.5 rounded-full border text-sm font-medium transition-all duration-300
+              font-display px-5 py-2.5 rounded-full border text-base font-semibold transition-all duration-300
               ${activeFilters.includes(filter)
                 ? 'bg-white text-black border-white'
                 : 'bg-transparent text-white/80 border-white/40 hover:border-white/70 hover:text-white'
