@@ -1,11 +1,11 @@
 import { useState, useMemo, useRef, useEffect } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Swiper as SwiperType } from 'swiper';
-import { EffectCoverflow, Pagination, Mousewheel, FreeMode } from 'swiper/modules';
+import { EffectCoverflow, Mousewheel, FreeMode } from 'swiper/modules';
 
 import 'swiper/css';
 import 'swiper/css/effect-coverflow';
-import 'swiper/css/pagination';
+
 
 import randomSculpture from '@/assets/random-sculpture.jpeg';
 import silverPendant from '@/assets/silver-pendant.jpeg';
@@ -289,10 +289,10 @@ export function ProjectsCarousel() {
       <div className="w-full">
         {filteredProjects.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">
-            <p className="text-white/70 text-lg mb-4">No projects match these filters</p>
+            <p className="font-display text-white/70 text-lg mb-4">No projects match these filters</p>
             <button
               onClick={() => setActiveFilters([])}
-              className="px-6 py-2 rounded-full border border-white/40 text-white/80 hover:bg-white/10 transition-colors"
+              className="font-display px-6 py-2 rounded-full border border-white/40 text-white/80 hover:bg-white/10 transition-colors"
             >
               Clear filters
             </button>
@@ -328,10 +328,7 @@ export function ProjectsCarousel() {
               releaseOnEdges: true,
               sensitivity: 0.6,
             }}
-            pagination={{
-              clickable: true,
-            }}
-            modules={[EffectCoverflow, Pagination, Mousewheel, FreeMode]}
+            modules={[EffectCoverflow, Mousewheel, FreeMode]}
             className="projects-carousel w-full max-w-7xl"
           >
             {filteredProjects.map((project) => (
@@ -354,10 +351,10 @@ export function ProjectsCarousel() {
 
                   {/* Content */}
                   <div className="relative z-10 h-full p-6 md:p-8 flex flex-col justify-end">
-                    <p className="text-white/70 text-sm tracking-wide uppercase mb-2">
+                    <p className="font-display text-white/70 text-sm tracking-wide uppercase mb-2">
                       {project.subtitle}
                     </p>
-                    <h3 className="text-white text-xl md:text-2xl font-bold mb-3">
+                    <h3 className="font-display text-white text-xl md:text-2xl font-bold mb-3">
                       {project.title}
                     </h3>
                     
@@ -366,7 +363,7 @@ export function ProjectsCarousel() {
                       {project.tags.map((tag) => (
                         <span
                           key={tag}
-                          className="px-3 py-1 text-xs rounded-full border border-white/30 text-white/80 bg-white/10 backdrop-blur-sm"
+                          className="font-display px-3 py-1 text-xs rounded-full border border-white/30 text-white/80 bg-white/10 backdrop-blur-sm"
                         >
                           {tag}
                         </span>
@@ -390,7 +387,7 @@ export function ProjectsCarousel() {
             key={filter}
             onClick={() => toggleFilter(filter)}
             className={`
-              px-5 py-2.5 rounded-full border text-sm font-medium transition-all duration-300
+              font-display px-5 py-2.5 rounded-full border text-sm font-medium transition-all duration-300
               ${activeFilters.includes(filter)
                 ? 'bg-white text-black border-white'
                 : 'bg-transparent text-white/80 border-white/40 hover:border-white/70 hover:text-white'

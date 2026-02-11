@@ -333,10 +333,6 @@
   overflow: visible !important;
 }
 
-.projects-carousel .swiper-pagination {
-  position: relative;
-  margin-top: 40px;
-}
 
 .projects-carousel .swiper-wrapper {
   overflow: visible;
@@ -372,18 +368,6 @@ section:has(.projects-carousel) {
 }
 
 
-/* Pagination dots */
-.projects-carousel .swiper-pagination-bullet {
-  background: hsl(var(--muted-foreground));
-  opacity: 0.5;
-  transition: all 0.3s ease;
-}
-
-.projects-carousel .swiper-pagination-bullet-active {
-  background: hsl(var(--primary));
-  opacity: 1;
-  transform: scale(1.2);
-}
 
 /* Mediums Section Styles */
 .mediums-section-content {
