@@ -1,34 +1,19 @@
 
 
-## Unify Font to Cormorant Garamond + Remove Carousel Dots
+## Equalize Spacing Above and Below the Carousel
 
 ### What Changes
 
-**1. Apply Cormorant Garamond (`font-display`) to remaining text outside Contact section**
+Make the gap between the "Projects" heading and the cards equal to the gap between the cards and the filter chips, creating a visually symmetric layout.
 
-The Contact section already uses `font-display` everywhere -- no changes needed there. The remaining areas to update are:
-
-- **Sidebar nav labels** ("Landing Page", "About Me", etc.) in `HeroSidebar.tsx` -- currently uses `font-body`
-- **Filter chip buttons** ("Physical Design", "Digital Design", "Art", "Work Experience") in `ProjectsCarousel.tsx`
-- **Carousel card text** (project titles, subtitles, tag pills) in `ProjectsCarousel.tsx`
-- **"No projects match" fallback text** in `ProjectsCarousel.tsx`
-
-**2. Remove the pagination dots from the carousel**
-
-Remove the dot indicators beneath the Swiper carousel and clean up related CSS.
-
----
+Both will be set to the same value (`mt-8` / `mb-8`, which is 32px).
 
 ### Technical Details
 
-**File: `src/components/HeroSidebar.tsx`**
-- Change `font-body` to `font-display` on the nav label span
-
 **File: `src/components/ProjectsCarousel.tsx`**
-- Remove `Pagination` from the Swiper module import and config
-- Add `font-display` to: subtitle, title, tag pills, filter buttons, and fallback text
 
-**File: `src/index.css`**
-- Remove `.swiper-pagination` and `.swiper-pagination-bullet` CSS rules
+- **Heading div** (currently `mb-12`): Change to `mb-8` -- this closes the gap between "Projects" and the cards
+- **Filter chips container** (currently `mt-5`): Change to `mt-8` -- this pushes the filter buttons slightly further from the cards
 
-This is easy to revert if you prefer the original look after seeing it.
+`mb` = margin-bottom (space below an element), `mt` = margin-top (space above). Setting both to `8` (32px) makes the spacing identical on both sides of the carousel.
+
