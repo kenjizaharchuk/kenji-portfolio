@@ -102,6 +102,9 @@ export function HeroSidebar({ isPreloaderActive = false }: HeroSidebarProps) {
     if (sectionId === 'about') {
       const targetY = element.offsetTop + (window.innerHeight * 2.5);
       window.scrollTo({ top: targetY, behavior: 'smooth' });
+    } else if (sectionId === 'things') {
+      const targetY = element.offsetTop + (window.innerHeight * 0.5);
+      window.scrollTo({ top: targetY, behavior: 'smooth' });
     } else {
       element.scrollIntoView({ behavior: 'smooth' });
     }
