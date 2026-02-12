@@ -1,21 +1,28 @@
 
 
-## Push "Things I've Made" Down + Add Card Outlines
+## Adjust "Things I've Made" Sidebar Scroll Target
 
 ### What Changes
 
-**1. Increase top spacing on "Things I've Made" section**
-
-The About section ends right at the viewport edge (it's a pinned full-screen section). Currently, "Things I've Made" only has `pt-12` (48px) / `md:pt-16` (64px) of top padding, while Contact has `pt-48` (192px). To equalize the visual gap between sections, we'll increase the Projects section top padding to `pt-48` to match Contact.
-
-**2. Add subtle border outline to project cards**
-
-Add a `border border-white/15` to each project card for a soft, elegant highlight that complements the dark starfield background without being distracting.
+When clicking the "Things I've Made" bar in the sidebar, the viewport currently scrolls to the very top of that section, showing mostly empty space above the heading. Instead, it should scroll further down so the carousel cards are centered in the viewport.
 
 ### Technical Details
 
-**File: `src/components/ProjectsCarousel.tsx`**
+**File: `src/components/HeroSidebar.tsx`** (line 99-101, inside `scrollToSection`)
 
-- **Line 280** -- Section element: change `pt-12 pb-16 md:pt-16 md:pb-20` to `pt-48 pb-16 md:pb-20`
-- **Line 337** -- Card container div (the `rounded-3xl overflow-hidden` div): add `border border-white/15` to existing classes
+Add a special case for `sectionId === 'things'`, similar to how `'about'` already has a custom offset. The target will be the section's `offsetTop` plus roughly half the viewport height (`window.innerHeight * 0.5`), which will center the view on the carousel cards rather than showing mostly the top padding.
 
+```text
+Current:
+  } else {
+    element.scrollIntoView({ behavior: 'smooth' });
+  }
+
+New:
+  } else if (sectionId === 'things') {
+    const targetY = element.offsetTop + (window.innerHeight * 0.5);
+    window.scrollTo({ top: targetY, behavior: 'smooth' });
+  } else {
+    element.scrollIntoView({ behavior: 'smooth' });
+  }
+```
