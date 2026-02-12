@@ -277,7 +277,7 @@ export function ProjectsCarousel() {
   };
 
   return (
-    <section id="things" className="relative min-h-screen pt-12 pb-16 md:pt-16 md:pb-20 flex flex-col items-center justify-center">
+    <section id="things" className="relative min-h-screen pt-48 pb-16 md:pb-20 flex flex-col items-center justify-center">
       {/* Section Header */}
       <div className="text-center mb-9 mt-8">
         <h2 className="font-display text-5xl md:text-6xl font-bold text-white/90">
@@ -334,7 +334,7 @@ export function ProjectsCarousel() {
             {filteredProjects.map((project) => (
               <SwiperSlide key={project.id} className="swiper-slide-custom">
                 <div
-                  className={`relative w-[340px] md:w-[600px] h-[260px] md:h-[420px] rounded-3xl overflow-hidden group cursor-pointer ${!project.image ? `bg-gradient-to-br ${project.gradient}` : ''}`}
+                  className={`relative w-[340px] md:w-[600px] h-[260px] md:h-[420px] rounded-3xl overflow-hidden border border-white/15 group cursor-pointer ${!project.image ? `bg-gradient-to-br ${project.gradient}` : ''}`}
                 >
                   {/* Background Image */}
                   {project.image && (
