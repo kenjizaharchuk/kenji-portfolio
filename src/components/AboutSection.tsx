@@ -1,68 +1,14 @@
-import { useRef, useEffect } from 'react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import kenjiPhoto from '@/assets/kenji-photo.png';
 
-gsap.registerPlugin(ScrollTrigger);
-
 export const AboutSection = () => {
-  const sectionRef = useRef<HTMLElement>(null);
-  const cardRef = useRef<HTMLDivElement>(null);
-  
-  useEffect(() => {
-    const card = cardRef.current;
-    const section = sectionRef.current;
-    
-    if (!card || !section) return;
-    
-    // Initial state: extremely small
-    gsap.set(card, { scale: 0.01 });
-    
-    // Create timeline with ScrollTrigger
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: section,
-        start: "top top",
-        end: "+=250%", // 2.5 viewport heights for slower growth
-        pin: true,
-        scrub: 1,
-        anticipatePin: 1,
-      }
-    });
-    
-    // Scale animation takes first 85% of scroll distance (slower growth)
-    tl.to(card, {
-      scale: 1,
-      duration: 0.85,
-      ease: "power2.out",
-    });
-    
-    // Hold at full scale for remaining 15% (half the previous stickiness)
-    tl.to(card, {
-      scale: 1,
-      duration: 0.15,
-    });
-    
-    return () => {
-      tl.scrollTrigger?.kill();
-      tl.kill();
-    };
-  }, []);
-  
   return (
     <section 
       id="about"
-      ref={sectionRef}
       className="h-screen flex items-center justify-center relative"
       style={{ zIndex: 10 }}
     >
-      {/* About Card - always opacity 1, only scale changes */}
       <div 
-        ref={cardRef}
         className="w-[85vw] max-w-5xl border border-white/40 rounded-sm px-8 md:px-12 py-12 ml-8 lg:ml-16"
-        style={{
-          transformOrigin: 'center center',
-        }}
       >
         <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12">
           {/* Left - Text Content */}
@@ -96,7 +42,6 @@ export const AboutSection = () => {
                   boxShadow: '0 20px 50px rgba(0,0,0,0.4), 0 0 30px rgba(255,255,255,0.1)',
                 }}
               />
-              {/* Subtle glow behind photo */}
               <div 
                 className="absolute -inset-2 rounded-2xl -z-10"
                 style={{
