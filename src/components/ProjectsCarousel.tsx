@@ -111,7 +111,7 @@ const projects: Project[] = [
     subtitle: 'Creative Intern · UltraSuperNew Inc.',
     image: discordBooth,
     tags: ['Experience Design', 'Concept Development', 'Client Presentation'],
-    categories: ['Physical Design', 'Digital Design', 'Work Experience'],
+    categories: ['Digital Design', 'Work Experience'],
   },
   {
     id: 7,
