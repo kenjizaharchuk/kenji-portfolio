@@ -8,9 +8,9 @@ export const AboutSection = () => {
       style={{ zIndex: 10 }}
     >
       <div 
-        className="w-[85vw] max-w-5xl border border-white/40 rounded-sm px-8 md:px-12 py-12 ml-8 lg:ml-16"
+        className="w-[80vw] max-w-4xl border border-white/40 rounded-sm px-7 md:px-10 py-10 ml-8 lg:ml-16"
       >
-        <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12">
+        <div className="flex flex-col md:flex-row items-center gap-7 md:gap-10">
           {/* Left - Text Content */}
           <div className="flex-1 text-center md:text-left">
             <h2 className="text-3xl md:text-5xl font-bold text-foreground mb-4 font-display">
@@ -37,7 +37,7 @@ export const AboutSection = () => {
               <img 
                 src={kenjiPhoto} 
                 alt="Kenji"
-                className="w-64 md:w-80 h-auto rounded-sm object-cover"
+                className="w-60 md:w-72 h-auto rounded-sm object-cover"
                 style={{
                   boxShadow: '0 20px 50px rgba(0,0,0,0.4), 0 0 30px rgba(255,255,255,0.1)',
                 }}
