@@ -12,7 +12,7 @@ export const AboutSection = () => {
       >
         <div className="flex flex-col md:flex-row items-center gap-6 md:gap-8">
           {/* Left - Text Content */}
-          <div className="flex-[1.2] max-w-md text-center md:text-left">
+          <div className="flex-[1.2] max-w-sm text-center md:text-left">
             <h2 className="text-3xl md:text-5xl font-bold text-foreground mb-4 font-display">
               I'm Kenji
             </h2>
