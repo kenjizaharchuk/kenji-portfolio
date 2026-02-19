@@ -19,6 +19,7 @@ export default {
         heading: ["var(--font-heading)"],
         body: ["var(--font-body)"],
         display: ['"Cormorant Garamond"', 'serif'],
+        alike: ['"Alike"', 'serif'],
       },
       colors: {
         border: "hsl(var(--border))",
