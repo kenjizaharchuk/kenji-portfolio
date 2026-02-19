@@ -1,16 +1,25 @@
 
 
-## Update About Me Section Text and Font Weight
+## Try "Alike" Font for About Me Body Text
+
+Alike is available on Google Fonts as a serif typeface. It only comes in a single weight (400), so we cannot use semibold/bold variants natively -- but we can still test how it looks and use CSS `font-weight` to simulate heavier rendering if needed.
 
 ### Changes
 
-**File: `src/components/AboutSection.tsx`**
+**1. `index.html`** -- Add Alike to the Google Fonts import URL
 
-1. **Replace body text** with the three new paragraphs provided, including italicizing the word "why" in the first paragraph.
+Append `family=Alike` to the existing Google Fonts link so it loads alongside Poppins and Cormorant Garamond.
 
-2. **Increase text brightness/weight:**
-   - Body text: change from `text-foreground/60` to `text-foreground/80` and add `font-medium` -- this bumps readability without going full bold.
-   - "Welcome to my website!" subtitle: change from `text-foreground/80` to `text-foreground/90` and add `font-semibold` (currently just inherits normal weight).
+**2. `tailwind.config.ts`** -- Add an `alike` font family
 
-3. **Keep unchanged:** "I'm Kenji" title and all sizing/layout.
+Add a new entry: `alike: ['"Alike"', 'serif']` so we can use the class `font-alike` in components.
+
+**3. `src/components/AboutSection.tsx`** -- Apply to body paragraphs
+
+- Revert font size from `text-lg md:text-xl` back to `text-base md:text-lg`
+- Bump weight from `font-medium` to `font-semibold`
+- Replace `font-display` with `font-alike` on the two body paragraphs
+- Headings ("I'm Kenji" and "Welcome to my website!") stay in Cormorant Garamond
+
+This lets you compare Alike (body) vs Cormorant Garamond (headings) side by side. If you don't like it, reverting is a one-word class change.
 
