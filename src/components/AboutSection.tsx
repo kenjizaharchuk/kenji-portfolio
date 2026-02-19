@@ -19,14 +19,11 @@ export const AboutSection = () => {
             <h3 className="text-xl md:text-2xl text-foreground/90 mb-6 font-display font-semibold">
               Welcome to my website!
             </h3>
-            <p className="text-foreground/80 text-base md:text-lg leading-relaxed font-display font-medium">
-              I'm a Mechanical Engineer (MS '26) with a background in Design (BS '25) specializing in Physical Manufacturing and Product Realization at Stanford. Working at the intersection of engineering, aesthetics, and fabrication, I love thinking about <em>why</em> we like the things we like.
+            <p className="text-foreground/80 text-lg md:text-xl leading-relaxed font-display font-medium">
+              I'm a Mechanical Engineer (MS '26) with a background in Design (BS '25) specializing in Physical Manufacturing and Product Realization at Stanford. Working at the intersection of engineering, aesthetics, and fabrication, I love thinking about <em className="font-bold"><strong>why</strong></em> we like the things we like.
             </p>
-            <p className="text-foreground/80 text-base md:text-lg leading-relaxed mt-4 font-display font-medium">
-              To create something truly novel, I believe you have to look beyond your own field. I'm curious about all things, and draw inspiration from all aspects of life.
-            </p>
-            <p className="text-foreground/80 text-base md:text-lg leading-relaxed mt-4 font-display font-medium">
-              I'm at my best when I'm working on something hands-on, being challenged, and balancing multiple projects that force me to think differently. You'll see this design philosophy in everything I make. Take a look around my website, and you'll see for yourself.
+            <p className="text-foreground/80 text-lg md:text-xl leading-relaxed mt-4 font-display font-medium">
+              I'm at my best when I'm working on something hands-on, being challenged, and balancing multiple projects that force me to think differently. Take a look around my website to see the projects I've built and the ideas I've brought to life.
             </p>
           </div>
           
