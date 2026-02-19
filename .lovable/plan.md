@@ -1,10 +1,13 @@
 
 
-## Narrow the Text Column by ~5%
+## Text Column & Gap Adjustment
 
 **File:** `src/components/AboutSection.tsx`
 
-Reduce the text column's flex-grow value from `flex-[1.3]` to `flex-[1.2]`. Since the image column is `flex-none` (fixed size), shrinking the text column's grow factor will naturally widen the gap between text and image without touching the image or adding explicit spacing.
+### Changes
 
-No other changes -- the gap utilities, image column, container, and responsive behavior all stay as-is.
+1. **Text column width:** Change `max-w-lg` to `max-w-md` on the text container div (line 15).
+2. **Gap:** Change `gap-5 md:gap-6` to `gap-6 md:gap-8` on the flex container div (line 12).
+
+Nothing else changes.
 
