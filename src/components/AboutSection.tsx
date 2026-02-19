@@ -10,9 +10,9 @@ export const AboutSection = () => {
       <div 
         className="w-[80vw] max-w-4xl border border-white/40 rounded-sm px-7 md:px-10 py-10 ml-8 lg:ml-16"
       >
-        <div className="flex flex-col md:flex-row items-center gap-7 md:gap-10">
+        <div className="flex flex-col md:flex-row items-center gap-5 md:gap-6">
           {/* Left - Text Content */}
-          <div className="flex-1 text-center md:text-left">
+          <div className="flex-[1.3] max-w-lg text-center md:text-left">
             <h2 className="text-3xl md:text-5xl font-bold text-foreground mb-4 font-display">
               I'm Kenji
             </h2>
@@ -28,7 +28,7 @@ export const AboutSection = () => {
           </div>
           
           {/* Right - Photo */}
-          <div className="flex-1 flex justify-center md:justify-end">
+          <div className="flex-none">
             <div className="relative">
               <img 
                 src={kenjiPhoto} 
