@@ -20,7 +20,7 @@ export const AboutSection = () => {
               Welcome to my website!
             </h3>
             <p className="text-foreground/80 text-base md:text-lg leading-relaxed font-display font-semibold">
-              I'm a Mechanical Engineer (MS '26) with a background in Design (BS '25) specializing in Physical Manufacturing and Product Realization at Stanford. Working at the intersection of engineering, aesthetics, and fabrication, I love thinking about <em className="font-bold"><strong>why</strong></em> we like the things we like.
+              I'm a Mechanical Engineer (MS '26) with a background in Design (BS '25) specializing in Manufacturing and Product Realization at Stanford. Working at the intersection of engineering, aesthetics, and fabrication, I love thinking about <em className="font-bold"><strong>why</strong></em> we like the things we like.
             </p>
             <p className="text-foreground/80 text-base md:text-lg leading-relaxed mt-4 font-display font-semibold">
               I'm at my best when I'm working on something hands-on, being challenged, and balancing multiple projects that force me to think differently. Take a look around my website to see the projects I've built and the ideas I've brought to life.
