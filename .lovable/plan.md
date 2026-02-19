@@ -1,20 +1,28 @@
 
 
-## About Section Text Updates
+## About Section Layout Refinement
 
-### File: `src/components/AboutSection.tsx`
+All changes in `src/components/AboutSection.tsx`.
 
-**1. Remove "Physical" from the bio paragraph**
+### 1. Reduce the horizontal gap
 
-Change:
-> "specializing in Physical Manufacturing and Product Realization at Stanford"
+Change the flex container gap from `gap-7 md:gap-10` down to `gap-5 md:gap-6`. This closes the gutter by roughly 30-40% so the text and image feel paired rather than separated into two zones.
 
-To:
-> "specializing in Manufacturing and Product Realization at Stanford"
+### 2. Constrain the text column width
 
-**2. Increase opacity on "Welcome to my website!" subtitle**
+Change the text column from `flex-1` (unconstrained) to `flex-[1.3]` and add `max-w-lg` to cap the line length. This:
+- Shortens line length for better readability
+- Naturally tightens the gap
+- Makes the image feel larger and more present without resizing it
 
-Change the subtitle's class from `text-foreground/80` to `text-foreground/90` so it stands out slightly more than the body text while remaining softer than the main heading.
+### 3. Pull the image closer (Option A -- editorial alignment)
 
-Body paragraphs stay at `text-foreground/80` as they are now.
+Change the image column from `flex-1` to `flex-none` so it sizes to its content rather than stretching to fill half the container. This removes the dead space on the image side and lets the photo sit closer to the text, responding to it rather than floating independently.
 
+### Summary of class changes
+
+- Flex container: `gap-7 md:gap-10` to `gap-5 md:gap-6`
+- Text column: `flex-1` to `flex-[1.3] max-w-lg`
+- Image column: `flex-1 flex justify-center md:justify-end` to `flex-none`
+
+No changes to font sizes, weights, colors, or the image itself.
