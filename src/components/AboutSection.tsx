@@ -17,7 +17,7 @@ export const AboutSection = () => {
               I'm Kenji
             </h2>
             <h3 className="text-xl md:text-2xl text-foreground/90 mb-6 font-display font-semibold">
-              Welcome to my website!
+Welcome to my website!
             </h3>
             <p className="text-foreground/80 text-base md:text-lg leading-relaxed font-display font-semibold">
               I'm a Mechanical Engineer (MS '26) with a background in Design (BS '25) specializing in Manufacturing and Product Realization at Stanford. Working at the intersection of engineering, aesthetics, and fabrication, I love thinking about <em className="font-bold"><strong>why</strong></em> we like the things we like.
