@@ -3,7 +3,9 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Swiper as SwiperType } from 'swiper';
 import { EffectCoverflow, Mousewheel, FreeMode } from 'swiper/modules';
 
+// @ts-ignore
 import 'swiper/css';
+// @ts-ignore
 import 'swiper/css/effect-coverflow';
 
 
