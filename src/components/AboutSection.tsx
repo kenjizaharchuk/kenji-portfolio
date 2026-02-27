@@ -8,7 +8,7 @@ export const AboutSection = () => {
       style={{ zIndex: 10 }}
     >
       <div 
-        className="w-[80vw] max-w-4xl border border-white/40 rounded-sm px-7 md:px-10 py-10 ml-8 lg:ml-16"
+        className="w-[80vw] max-w-4xl border border-white/40 rounded-sm px-7 md:px-10 py-10 ml-0 md:ml-8 lg:ml-16"
       >
         <div className="flex flex-col md:flex-row items-center gap-5 md:gap-8">
           {/* Left - Text Content */}

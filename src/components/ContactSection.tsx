@@ -193,10 +193,13 @@ export function ContactSection() {
           #contact > div:first-of-type > div:first-child {
             order: 0 !important;
             justify-content: center !important;
+            align-items: center !important;
             margin-top: 0 !important;
+            padding-left: 0 !important;
           }
           #contact > div:first-of-type > div:first-child > div {
             width: min(320px, 90vw) !important;
+            margin: 0 auto !important;
           }
         }
       `}</style>
