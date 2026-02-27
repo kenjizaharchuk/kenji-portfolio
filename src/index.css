@@ -387,3 +387,26 @@ section:has(.projects-carousel) {
 .medium-card-arch {
   border-radius: 999px 999px 0 0;
 }
+
+/* Mobile-only adjustments */
+@media (max-width: 768px) {
+  /* About section: fix clipping and centering */
+  #about {
+    height: auto !important;
+    min-height: 100vh;
+    padding-top: 5rem;
+    padding-bottom: 3rem;
+  }
+
+  /* Carousel cards: reduce text/tag size */
+  .projects-carousel .swiper-slide h3 {
+    font-size: 1.15rem !important;
+  }
+  .projects-carousel .swiper-slide p {
+    font-size: 0.75rem !important;
+  }
+  .projects-carousel .swiper-slide span[class*="rounded"] {
+    font-size: 0.65rem !important;
+    padding: 2px 8px !important;
+  }
+}
