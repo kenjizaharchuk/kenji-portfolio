@@ -1,17 +1,36 @@
 
 
-## Set Custom Favicon
+## Update Open Graph and Twitter Meta Tags
 
-A minimal, safe change that only adds one file and updates one HTML tag. No layout, styling, dependencies, build config, or lockfile changes.
+Remove all Lovable branding from link previews and use your website screenshot as the preview image.
 
-### Steps
+### Changes (only `index.html` and one new image file)
 
-1. **Copy the uploaded image to `public/`**
-   - Copy `user-uploads://Website_Favicon.png` to `public/favicon.png`
+**1. Copy uploaded screenshot to `public/`**
+- Copy `user-uploads://Screenshot_2026-02-27_at_7.48.31 AM.png` to `public/og-image.png`
 
-2. **Update `index.html`**
-   - Replace the existing `<link rel="icon" href="/favicon.ico">` (if present) or add a new `<link rel="icon">` tag in the `<head>`
-   - New tag: `<link rel="icon" type="image/png" href="/favicon.png">`
+**2. Update `index.html` meta tags**
+
+Replace all existing OG/Twitter meta tags and remove Lovable branding:
+
+```html
+<meta name="description" content="Portfolio of Kenji Zaharchuk -- Design, Art, and Creative Work" />
+<meta name="author" content="Kenji Zaharchuk" />
+
+<meta property="og:title" content="Kenji Zaharchuk" />
+<meta property="og:description" content="Portfolio of Kenji Zaharchuk -- Design, Art, and Creative Work" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://kenjizaharchuk.com" />
+<meta property="og:site_name" content="Kenji Zaharchuk" />
+<meta property="og:image" content="https://kenjizaharchuk.com/og-image.png" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://kenjizaharchuk.com/og-image.png" />
+```
+
+- Remove the `twitter:site` tag referencing `@Lovable`
+- Remove the TODO comment
+- Use `summary_large_image` card type since the screenshot is a large landscape-ish image (looks much better in previews than `summary`)
 
 ### What will NOT change
 - No layout, styling, or content changes
@@ -20,5 +39,8 @@ A minimal, safe change that only adds one file and updates one HTML tag. No layo
 - No routing changes
 
 ### Deployment note
-This commit will auto-push to GitHub. If Cloudflare Pages is set to auto-deploy on push, it will trigger a rebuild. The change is trivial and will not break the build.
+This auto-pushes to GitHub. If Cloudflare auto-deploys on push, it will rebuild. The change is trivial (one new image file + a few HTML meta tag edits).
+
+### Note on caching
+Social platforms (iMessage, Discord, etc.) cache link previews aggressively. After this deploys, it may take some time for the new preview to appear. You can force a refresh on some platforms by using tools like the [Facebook Sharing Debugger](https://developers.facebook.com/tools/debug/) or [Twitter Card Validator](https://cards-dev.twitter.com/validator).
 
