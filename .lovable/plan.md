@@ -1,24 +1,33 @@
 
 
-## Update Favicon and Add OG Preview Image
+## Mobile-Only CSS Adjustments
 
-Two simple file copies — no code logic, dependencies, or build config changes.
+Three targeted mobile fixes using media queries in `src/index.css`. No HTML, JS, dependency, or build changes.
 
-### Steps
+### 1. About Me section — fix clipping and centering
 
-1. **Replace favicon**
-   - Copy `user-uploads://Website_Favicon-2.png` to `public/favicon.png` (overwriting the existing one)
+The About section uses `h-screen` with `flex items-center justify-center` and the inner box has `ml-8 lg:ml-16`. On mobile, the left margin shifts it right, and the container can clip at the top.
 
-2. **Add OG preview image**
-   - Copy `user-uploads://Screenshot_2026-02-27_at_8.04.56 AM.png` to `public/og-image.png`
-   - This is the rectangular photo that will show up in link previews (iMessage, Discord, Twitter, etc.)
-   - `index.html` already points to `/og-image.png` from the previous edit, so no HTML changes needed
+**Fix:** Add a mobile media query that removes the left margin and adds top padding so the box is fully visible and centered.
 
-### What will NOT change
-- No HTML, CSS, JS, or config changes
-- No dependency or lockfile changes
-- No build configuration changes
+### 2. "Things I've Made" cards — reduce text/tag size
 
-### Caching note
-After deploy, social platforms may still show the old preview for a while due to caching. You can force a refresh using the [Facebook Sharing Debugger](https://developers.facebook.com/tools/debug/) or by waiting a few hours.
+The carousel cards use `text-2xl md:text-3xl` for titles and `text-sm` for tags with `px-3 py-1` padding. On mobile (the `w-[340px] h-[260px]` card size), these overpower the image.
+
+**Fix:** Add mobile styles to reduce the card title to ~1.15rem, subtitle to ~0.75rem, and tag pills to ~0.65rem with tighter padding, giving the image more visual priority.
+
+### 3. Contact image — center on mobile
+
+The existing mobile CSS in `ContactSection.tsx` sets the image container width but doesn't center it horizontally.
+
+**Fix:** Add `margin: 0 auto` and remove the `paddingLeft: '8vw'` override on the image column in the existing mobile media query styles.
+
+### Technical Details
+
+All changes go into `src/index.css` as new `@media (max-width: 768px)` rules, plus a small tweak to the inline `<style>` block in `ContactSection.tsx` to center the contact image.
+
+**Files modified:**
+- `src/index.css` — add mobile media queries for About section and carousel cards
+- `src/components/ContactSection.tsx` — adjust existing mobile `<style>` block to center the image
+- `src/components/AboutSection.tsx` — remove the hardcoded `ml-8 lg:ml-16` in favor of responsive classes
 
