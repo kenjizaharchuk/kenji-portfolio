@@ -1,22 +1,24 @@
 
 
-## Add Right Margin to the Text Column
+## Set Custom Favicon
 
-### Problem
-After reducing the gap, the text and image columns are too close together. You want more breathing room, but only by pulling the text column's right edge inward -- the image column stays untouched.
+A minimal, safe change that only adds one file and updates one HTML tag. No layout, styling, dependencies, build config, or lockfile changes.
 
-### Fix (File: `src/components/AboutSection.tsx`)
+### Steps
 
-**Line 15 (text column div):** Add `pr-4 md:pr-6` (right padding) to the text column. This creates visual spacing between the text content and the image without affecting the image column or the flex gap.
+1. **Copy the uploaded image to `public/`**
+   - Copy `user-uploads://Website_Favicon.png` to `public/favicon.png`
 
-Change:
-```
-<div className="flex-[3] text-center md:text-left">
-```
-To:
-```
-<div className="flex-[3] text-center md:text-left md:pr-6">
-```
+2. **Update `index.html`**
+   - Replace the existing `<link rel="icon" href="/favicon.ico">` (if present) or add a new `<link rel="icon">` tag in the `<head>`
+   - New tag: `<link rel="icon" type="image/png" href="/favicon.png">`
 
-The `md:` prefix ensures this only applies on desktop where the columns are side-by-side. On mobile (stacked layout), no extra padding is added.
+### What will NOT change
+- No layout, styling, or content changes
+- No dependency or lockfile changes
+- No build configuration changes
+- No routing changes
+
+### Deployment note
+This commit will auto-push to GitHub. If Cloudflare Pages is set to auto-deploy on push, it will trigger a rebuild. The change is trivial and will not break the build.
 
