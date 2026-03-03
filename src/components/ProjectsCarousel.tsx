@@ -86,6 +86,7 @@ const projects: Project[] = [
     image: airanLab,
     tags: ['Rapid Prototyping', 'CAD', '3D Printing', 'Design Iteration'],
     categories: ['Physical Design', 'Work Experience'],
+    link: 'https://news.stanford.edu/stories/2025/11/ultrasound-technique-aging-injured-brains-neurodegeneration-treatment-research',
   },
   {
     id: 4,
