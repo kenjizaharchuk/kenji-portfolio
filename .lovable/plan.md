@@ -1,33 +1,34 @@
 
+## Add 3 New Cards, Swap Positions, and Add Arrow Key Navigation
 
-## Mobile-Only CSS Adjustments
+### 1. Copy images to `src/assets/`
 
-Three targeted mobile fixes using media queries in `src/index.css`. No HTML, JS, dependency, or build changes.
+- `user-uploads://Screenshot_2026-03-02_at_7.23.04 PM.png` → `src/assets/notes-from-farm.png`
+- `user-uploads://Screenshot_2026-03-02_at_5.25.42 PM.png` → `src/assets/time-capsule.png`
+- `user-uploads://Screenshot_2026-03-02_at_5.14.01 PM.png` → `src/assets/sensory-puzzle.png`
 
-### 1. About Me section — fix clipping and centering
+### 2. Add 3 new project entries in `ProjectsCarousel.tsx`
 
-The About section uses `h-screen` with `flex items-center justify-center` and the inner box has `ml-8 lg:ml-16`. On mobile, the left margin shifts it right, and the container can clip at the top.
+Add a `link?: string` field to the `Project` interface, then add these cards to the `projects` array:
 
-**Fix:** Add a mobile media query that removes the left margin and adds top padding so the box is fully visible and centered.
+- **Notes From the Farm** (id: 18) — link: `https://news.stanford.edu/stories/2025/05/notes-from-farm-book-advice-tips-incoming-students`
+- **Time Capsule** (id: 19)
+- **Sensory Puzzle** (id: 20) — link: `https://www.youtube.com/watch?v=OM2aNGwdu0M`
 
-### 2. "Things I've Made" cards — reduce text/tag size
+All three are categorized under `Physical Design`.
 
-The carousel cards use `text-2xl md:text-3xl` for titles and `text-sm` for tags with `px-3 py-1` padding. On mobile (the `w-[340px] h-[260px]` card size), these overpower the image.
+### 3. Swap Mountain Sculpture and Planet Money Bot positions
 
-**Fix:** Add mobile styles to reduce the card title to ~1.15rem, subtitle to ~0.75rem, and tag pills to ~0.65rem with tighter padding, giving the image more visual priority.
+Move the Mountain Sculpture entry (id: 2, currently at array position 7) to where Planet Money Bot is (position 12), and vice versa. This swaps their order in the carousel.
 
-### 3. Contact image — center on mobile
+### 4. Make clickable cards open links in new tab
 
-The existing mobile CSS in `ContactSection.tsx` sets the image container width but doesn't center it horizontally.
+Wrap the card `<div>` in an `<a>` tag (or use an `onClick` handler) when `project.link` is defined, opening the URL in a new tab. Only "Notes From the Farm" and "Sensory Puzzle" will be clickable.
 
-**Fix:** Add `margin: 0 auto` and remove the `paddingLeft: '8vw'` override on the image column in the existing mobile media query styles.
+### 5. Add arrow key navigation
 
-### Technical Details
+Swiper already captures keyboard events via its `Keyboard` module. Add the `Keyboard` module to the Swiper config with `keyboard: { enabled: true }`. This enables left/right arrow key navigation out of the box, alongside all existing interactions (scroll, drag, click).
 
-All changes go into `src/index.css` as new `@media (max-width: 768px)` rules, plus a small tweak to the inline `<style>` block in `ContactSection.tsx` to center the contact image.
-
-**Files modified:**
-- `src/index.css` — add mobile media queries for About section and carousel cards
-- `src/components/ContactSection.tsx` — adjust existing mobile `<style>` block to center the image
-- `src/components/AboutSection.tsx` — remove the hardcoded `ml-8 lg:ml-16` in favor of responsive classes
-
+### Files modified
+- `src/components/ProjectsCarousel.tsx` — new imports, interface update, 3 new entries, position swap, link handling, keyboard module
+- 3 new image files in `src/assets/`
