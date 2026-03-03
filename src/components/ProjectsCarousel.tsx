@@ -26,6 +26,7 @@ import frenchFryWhistle from '@/assets/french-fry-whistle.jpg';
 import mapleLeafPunch from '@/assets/maple-leaf-punch.jpg';
 import northStarPendant from '@/assets/north-star-pendant.png';
 import airanLab from '@/assets/airan-lab.png';
+import rizzleAi from '@/assets/rizzle-ai.png';
 import notesFromFarm from '@/assets/notes-from-farm.jpg';
 import timeCapsule from '@/assets/time-capsule.jpg';
 import sensoryPuzzle from '@/assets/sensory-puzzle.jpg';
@@ -110,6 +111,15 @@ const projects: Project[] = [
     image: planetMoney,
     tags: ['User Research', 'Brand Development', 'UI/UX', 'A/B Testing', 'Figma'],
     categories: ['Digital Design', 'Work Experience'],
+  },
+  {
+    id: 21,
+    title: 'Rizzle AI',
+    subtitle: 'AI Media',
+    image: rizzleAi,
+    tags: ['AI Systems', 'Product Strategy'],
+    categories: ['Work Experience'],
+    link: 'https://rizzle.com',
   },
   {
     id: 6,
