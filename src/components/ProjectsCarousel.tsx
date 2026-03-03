@@ -26,9 +26,9 @@ import frenchFryWhistle from '@/assets/french-fry-whistle.jpg';
 import mapleLeafPunch from '@/assets/maple-leaf-punch.jpg';
 import northStarPendant from '@/assets/north-star-pendant.png';
 import airanLab from '@/assets/airan-lab.png';
-import notesFromFarm from '@/assets/notes-from-farm.png';
-import timeCapsule from '@/assets/time-capsule.png';
-import sensoryPuzzle from '@/assets/sensory-puzzle.png';
+import notesFromFarm from '@/assets/notes-from-farm.jpg';
+import timeCapsule from '@/assets/time-capsule.jpg';
+import sensoryPuzzle from '@/assets/sensory-puzzle.jpg';
 
 // Filter categories
 const FILTER_CATEGORIES = [
