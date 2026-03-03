@@ -1,7 +1,7 @@
 import { useState, useMemo, useRef } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Swiper as SwiperType } from 'swiper';
-import { EffectCoverflow, Mousewheel, FreeMode } from 'swiper/modules';
+import { EffectCoverflow, Mousewheel, FreeMode, Keyboard } from 'swiper/modules';
 
 // @ts-ignore
 import 'swiper/css';
@@ -26,6 +26,9 @@ import frenchFryWhistle from '@/assets/french-fry-whistle.jpg';
 import mapleLeafPunch from '@/assets/maple-leaf-punch.jpg';
 import northStarPendant from '@/assets/north-star-pendant.png';
 import airanLab from '@/assets/airan-lab.png';
+import notesFromFarm from '@/assets/notes-from-farm.png';
+import timeCapsule from '@/assets/time-capsule.png';
+import sensoryPuzzle from '@/assets/sensory-puzzle.png';
 
 // Filter categories
 const FILTER_CATEGORIES = [
@@ -46,6 +49,7 @@ interface Project {
   imagePosition?: string;
   tags: string[];
   categories: FilterCategory[];
+  link?: string;
 }
 
 const projects: Project[] = [
@@ -100,12 +104,12 @@ const projects: Project[] = [
     categories: ['Physical Design'],
   },
   {
-    id: 2,
-    title: 'Mountain Sculpture',
-    subtitle: 'Sculpture',
-    image: randomSculpture,
-    tags: ['Paper Mache', 'Plaster', 'Hand Sculpting'],
-    categories: ['Art'],
+    id: 11,
+    title: 'Planet Money Bot',
+    subtitle: 'Lead Designer',
+    image: planetMoney,
+    tags: ['User Research', 'Brand Development', 'UI/UX', 'A/B Testing', 'Figma'],
+    categories: ['Digital Design', 'Work Experience'],
   },
   {
     id: 6,
@@ -149,12 +153,12 @@ const projects: Project[] = [
     categories: ['Digital Design', 'Work Experience'],
   },
   {
-    id: 11,
-    title: 'Planet Money Bot',
-    subtitle: 'Lead Designer',
-    image: planetMoney,
-    tags: ['User Research', 'Brand Development', 'UI/UX', 'A/B Testing', 'Figma'],
-    categories: ['Digital Design', 'Work Experience'],
+    id: 2,
+    title: 'Mountain Sculpture',
+    subtitle: 'Sculpture',
+    image: randomSculpture,
+    tags: ['Paper Mache', 'Plaster', 'Hand Sculpting'],
+    categories: ['Art'],
   },
   {
     id: 12,
@@ -181,13 +185,30 @@ const projects: Project[] = [
     categories: ['Art'],
   },
   {
-    id: 15,
-    title: 'French Fry Whistle',
-    subtitle: 'Advanced Machining',
-    image: frenchFryWhistle,
-    imagePosition: 'center 30%',
-    tags: ['CNC', 'CAD', 'CAM'],
+    id: 18,
+    title: 'Notes From the Farm',
+    subtitle: 'Book of Student Stories',
+    image: notesFromFarm,
+    tags: ['Brand Design', 'Marketing Campaign', 'End to End Production'],
     categories: ['Physical Design'],
+    link: 'https://news.stanford.edu/stories/2025/05/notes-from-farm-book-advice-tips-incoming-students',
+  },
+  {
+    id: 19,
+    title: 'Time Capsule',
+    subtitle: 'Metal Working Exploration',
+    image: timeCapsule,
+    tags: ['Waterjet Cutting', 'TIG Welding', 'Aluminum Casting'],
+    categories: ['Physical Design'],
+  },
+  {
+    id: 20,
+    title: 'Sensory Puzzle',
+    subtitle: 'An Inclusive Approach to Play',
+    image: sensoryPuzzle,
+    tags: ['Accessible Design', 'Rapid Prototyping'],
+    categories: ['Physical Design'],
+    link: 'https://www.youtube.com/watch?v=OM2aNGwdu0M',
   },
 ];
 
@@ -293,52 +314,86 @@ export function ProjectsCarousel() {
               releaseOnEdges: true,
               sensitivity: 0.6,
             }}
-            modules={[EffectCoverflow, Mousewheel, FreeMode]}
+            keyboard={{ enabled: true }}
+            modules={[EffectCoverflow, Mousewheel, FreeMode, Keyboard]}
             className="projects-carousel w-full max-w-7xl"
           >
             {filteredProjects.map((project) => (
               <SwiperSlide key={project.id} className="swiper-slide-custom">
-                <div
-                  className={`relative w-[340px] md:w-[600px] h-[260px] md:h-[420px] rounded-3xl overflow-hidden border border-white/15 group cursor-pointer ${!project.image ? `bg-gradient-to-br ${project.gradient}` : ''}`}
-                >
-                  {/* Background Image */}
-                  {project.image && (
-                    <img
-                      src={project.image}
-                      alt={project.title}
-                      className="absolute inset-0 w-full h-full object-cover"
-                      style={{ objectPosition: project.imagePosition || 'center' }}
-                    />
-                  )}
-
-                  {/* Gradient overlay for text readability */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-
-                  {/* Content */}
-                  <div className="relative z-10 h-full p-6 md:p-8 flex flex-col justify-end">
-                    <p className="font-display text-white/70 text-base font-semibold tracking-wide uppercase mb-2">
-                      {project.subtitle}
-                    </p>
-                    <h3 className="font-display text-white text-2xl md:text-3xl font-bold mb-3">
-                      {project.title}
-                    </h3>
-                    
-                    {/* Tag Pills */}
-                    <div className="flex flex-wrap gap-2">
-                      {project.tags.map((tag) => (
-                        <span
-                          key={tag}
-                          className="font-display px-3 py-1 text-sm font-medium rounded-full border border-white/30 text-white/80 bg-white/10 backdrop-blur-sm"
-                        >
-                          {tag}
-                        </span>
-                      ))}
+                {project.link ? (
+                  <a
+                    href={project.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block"
+                  >
+                    <div
+                      className={`relative w-[340px] md:w-[600px] h-[260px] md:h-[420px] rounded-3xl overflow-hidden border border-white/15 group cursor-pointer ${!project.image ? `bg-gradient-to-br ${project.gradient}` : ''}`}
+                    >
+                      {project.image && (
+                        <img
+                          src={project.image}
+                          alt={project.title}
+                          className="absolute inset-0 w-full h-full object-cover"
+                          style={{ objectPosition: project.imagePosition || 'center' }}
+                        />
+                      )}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+                      <div className="relative z-10 h-full p-6 md:p-8 flex flex-col justify-end">
+                        <p className="font-display text-white/70 text-base font-semibold tracking-wide uppercase mb-2">
+                          {project.subtitle}
+                        </p>
+                        <h3 className="font-display text-white text-2xl md:text-3xl font-bold mb-3">
+                          {project.title}
+                        </h3>
+                        <div className="flex flex-wrap gap-2">
+                          {project.tags.map((tag) => (
+                            <span
+                              key={tag}
+                              className="font-display px-3 py-1 text-sm font-medium rounded-full border border-white/30 text-white/80 bg-white/10 backdrop-blur-sm"
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300" />
                     </div>
+                  </a>
+                ) : (
+                  <div
+                    className={`relative w-[340px] md:w-[600px] h-[260px] md:h-[420px] rounded-3xl overflow-hidden border border-white/15 group cursor-pointer ${!project.image ? `bg-gradient-to-br ${project.gradient}` : ''}`}
+                  >
+                    {project.image && (
+                      <img
+                        src={project.image}
+                        alt={project.title}
+                        className="absolute inset-0 w-full h-full object-cover"
+                        style={{ objectPosition: project.imagePosition || 'center' }}
+                      />
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+                    <div className="relative z-10 h-full p-6 md:p-8 flex flex-col justify-end">
+                      <p className="font-display text-white/70 text-base font-semibold tracking-wide uppercase mb-2">
+                        {project.subtitle}
+                      </p>
+                      <h3 className="font-display text-white text-2xl md:text-3xl font-bold mb-3">
+                        {project.title}
+                      </h3>
+                      <div className="flex flex-wrap gap-2">
+                        {project.tags.map((tag) => (
+                          <span
+                            key={tag}
+                            className="font-display px-3 py-1 text-sm font-medium rounded-full border border-white/30 text-white/80 bg-white/10 backdrop-blur-sm"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300" />
                   </div>
-
-                  {/* Hover overlay */}
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300" />
-                </div>
+                )}
               </SwiperSlide>
             ))}
           </Swiper>
