@@ -329,84 +329,66 @@ export function ProjectsCarousel() {
             modules={[EffectCoverflow, Mousewheel, FreeMode, Keyboard]}
             className="projects-carousel w-full max-w-7xl"
           >
-            {filteredProjects.map((project) => (
-              <SwiperSlide key={project.id} className="swiper-slide-custom">
-                {project.link ? (
-                  <a
-                    href={project.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block"
-                  >
-                    <div
-                      className={`relative w-[340px] md:w-[600px] h-[260px] md:h-[420px] rounded-3xl overflow-hidden border border-white/15 group cursor-pointer ${!project.image ? `bg-gradient-to-br ${project.gradient}` : ''}`}
-                    >
-                      {project.image && (
-                        <img
-                          src={project.image}
-                          alt={project.title}
-                          className="absolute inset-0 w-full h-full object-cover"
-                          style={{ objectPosition: project.imagePosition || 'center' }}
-                        />
-                      )}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-                      <div className="relative z-10 h-full p-6 md:p-8 flex flex-col justify-end">
-                        <p className="font-display text-white/70 text-base font-semibold tracking-wide uppercase mb-2">
-                          {project.subtitle}
-                        </p>
-                        <h3 className="font-display text-white text-2xl md:text-3xl font-bold mb-3">
-                          {project.title}
-                        </h3>
-                        <div className="flex flex-wrap gap-2">
-                          {project.tags.map((tag) => (
-                            <span
-                              key={tag}
-                              className="font-display px-3 py-1 text-sm font-medium rounded-full border border-white/30 text-white/80 bg-white/10 backdrop-blur-sm"
-                            >
-                              {tag}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300" />
+            {filteredProjects.map((project) => {
+              const isActive = project.id === currentProjectId;
+              const showHover = !isActive || !!project.link;
+              const hoverOverlayClass = showHover ? 'group-hover:bg-black/20' : '';
+              const cursorClass = isActive && !project.link ? 'cursor-default' : 'cursor-pointer';
+              const cardClass = `relative w-[340px] md:w-[600px] h-[260px] md:h-[420px] rounded-3xl overflow-hidden border border-white/15 group ${cursorClass} ${!project.image ? `bg-gradient-to-br ${project.gradient}` : ''}`;
+
+              const cardInner = (
+                <div className={cardClass}>
+                  {project.image && (
+                    <img
+                      src={project.image}
+                      alt={project.title}
+                      className="absolute inset-0 w-full h-full object-cover"
+                      style={{ objectPosition: project.imagePosition || 'center' }}
+                    />
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+                  <div className="relative z-10 h-full p-6 md:p-8 flex flex-col justify-end">
+                    <p className="font-display text-white/70 text-base font-semibold tracking-wide uppercase mb-2">
+                      {project.subtitle}
+                    </p>
+                    <h3 className="font-display text-white text-2xl md:text-3xl font-bold mb-3">
+                      {project.title}
+                    </h3>
+                    <div className="flex flex-wrap gap-2">
+                      {project.tags.map((tag) => (
+                        <span
+                          key={tag}
+                          className="font-display px-3 py-1 text-sm font-medium rounded-full border border-white/30 text-white/80 bg-white/10 backdrop-blur-sm"
+                        >
+                          {tag}
+                        </span>
+                      ))}
                     </div>
-                  </a>
-                ) : (
-                  <div
-                    className={`relative w-[340px] md:w-[600px] h-[260px] md:h-[420px] rounded-3xl overflow-hidden border border-white/15 group cursor-pointer ${!project.image ? `bg-gradient-to-br ${project.gradient}` : ''}`}
-                  >
-                    {project.image && (
-                      <img
-                        src={project.image}
-                        alt={project.title}
-                        className="absolute inset-0 w-full h-full object-cover"
-                        style={{ objectPosition: project.imagePosition || 'center' }}
-                      />
-                    )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-                    <div className="relative z-10 h-full p-6 md:p-8 flex flex-col justify-end">
-                      <p className="font-display text-white/70 text-base font-semibold tracking-wide uppercase mb-2">
-                        {project.subtitle}
-                      </p>
-                      <h3 className="font-display text-white text-2xl md:text-3xl font-bold mb-3">
-                        {project.title}
-                      </h3>
-                      <div className="flex flex-wrap gap-2">
-                        {project.tags.map((tag) => (
-                          <span
-                            key={tag}
-                            className="font-display px-3 py-1 text-sm font-medium rounded-full border border-white/30 text-white/80 bg-white/10 backdrop-blur-sm"
-                          >
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300" />
                   </div>
-                )}
-              </SwiperSlide>
-            ))}
+                  <div className={`absolute inset-0 bg-black/0 ${hoverOverlayClass} transition-colors duration-300`} />
+                </div>
+              );
+
+              return (
+                <SwiperSlide key={project.id} className="swiper-slide-custom">
+                  {project.link ? (
+                    <a
+                      href={project.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block"
+                      onClick={(e) => {
+                        if (!isActive) e.preventDefault();
+                      }}
+                    >
+                      {cardInner}
+                    </a>
+                  ) : (
+                    cardInner
+                  )}
+                </SwiperSlide>
+              );
+            })}
           </Swiper>
         )}
       </div>
