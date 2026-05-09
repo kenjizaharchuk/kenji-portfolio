@@ -86,10 +86,9 @@ export function HeroSidebar({ isPreloaderActive = false }: HeroSidebarProps) {
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     if (!element) return;
-    
+
     if (sectionId === 'things') {
-      const targetY = element.offsetTop + (window.innerHeight * 0.3);
-      window.scrollTo({ top: targetY, behavior: 'smooth' });
+      element.scrollIntoView({ behavior: 'smooth', block: 'center' });
     } else {
       element.scrollIntoView({ behavior: 'smooth' });
     }
