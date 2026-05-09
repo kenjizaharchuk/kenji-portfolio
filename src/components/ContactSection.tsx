@@ -30,7 +30,7 @@ export function ContactSection() {
   return (
     <section 
       id="contact"
-      className="relative pt-72 md:pt-80 pb-0 px-6 overflow-hidden"
+      className="relative pt-72 md:pt-80 xl:pt-48 2xl:pt-32 pb-0 px-6 overflow-hidden"
     >
       {/* Two-column layout: 40% image / 60% panel area */}
       <div 
