@@ -30,17 +30,20 @@ export function HeroSidebar({ isPreloaderActive = false }: HeroSidebarProps) {
 
   useEffect(() => {
     const aboutSection = document.getElementById('about');
-    const thingsSection = document.getElementById('things');
     const contactSection = document.getElementById('contact');
 
-    if (!aboutSection || !thingsSection || !contactSection) return;
+    if (!aboutSection || !contactSection) return;
 
     let inAbout = false;
     let inContact = false;
-    let inThingsDominant = false;
 
     const updateVisibility = () => {
-      setIsVisible(inAbout || inContact || !inThingsDominant);
+      setIsVisible(inAbout || inContact);
+    };
+
+    const options: IntersectionObserverInit = {
+      rootMargin: '-15% 0px -15% 0px',
+      threshold: 0,
     };
 
     const aboutObserver = new IntersectionObserver(
@@ -48,7 +51,7 @@ export function HeroSidebar({ isPreloaderActive = false }: HeroSidebarProps) {
         inAbout = entry.isIntersecting;
         updateVisibility();
       },
-      { threshold: 0 }
+      options
     );
 
     const contactObserver = new IntersectionObserver(
@@ -56,30 +59,18 @@ export function HeroSidebar({ isPreloaderActive = false }: HeroSidebarProps) {
         inContact = entry.isIntersecting;
         updateVisibility();
       },
-      { threshold: 0 }
-    );
-
-    const thingsObserver = new IntersectionObserver(
-      ([entry]) => {
-        // Hysteresis: become dominant at >=0.5, release below 0.25
-        if (entry.intersectionRatio >= 0.5) {
-          inThingsDominant = true;
-        } else if (entry.intersectionRatio < 0.25) {
-          inThingsDominant = false;
-        }
-        updateVisibility();
-      },
-      { threshold: [0, 0.25, 0.5, 0.75, 1] }
+      options
     );
 
     aboutObserver.observe(aboutSection);
     contactObserver.observe(contactSection);
-    thingsObserver.observe(thingsSection);
+
+    // Initialize hidden until an observer fires
+    setIsVisible(false);
 
     return () => {
       aboutObserver.disconnect();
       contactObserver.disconnect();
-      thingsObserver.disconnect();
     };
   }, []);
 
