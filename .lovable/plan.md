@@ -1,29 +1,42 @@
-## Goal
+## Problem
 
-Push the Contact section's content down so the Projects → Contact gap visually matches the About → Projects gap. Edit only `ContactSection.tsx`.
+`HeroSidebar` is still mounted in `Index.tsx` and styled correctly (`fixed left-…`, `z-50`, `hidden md:flex`), so it should appear at the current 1483px viewport. The reason it disappears in preview is the visibility logic in `HeroSidebar.tsx`.
 
-## Why
+The current logic observes only the `#things` section and hides the sidebar whenever `things` has `intersectionRatio > 0.05`. Two issues with that:
 
-`ContactSection` currently uses `pt-48` (12rem) on its `<section>`. The About → Projects gap is larger because `ProjectsCarousel` also has its own `pt-48` plus the natural end of the About section. To balance the two visual gaps, the Contact section needs more top breathing room.
+1. The Projects section is `min-h-screen` and sits directly above Contact. When the user scrolls into the Contact section, the bottom of `#things` is still intersecting the top of the viewport, so the sidebar stays hidden on Contact.
+2. On initial load / when scrolled to the very top (About), if the observer hasn't fired yet or `things` is partially visible at the bottom of the viewport on tall screens, the sidebar can also flicker hidden.
 
-## Change
+Net effect: sidebar feels like it "went away," even though nothing was removed.
 
-### `src/components/ContactSection.tsx` (line ~32)
+## Fix (single file: `src/components/HeroSidebar.tsx`)
 
-Increase the section's top padding. Keep everything else (bottom padding, horizontal padding, overflow) untouched.
+Replace the single-observer logic with a check that hides the sidebar **only when `#things` dominates the viewport** (i.e., the user is actually in the Projects section), not whenever it's barely intersecting.
 
-- Before: `className="relative pt-48 pb-0 px-6 overflow-hidden"`
-- After:  `className="relative pt-72 md:pt-80 pb-0 px-6 overflow-hidden"`
+Approach:
+- Keep observing `#things`, but raise the hide threshold so the sidebar only hides when a meaningful portion of `things` is in view (e.g., `intersectionRatio >= 0.5`), with thresholds `[0, 0.25, 0.5, 0.75, 1]`.
+- Alternatively / additionally, also observe `#about` and `#contact` and force the sidebar visible whenever either is intersecting the viewport at all — that guarantees it shows on both sections regardless of what `things` is doing at the edges.
+- Combine: `isVisible = inAboutOrContact || !inThingsDominant`.
 
-This adds roughly 6–8rem (~96–128px) of extra space above the heading/image row, which should bring the Projects → Contact gap into visual parity with About → Projects at the current 1483px viewport, while still scaling sensibly on smaller screens.
-
-Nothing else in the file changes — typography, grid, image, panel styles, mobile overrides, and content all stay exactly as they are. `AboutSection.tsx` and `ProjectsCarousel.tsx` are not touched.
+No changes to:
+- Sidebar styles, position, z-index, or markup
+- `Index.tsx` mounting
+- Any section layouts (`AboutSection`, `ProjectsCarousel`, `ContactSection`)
+- Mobile behavior (`hidden md:flex` stays)
 
 ## Verification
 
-Scroll the preview top → bottom and confirm:
-- The empty space above "Contact Me!" is noticeably larger than before.
-- The About → Projects gap and Projects → Contact gap now look balanced.
-- No other visual change in the Contact section (image, panel, text, icons unchanged).
+1. Load `/` — sidebar visible over About.
+2. Scroll into Projects/Things — sidebar fades out.
+3. Continue scrolling into Contact — sidebar fades back in and stays visible through the Contact section.
+4. Confirm at viewport 1483×905 (current) and at ~1100px and ~768px breakpoints.
 
-If the gap still looks too small after the change, we can bump to `pt-80 md:pt-96`; if it overshoots, drop to `pt-64 md:pt-72`.
+## Technical detail
+
+In `HeroSidebar.tsx`, the `useEffect` that sets up `thingsObserver` will be replaced with three observers (`about`, `things`, `contact`) tracking three boolean refs, and `updateVisibility` becomes:
+
+```ts
+setIsVisible(inAbout || inContact || !inThingsDominant);
+```
+
+with `inThingsDominant` flipping true at `intersectionRatio >= 0.5` and false below `0.25` (small hysteresis to avoid flicker). Thresholds passed to the `things` observer: `[0, 0.25, 0.5, 0.75, 1]`. About/Contact observers use threshold `0` (any intersection counts).
