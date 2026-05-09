@@ -279,7 +279,7 @@ export function ProjectsCarousel() {
         {/* Section Header */}
         <div className="text-center mb-9 mt-8">
           <h2 className="font-display text-5xl md:text-6xl font-bold text-white/90">
-            Things I''''ve Made
+            Things I've Made
           </h2>
         </div>
 
