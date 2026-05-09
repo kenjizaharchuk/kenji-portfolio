@@ -110,24 +110,31 @@ export function HeroSidebar({ isPreloaderActive = false }: HeroSidebarProps) {
         transition-opacity duration-500
         ${isVisible && !isPreloaderActive ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}
       `}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => {
-        setIsHovered(false);
-        setHoveredIndex(null);
-      }}
     >
       {navItems.map((item, index) => (
         <button
           key={item.sectionId}
           onClick={() => scrollToSection(item.sectionId)}
-          onMouseEnter={() => setHoveredIndex(index)}
           className="group flex items-center gap-3 cursor-pointer bg-transparent border-none p-0"
         >
           <div
-            className="h-[3px] bg-white/40 transition-all duration-300 ease-out group-hover:bg-white/80"
-            style={{ width: `${getLineWidth(index)}px` }}
-          />
-          
+            onMouseEnter={() => {
+              setIsHovered(true);
+              setHoveredIndex(index);
+            }}
+            onMouseLeave={() => {
+              setIsHovered(false);
+              setHoveredIndex(null);
+            }}
+            className="flex items-center"
+            style={{ width: isCompact ? 60 : 100, height: 24 }}
+          >
+            <div
+              className="h-[3px] bg-white/40 transition-all duration-300 ease-out group-hover:bg-white/80"
+              style={{ width: `${getLineWidth(index)}px` }}
+            />
+          </div>
+
           {!isCompact && (
             <span
               className={`
