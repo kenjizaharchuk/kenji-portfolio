@@ -4,7 +4,7 @@ export const AboutSection = () => {
   return (
     <section 
       id="about"
-      className="h-screen flex items-center justify-center relative"
+      className="py-24 md:py-32 flex items-center justify-center relative"
       style={{ zIndex: 10 }}
     >
       <div 

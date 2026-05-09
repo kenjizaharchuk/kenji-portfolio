@@ -274,7 +274,7 @@ export function ProjectsCarousel() {
   };
 
   return (
-    <section id="things" className="relative min-h-screen pt-48 pb-16 md:pb-20 flex flex-col items-center justify-center py-[1968px]">
+    <section id="things" className="relative min-h-screen pt-48 pb-16 md:pb-20 flex flex-col items-center justify-center">
       {/* Section Header */}
       <div className="text-center mb-9 mt-8">
         <h2 className="font-display text-5xl md:text-6xl font-bold text-white/90">

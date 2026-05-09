@@ -1,34 +1,36 @@
+## Goal
 
-## Add 3 New Cards, Swap Positions, and Add Arrow Key Navigation
+Make the vertical gap between About → Projects roughly match the gap between Projects → Contact, and remove the oversized padding accidentally added to the Projects section.
 
-### 1. Copy images to `src/assets/`
+## Why the gap looks uneven today
 
-- `user-uploads://Screenshot_2026-03-02_at_7.23.04 PM.png` → `src/assets/notes-from-farm.png`
-- `user-uploads://Screenshot_2026-03-02_at_5.25.42 PM.png` → `src/assets/time-capsule.png`
-- `user-uploads://Screenshot_2026-03-02_at_5.14.01 PM.png` → `src/assets/sensory-puzzle.png`
+- `AboutSection` uses `h-screen` with its content vertically centered. The card itself is short, so there's a large block of empty space below it before the Projects section begins.
+- `ProjectsCarousel` has `pt-48` (top) and only `pb-16 md:pb-20` (bottom).
+- `ContactSection` has `pt-48`.
 
-### 2. Add 3 new project entries in `ProjectsCarousel.tsx`
+Net result: About → Projects = (empty bottom half of About viewport) + 12rem. Projects → Contact = ~5rem + 12rem. The first gap is much taller.
 
-Add a `link?: string` field to the `Project` interface, then add these cards to the `projects` array:
+A separate issue: the Projects section currently also has `py-[1968px]` (≈1968px top and bottom), which we'll remove.
 
-- **Notes From the Farm** (id: 18) — link: `https://news.stanford.edu/stories/2025/05/notes-from-farm-book-advice-tips-incoming-students`
-- **Time Capsule** (id: 19)
-- **Sensory Puzzle** (id: 20) — link: `https://www.youtube.com/watch?v=OM2aNGwdu0M`
+## Changes
 
-All three are categorized under `Physical Design`.
+### 1. `src/components/ProjectsCarousel.tsx` (line 277)
+Remove the giant padding so the section returns to its intended spacing:
 
-### 3. Swap Mountain Sculpture and Planet Money Bot positions
+- Before: `className="relative min-h-screen pt-48 pb-16 md:pb-20 flex flex-col items-center justify-center py-[1968px]"`
+- After: `className="relative min-h-screen pt-48 pb-16 md:pb-20 flex flex-col items-center justify-center"`
 
-Move the Mountain Sculpture entry (id: 2, currently at array position 7) to where Planet Money Bot is (position 12), and vice versa. This swaps their order in the carousel.
+### 2. `src/components/AboutSection.tsx` (line 7)
+Remove `h-screen` so the About section sizes to its content instead of filling the viewport, and add modest vertical padding so it still breathes:
 
-### 4. Make clickable cards open links in new tab
+- Before: `className="h-screen flex items-center justify-center relative"`
+- After: `className="py-24 md:py-32 flex items-center justify-center relative"`
 
-Wrap the card `<div>` in an `<a>` tag (or use an `onClick` handler) when `project.link` is defined, opening the URL in a new tab. Only "Notes From the Farm" and "Sensory Puzzle" will be clickable.
+This eliminates the big empty space below the About card and brings the About → Projects gap close to the Projects → Contact gap.
 
-### 5. Add arrow key navigation
+## Verification
 
-Swiper already captures keyboard events via its `Keyboard` module. Add the `Keyboard` module to the Swiper config with `keyboard: { enabled: true }`. This enables left/right arrow key navigation out of the box, alongside all existing interactions (scroll, drag, click).
-
-### Files modified
-- `src/components/ProjectsCarousel.tsx` — new imports, interface update, 3 new entries, position swap, link handling, keyboard module
-- 3 new image files in `src/assets/`
+After the change, scroll the preview from top to bottom and confirm:
+- About card no longer has a tall empty area beneath it.
+- The visual gap before "Things I've Made" and the gap before "Contact Me!" look balanced.
+- Projects carousel layout is unaffected.
