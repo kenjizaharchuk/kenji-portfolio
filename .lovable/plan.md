@@ -1,36 +1,29 @@
 ## Goal
 
-Make the vertical gap between About → Projects roughly match the gap between Projects → Contact, and remove the oversized padding accidentally added to the Projects section.
+Push the Contact section's content down so the Projects → Contact gap visually matches the About → Projects gap. Edit only `ContactSection.tsx`.
 
-## Why the gap looks uneven today
+## Why
 
-- `AboutSection` uses `h-screen` with its content vertically centered. The card itself is short, so there's a large block of empty space below it before the Projects section begins.
-- `ProjectsCarousel` has `pt-48` (top) and only `pb-16 md:pb-20` (bottom).
-- `ContactSection` has `pt-48`.
+`ContactSection` currently uses `pt-48` (12rem) on its `<section>`. The About → Projects gap is larger because `ProjectsCarousel` also has its own `pt-48` plus the natural end of the About section. To balance the two visual gaps, the Contact section needs more top breathing room.
 
-Net result: About → Projects = (empty bottom half of About viewport) + 12rem. Projects → Contact = ~5rem + 12rem. The first gap is much taller.
+## Change
 
-A separate issue: the Projects section currently also has `py-[1968px]` (≈1968px top and bottom), which we'll remove.
+### `src/components/ContactSection.tsx` (line ~32)
 
-## Changes
+Increase the section's top padding. Keep everything else (bottom padding, horizontal padding, overflow) untouched.
 
-### 1. `src/components/ProjectsCarousel.tsx` (line 277)
-Remove the giant padding so the section returns to its intended spacing:
+- Before: `className="relative pt-48 pb-0 px-6 overflow-hidden"`
+- After:  `className="relative pt-72 md:pt-80 pb-0 px-6 overflow-hidden"`
 
-- Before: `className="relative min-h-screen pt-48 pb-16 md:pb-20 flex flex-col items-center justify-center py-[1968px]"`
-- After: `className="relative min-h-screen pt-48 pb-16 md:pb-20 flex flex-col items-center justify-center"`
+This adds roughly 6–8rem (~96–128px) of extra space above the heading/image row, which should bring the Projects → Contact gap into visual parity with About → Projects at the current 1483px viewport, while still scaling sensibly on smaller screens.
 
-### 2. `src/components/AboutSection.tsx` (line 7)
-Remove `h-screen` so the About section sizes to its content instead of filling the viewport, and add modest vertical padding so it still breathes:
-
-- Before: `className="h-screen flex items-center justify-center relative"`
-- After: `className="py-24 md:py-32 flex items-center justify-center relative"`
-
-This eliminates the big empty space below the About card and brings the About → Projects gap close to the Projects → Contact gap.
+Nothing else in the file changes — typography, grid, image, panel styles, mobile overrides, and content all stay exactly as they are. `AboutSection.tsx` and `ProjectsCarousel.tsx` are not touched.
 
 ## Verification
 
-After the change, scroll the preview from top to bottom and confirm:
-- About card no longer has a tall empty area beneath it.
-- The visual gap before "Things I've Made" and the gap before "Contact Me!" look balanced.
-- Projects carousel layout is unaffected.
+Scroll the preview top → bottom and confirm:
+- The empty space above "Contact Me!" is noticeably larger than before.
+- The About → Projects gap and Projects → Contact gap now look balanced.
+- No other visual change in the Contact section (image, panel, text, icons unchanged).
+
+If the gap still looks too small after the change, we can bump to `pt-80 md:pt-96`; if it overshoots, drop to `pt-64 md:pt-72`.
