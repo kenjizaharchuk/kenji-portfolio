@@ -275,141 +275,28 @@ export function ProjectsCarousel() {
 
   return (
     <section id="things" className="relative min-h-screen pt-48 pb-16 md:pb-20 flex-col flex items-center justify-center py-[96px]">
-      {/* Section Header */}
-      <div className="text-center mb-9 mt-8">
-        <h2 className="font-display text-5xl md:text-6xl font-bold text-white/90">
-          Things I've Made
-        </h2>
-      </div>
-
-      {/* Carousel Container */}
-      <div className="w-full">
-        {filteredProjects.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-20 text-center">
-            <p className="font-display text-white/70 text-xl mb-4">No projects match these filters</p>
+      <div id="things-content" className="w-full flex flex-col items-center">
+        {/* Section Header */}
+        <div className="text-center mb-9 mt-8">
+...
+        {/* Filter Chips */}
+        <div className="flex flex-wrap justify-center gap-3 mt-8 px-4">
+          {FILTER_CATEGORIES.map((filter) => (
             <button
-              onClick={() => setActiveFilters([])}
-              className="font-display px-6 py-2 rounded-full border border-white/40 text-white/80 hover:bg-white/10 transition-colors"
+              key={filter}
+              onClick={() => toggleFilter(filter)}
+              className={`
+                font-display px-5 py-2.5 rounded-full border text-base font-semibold transition-all duration-300
+                ${activeFilters.includes(filter)
+                  ? 'bg-white text-black border-white'
+                  : 'bg-transparent text-white/80 border-white/40 hover:border-white/70 hover:text-white'
+                }
+              `}
             >
-              Clear filters
+              {filter}
             </button>
-          </div>
-        ) : (
-          <Swiper
-            key={swiperKey}
-            onSwiper={(swiper) => { swiperRef.current = swiper; }}
-            onSlideChange={handleSlideChange}
-            effect="coverflow"
-            grabCursor={true}
-            centeredSlides={true}
-            slidesPerView="auto"
-            initialSlide={initialSlide}
-            speed={700}
-            coverflowEffect={{
-              rotate: 25,
-              stretch: -50,
-              depth: -150,
-              modifier: 1.2,
-              slideShadows: false,
-            }}
-            freeMode={{
-              enabled: true,
-              sticky: true,
-              momentumRatio: 0.5,
-              momentumBounce: false,
-            }}
-            loop={filteredProjects.length >= 3}
-            slideToClickedSlide={true}
-            mousewheel={{
-              forceToAxis: true,
-              releaseOnEdges: true,
-              sensitivity: 0.6,
-            }}
-            keyboard={{ enabled: true }}
-            modules={[EffectCoverflow, Mousewheel, FreeMode, Keyboard]}
-            className="projects-carousel w-full max-w-7xl"
-          >
-            {filteredProjects.map((project) => {
-              const isActive = project.id === currentProjectId;
-              const showHover = !isActive || !!project.link;
-              const hoverOverlayClass = showHover ? 'group-hover:bg-black/20' : '';
-              const cursorClass = isActive && !project.link ? 'cursor-default' : 'cursor-pointer';
-              const cardClass = `relative w-[340px] md:w-[600px] h-[260px] md:h-[420px] rounded-3xl overflow-hidden border border-white/15 group ${cursorClass} ${!project.image ? `bg-gradient-to-br ${project.gradient}` : ''}`;
-
-              const cardInner = (
-                <div className={cardClass}>
-                  {project.image && (
-                    <img
-                      src={project.image}
-                      alt={project.title}
-                      className="absolute inset-0 w-full h-full object-cover"
-                      style={{ objectPosition: project.imagePosition || 'center' }}
-                    />
-                  )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-                  <div className="relative z-10 h-full p-6 md:p-8 flex flex-col justify-end">
-                    <p className="font-display text-white/70 text-base font-semibold tracking-wide uppercase mb-2">
-                      {project.subtitle}
-                    </p>
-                    <h3 className="font-display text-white text-2xl md:text-3xl font-bold mb-3">
-                      {project.title}
-                    </h3>
-                    <div className="flex flex-wrap gap-2">
-                      {project.tags.map((tag) => (
-                        <span
-                          key={tag}
-                          className="font-display px-3 py-1 text-sm font-medium rounded-full border border-white/30 text-white/80 bg-white/10 backdrop-blur-sm"
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                  <div className={`absolute inset-0 bg-black/0 ${hoverOverlayClass} transition-colors duration-300`} />
-                </div>
-              );
-
-              return (
-                <SwiperSlide key={project.id} className="swiper-slide-custom">
-                  {project.link ? (
-                    <a
-                      href={project.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="block"
-                      onClick={(e) => {
-                        if (!isActive) e.preventDefault();
-                      }}
-                    >
-                      {cardInner}
-                    </a>
-                  ) : (
-                    cardInner
-                  )}
-                </SwiperSlide>
-              );
-            })}
-          </Swiper>
-        )}
-      </div>
-
-      {/* Filter Chips */}
-      <div className="flex flex-wrap justify-center gap-3 mt-8 px-4">
-        {FILTER_CATEGORIES.map((filter) => (
-          <button
-            key={filter}
-            onClick={() => toggleFilter(filter)}
-            className={`
-              font-display px-5 py-2.5 rounded-full border text-base font-semibold transition-all duration-300
-              ${activeFilters.includes(filter)
-                ? 'bg-white text-black border-white'
-                : 'bg-transparent text-white/80 border-white/40 hover:border-white/70 hover:text-white'
-              }
-            `}
-          >
-            {filter}
-          </button>
-        ))}
+          ))}
+        </div>
       </div>
     </section>
   );
