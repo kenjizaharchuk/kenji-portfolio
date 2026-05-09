@@ -84,14 +84,15 @@ export function HeroSidebar({ isPreloaderActive = false }: HeroSidebarProps) {
   }, []);
 
   const scrollToSection = (sectionId: string) => {
+    if (sectionId === 'things') {
+      const target = document.getElementById('things-content') || document.getElementById('things');
+      if (!target) return;
+      target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
     const element = document.getElementById(sectionId);
     if (!element) return;
-
-    if (sectionId === 'things') {
-      element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    } else {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
+    element.scrollIntoView({ behavior: 'smooth' });
   };
 
   const getLineWidth = (index: number): number => {
