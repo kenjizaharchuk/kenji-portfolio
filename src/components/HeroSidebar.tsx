@@ -16,7 +16,7 @@ interface HeroSidebarProps {
 }
 
 export function HeroSidebar({ isPreloaderActive = false }: HeroSidebarProps) {
-  const [isVisible, setIsVisible] = useState(true);
+  const [isVisible, setIsVisible] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [isCompact, setIsCompact] = useState(false);
@@ -30,17 +30,15 @@ export function HeroSidebar({ isPreloaderActive = false }: HeroSidebarProps) {
 
   useEffect(() => {
     const aboutSection = document.getElementById('about');
-    const thingsSection = document.getElementById('things');
     const contactSection = document.getElementById('contact');
 
-    if (!aboutSection || !thingsSection || !contactSection) return;
+    if (!aboutSection || !contactSection) return;
 
     let inAbout = false;
     let inContact = false;
-    let inThingsDominant = false;
 
     const updateVisibility = () => {
-      setIsVisible(inAbout || inContact || !inThingsDominant);
+      setIsVisible(inAbout || inContact);
     };
 
     const aboutObserver = new IntersectionObserver(
@@ -59,27 +57,12 @@ export function HeroSidebar({ isPreloaderActive = false }: HeroSidebarProps) {
       { threshold: 0 }
     );
 
-    const thingsObserver = new IntersectionObserver(
-      ([entry]) => {
-        // Hysteresis: become dominant at >=0.5, release below 0.25
-        if (entry.intersectionRatio >= 0.5) {
-          inThingsDominant = true;
-        } else if (entry.intersectionRatio < 0.25) {
-          inThingsDominant = false;
-        }
-        updateVisibility();
-      },
-      { threshold: [0, 0.25, 0.5, 0.75, 1] }
-    );
-
     aboutObserver.observe(aboutSection);
     contactObserver.observe(contactSection);
-    thingsObserver.observe(thingsSection);
 
     return () => {
       aboutObserver.disconnect();
       contactObserver.disconnect();
-      thingsObserver.disconnect();
     };
   }, []);
 
