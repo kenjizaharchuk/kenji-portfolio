@@ -32,26 +32,53 @@ export function HeroSidebar({ isPreloaderActive = false }: HeroSidebarProps) {
     const aboutSection = document.getElementById('about');
     const thingsSection = document.getElementById('things');
     const contactSection = document.getElementById('contact');
-    
-    if (!aboutSection || !thingsSection) return;
 
-    let isInThings = false;
+    if (!aboutSection || !thingsSection || !contactSection) return;
+
+    let inAbout = false;
+    let inContact = false;
+    let inThingsDominant = false;
 
     const updateVisibility = () => {
-      setIsVisible(!isInThings);
+      setIsVisible(inAbout || inContact || !inThingsDominant);
     };
+
+    const aboutObserver = new IntersectionObserver(
+      ([entry]) => {
+        inAbout = entry.isIntersecting;
+        updateVisibility();
+      },
+      { threshold: 0 }
+    );
+
+    const contactObserver = new IntersectionObserver(
+      ([entry]) => {
+        inContact = entry.isIntersecting;
+        updateVisibility();
+      },
+      { threshold: 0 }
+    );
 
     const thingsObserver = new IntersectionObserver(
       ([entry]) => {
-        isInThings = entry.intersectionRatio > 0.05;
+        // Hysteresis: become dominant at >=0.5, release below 0.25
+        if (entry.intersectionRatio >= 0.5) {
+          inThingsDominant = true;
+        } else if (entry.intersectionRatio < 0.25) {
+          inThingsDominant = false;
+        }
         updateVisibility();
       },
-      { threshold: [0, 0.05, 0.1] }
+      { threshold: [0, 0.25, 0.5, 0.75, 1] }
     );
 
+    aboutObserver.observe(aboutSection);
+    contactObserver.observe(contactSection);
     thingsObserver.observe(thingsSection);
 
     return () => {
+      aboutObserver.disconnect();
+      contactObserver.disconnect();
       thingsObserver.disconnect();
     };
   }, []);
