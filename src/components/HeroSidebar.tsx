@@ -30,20 +30,17 @@ export function HeroSidebar({ isPreloaderActive = false }: HeroSidebarProps) {
 
   useEffect(() => {
     const aboutSection = document.getElementById('about');
+    const thingsSection = document.getElementById('things');
     const contactSection = document.getElementById('contact');
 
-    if (!aboutSection || !contactSection) return;
+    if (!aboutSection || !thingsSection || !contactSection) return;
 
     let inAbout = false;
     let inContact = false;
+    let inThingsDominant = false;
 
     const updateVisibility = () => {
-      setIsVisible(inAbout || inContact);
-    };
-
-    const options: IntersectionObserverInit = {
-      rootMargin: '-15% 0px -15% 0px',
-      threshold: 0,
+      setIsVisible(inAbout || inContact || !inThingsDominant);
     };
 
     const aboutObserver = new IntersectionObserver(
@@ -51,7 +48,7 @@ export function HeroSidebar({ isPreloaderActive = false }: HeroSidebarProps) {
         inAbout = entry.isIntersecting;
         updateVisibility();
       },
-      options
+      { threshold: 0 }
     );
 
     const contactObserver = new IntersectionObserver(
@@ -59,18 +56,30 @@ export function HeroSidebar({ isPreloaderActive = false }: HeroSidebarProps) {
         inContact = entry.isIntersecting;
         updateVisibility();
       },
-      options
+      { threshold: 0 }
+    );
+
+    const thingsObserver = new IntersectionObserver(
+      ([entry]) => {
+        // Hysteresis: become dominant at >=0.5, release below 0.25
+        if (entry.intersectionRatio >= 0.5) {
+          inThingsDominant = true;
+        } else if (entry.intersectionRatio < 0.25) {
+          inThingsDominant = false;
+        }
+        updateVisibility();
+      },
+      { threshold: [0, 0.25, 0.5, 0.75, 1] }
     );
 
     aboutObserver.observe(aboutSection);
     contactObserver.observe(contactSection);
-
-    // Initialize hidden until an observer fires
-    setIsVisible(false);
+    thingsObserver.observe(thingsSection);
 
     return () => {
       aboutObserver.disconnect();
       contactObserver.disconnect();
+      thingsObserver.disconnect();
     };
   }, []);
 
@@ -110,31 +119,24 @@ export function HeroSidebar({ isPreloaderActive = false }: HeroSidebarProps) {
         transition-opacity duration-500
         ${isVisible && !isPreloaderActive ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}
       `}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => {
+        setIsHovered(false);
+        setHoveredIndex(null);
+      }}
     >
       {navItems.map((item, index) => (
         <button
           key={item.sectionId}
           onClick={() => scrollToSection(item.sectionId)}
+          onMouseEnter={() => setHoveredIndex(index)}
           className="group flex items-center gap-3 cursor-pointer bg-transparent border-none p-0"
         >
           <div
-            onMouseEnter={() => {
-              setIsHovered(true);
-              setHoveredIndex(index);
-            }}
-            onMouseLeave={() => {
-              setIsHovered(false);
-              setHoveredIndex(null);
-            }}
-            className="flex items-center"
-            style={{ width: isCompact ? 60 : 100, height: 24 }}
-          >
-            <div
-              className="h-[3px] bg-white/40 transition-all duration-300 ease-out group-hover:bg-white/80"
-              style={{ width: `${getLineWidth(index)}px` }}
-            />
-          </div>
-
+            className="h-[3px] bg-white/40 transition-all duration-300 ease-out group-hover:bg-white/80"
+            style={{ width: `${getLineWidth(index)}px` }}
+          />
+          
           {!isCompact && (
             <span
               className={`
