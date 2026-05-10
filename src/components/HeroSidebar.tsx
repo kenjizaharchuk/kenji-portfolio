@@ -31,14 +31,17 @@ export function HeroSidebar({ isPreloaderActive = false }: HeroSidebarProps) {
   useEffect(() => {
     const aboutSection = document.getElementById('about');
     const contactSection = document.getElementById('contact');
+    const projectsSection =
+      document.getElementById('things-content') || document.getElementById('things');
 
     if (!aboutSection || !contactSection) return;
 
     let inAbout = false;
     let inContact = false;
+    let inProjects = false;
 
     const updateVisibility = () => {
-      setIsVisible(inAbout || inContact);
+      setIsVisible(inContact || (inAbout && !inProjects));
     };
 
     const aboutObserver = new IntersectionObserver(
@@ -57,12 +60,30 @@ export function HeroSidebar({ isPreloaderActive = false }: HeroSidebarProps) {
       { threshold: 0 }
     );
 
+    // Stricter Projects rule: hide as soon as Projects becomes meaningfully
+    // visible, and stay hidden through the entire Projects view.
+    const projectsObserver = projectsSection
+      ? new IntersectionObserver(
+          ([entry]) => {
+            inProjects =
+              entry.isIntersecting && entry.intersectionRatio > 0.05;
+            updateVisibility();
+          },
+          {
+            threshold: [0, 0.05, 0.25, 0.5, 0.75, 1],
+            rootMargin: '-10% 0px -10% 0px',
+          }
+        )
+      : null;
+
     aboutObserver.observe(aboutSection);
     contactObserver.observe(contactSection);
+    if (projectsObserver && projectsSection) projectsObserver.observe(projectsSection);
 
     return () => {
       aboutObserver.disconnect();
       contactObserver.disconnect();
+      projectsObserver?.disconnect();
     };
   }, []);
 
