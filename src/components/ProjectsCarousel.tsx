@@ -341,7 +341,7 @@ export function ProjectsCarousel() {
                 const showHover = !isActive || !!project.link || hasSlug;
                 const hoverOverlayClass = showHover ? 'group-hover:bg-black/20' : '';
                 const cursorClass = isActive && !project.link && !hasSlug ? 'cursor-default' : 'cursor-pointer';
-                const cardClass = `relative w-[340px] md:w-[600px] h-[260px] md:h-[420px] rounded-3xl overflow-hidden border border-white/15 group ${cursorClass} ${!project.image ? `bg-gradient-to-br ${project.gradient}` : ''}`;
+                const cardClass = `relative w-[340px] md:w-[600px] h-[260px] md:h-[420px] rounded-3xl border border-white/15 group ${cursorClass} ${!project.image ? `bg-gradient-to-br ${project.gradient}` : ''}`;
 
                 const transition = { duration: 0.8, ease: [0.22, 1, 0.36, 1] as const };
 
