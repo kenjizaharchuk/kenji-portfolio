@@ -1,4 +1,6 @@
 import { useState, useMemo, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Swiper as SwiperType } from 'swiper';
 import { EffectCoverflow, Mousewheel, FreeMode, Keyboard } from 'swiper/modules';
@@ -51,6 +53,7 @@ interface Project {
   tags: string[];
   categories: FilterCategory[];
   link?: string;
+  slug?: string;
 }
 
 const projects: Project[] = [
@@ -112,6 +115,7 @@ const projects: Project[] = [
     image: planetMoney,
     tags: ['User Research', 'Brand Development', 'UI/UX', 'A/B Testing', 'Figma'],
     categories: ['Digital Design', 'Work Experience'],
+    slug: 'planet-money-bot',
   },
   {
     id: 21,
@@ -227,6 +231,7 @@ export function ProjectsCarousel() {
   const [activeFilters, setActiveFilters] = useState<FilterCategory[]>([]);
   const [currentProjectId, setCurrentProjectId] = useState<number>(projects[2].id);
   const swiperRef = useRef<SwiperType | null>(null);
+  const navigate = useNavigate();
 
   // Filter projects based on active filters (OR logic)
   const filteredProjects = useMemo(() => {
@@ -332,15 +337,24 @@ export function ProjectsCarousel() {
             >
               {filteredProjects.map((project) => {
                 const isActive = project.id === currentProjectId;
-                const showHover = !isActive || !!project.link;
+                const hasSlug = !!project.slug;
+                const showHover = !isActive || !!project.link || hasSlug;
                 const hoverOverlayClass = showHover ? 'group-hover:bg-black/20' : '';
-                const cursorClass = isActive && !project.link ? 'cursor-default' : 'cursor-pointer';
+                const cursorClass = isActive && !project.link && !hasSlug ? 'cursor-default' : 'cursor-pointer';
                 const cardClass = `relative w-[340px] md:w-[600px] h-[260px] md:h-[420px] rounded-3xl overflow-hidden border border-white/15 group ${cursorClass} ${!project.image ? `bg-gradient-to-br ${project.gradient}` : ''}`;
 
+                const transition = { duration: 0.8, ease: [0.22, 1, 0.36, 1] as const };
+
                 const cardInner = (
-                  <div className={cardClass}>
+                  <motion.div
+                    layoutId={hasSlug ? `card-${project.slug}` : undefined}
+                    transition={transition}
+                    className={cardClass}
+                  >
                     {project.image && (
-                      <img
+                      <motion.img
+                        layoutId={hasSlug ? `card-image-${project.slug}` : undefined}
+                        transition={transition}
                         src={project.image}
                         alt={project.title}
                         className="absolute inset-0 w-full h-full object-cover"
@@ -352,10 +366,18 @@ export function ProjectsCarousel() {
                       <p className="font-display text-white/70 text-base font-semibold tracking-wide uppercase mb-2">
                         {project.subtitle}
                       </p>
-                      <h3 className="font-display text-white text-2xl md:text-3xl font-bold mb-3">
+                      <motion.h3
+                        layoutId={hasSlug ? `card-title-${project.slug}` : undefined}
+                        transition={transition}
+                        className="font-display text-white text-2xl md:text-3xl font-bold mb-3"
+                      >
                         {project.title}
-                      </h3>
-                      <div className="flex flex-wrap gap-2">
+                      </motion.h3>
+                      <motion.div
+                        layoutId={hasSlug ? `card-tags-${project.slug}` : undefined}
+                        transition={transition}
+                        className="flex flex-wrap gap-2"
+                      >
                         {project.tags.map((tag) => (
                           <span
                             key={tag}
@@ -364,15 +386,26 @@ export function ProjectsCarousel() {
                             {tag}
                           </span>
                         ))}
-                      </div>
+                      </motion.div>
                     </div>
                     <div className={`absolute inset-0 bg-black/0 ${hoverOverlayClass} transition-colors duration-300`} />
-                  </div>
+                  </motion.div>
                 );
 
                 return (
                   <SwiperSlide key={project.id} className="swiper-slide-custom">
-                    {project.link ? (
+                    {hasSlug ? (
+                      <div
+                        className="block"
+                        onClick={(e) => {
+                          if (!isActive) return;
+                          e.preventDefault();
+                          navigate(`/projects/${project.slug}`);
+                        }}
+                      >
+                        {cardInner}
+                      </div>
+                    ) : project.link ? (
                       <a
                         href={project.link}
                         target="_blank"

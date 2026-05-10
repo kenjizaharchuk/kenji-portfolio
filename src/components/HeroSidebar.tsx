@@ -13,9 +13,10 @@ const navItems: NavItem[] = [
 
 interface HeroSidebarProps {
   isPreloaderActive?: boolean;
+  forceHidden?: boolean;
 }
 
-export function HeroSidebar({ isPreloaderActive = false }: HeroSidebarProps) {
+export function HeroSidebar({ isPreloaderActive = false, forceHidden = false }: HeroSidebarProps) {
   const [isVisible, setIsVisible] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
@@ -141,7 +142,7 @@ export function HeroSidebar({ isPreloaderActive = false }: HeroSidebarProps) {
         fixed left-6 md:left-10 lg:left-14 top-1/2 -translate-y-1/2 z-50
         hidden md:flex flex-col gap-3
         transition-opacity duration-500
-        ${isVisible && !isPreloaderActive ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}
+        ${isVisible && !isPreloaderActive && !forceHidden ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}
       `}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => {
