@@ -93,7 +93,8 @@ export function ProjectDetail({ slug, skipEnterAnimation = false }: ProjectDetai
           <motion.div
             layoutId={`card-image-${project.slug}`}
             transition={transition}
-            className="relative w-full aspect-[16/10] md:aspect-[16/9] rounded-3xl overflow-hidden border border-white/15"
+            className="relative w-full aspect-[21/9] overflow-hidden border border-white/15"
+            style={{ borderRadius: '1.5rem' }}
           >
             <img
               src={project.heroImage}
