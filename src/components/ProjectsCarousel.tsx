@@ -232,6 +232,7 @@ export function ProjectsCarousel() {
   const [currentProjectId, setCurrentProjectId] = useState<number>(projects[2].id);
   const swiperRef = useRef<SwiperType | null>(null);
   const navigate = useNavigate();
+  const { slug: activeSlug } = useParams();
 
   // Filter projects based on active filters (OR logic)
   const filteredProjects = useMemo(() => {
