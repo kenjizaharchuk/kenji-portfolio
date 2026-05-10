@@ -13,7 +13,7 @@ export function MorphGhost() {
     // no-op; animation onComplete drives transitions.
   }, [phase]);
 
-  if (phase === 'idle' || !sourceRect || !image) return null;
+  if (phase === 'idle' || phase === 'open' || !sourceRect || !image) return null;
 
   // While 'opening' but target not yet measured, render static at source so card stays covered.
   const animateTo =
