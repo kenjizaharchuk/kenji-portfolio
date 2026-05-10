@@ -1,21 +1,20 @@
-Plan:
+Update only `src/components/HeroSidebar.tsx` sidebar visibility logic.
 
-1. Update only `src/components/HeroSidebar.tsx`.
-2. Keep the existing nav items, click scrolling, hover animation, compact behavior, transitions, classes, and markup unchanged.
-3. Replace the current About/Contact-only visibility check with explicit section state for:
-   - `#about`
-   - `#things-content` if present, falling back to `#things`
-   - `#contact`
-4. Use a stricter Projects observer so the sidebar hides when Projects is meaningfully visible, not only when centered. The visibility rule will be:
-   - Show in About only while Projects is not meaningfully visible.
-   - Hide whenever Projects is meaningfully visible.
-   - Show again once Contact is meaningfully visible.
-5. Keep Contact as the re-entry condition so the sidebar does not reappear while the user is still viewing or interacting with the Projects carousel/cards/filter buttons.
+Goal: The sidebar must hide as soon as the Projects carousel/card area approaches the left side of the viewport, never overlapping side cards.
 
-Technical approach:
+Changes:
+1. Keep About and Contact observers, hover behavior, nav buttons, scrolling, layout, classes, and markup exactly as-is.
+2. Replace the Projects observer with a stricter, earlier-triggering one:
+   - Observe the outer `#things` section (the full Projects area, taller than `#things-content`).
+   - Use `threshold: 0` and a generous negative vertical `rootMargin` like `rootMargin: "-5% 0px -5% 0px"`, so `inProjects` becomes true the moment any meaningful slice of Projects enters the viewport — well before cards can reach the sidebar's vertical band.
+   - Treat any intersection (`entry.isIntersecting`) as `inProjects = true`, with no ratio gating.
+3. Change the visibility formula to give Projects strict priority:
+   ```ts
+   setIsVisible((inAbout || inContact) && !inProjects);
+   ```
+   About/Contact can no longer override Projects.
+4. As a backup safeguard, also observe `#things-content` with the same options and OR the two intersection results into `inProjects`, so either signal hides the sidebar.
 
-```ts
-setIsVisible(inContact || (inAbout && !inProjects));
-```
+Result: Sidebar is hidden throughout the entire Things I've Made view, including while side carousel cards are visible, and only reappears once About or Contact is in the viewport and Projects is not.
 
-`inProjects` will be driven by observing the Projects content/section with a generous threshold/rootMargin so the hide state starts early and stays active through the Projects view.
+No layout, spacing, scroll behavior, carousel behavior, hover animation, typography, images, cards, or content will be changed.
