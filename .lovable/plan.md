@@ -1,37 +1,46 @@
-## Refinements to Project Detail View
+## Three Refinements to Project Detail View
 
-Three targeted fixes, scoped to `ProjectsCarousel.tsx` and `ProjectDetail.tsx`. No other files touched.
+Scoped to `ProjectsCarousel.tsx` and `ProjectDetail.tsx`. No other files touched.
 
-### 1. Fix carousel card border-radius after close
+### 1. Fix filter-toggle entrance animation on slugged card
 
-**Problem:** Framer Motion's `layoutId` animation overrides `rounded-3xl` during the shared transition, leaving the card with sharp corners on return.
+**Problem:** When filters toggle, the Swiper remounts (`key={swiperKey}`). Cards with `layoutId` (currently only Planet Money Bot) get treated as moving from their previous DOM location — sliding in from off-screen — instead of appearing in place like other cards.
 
-**Fix:** In `ProjectsCarousel.tsx`, on the `motion.div` with `layoutId={`card-${slug}`}`, add inline `style={{ borderRadius: '1.5rem' }}` (matches `rounded-3xl` = 24px). Apply the same inline radius on the `motion.img` for `card-image-${slug}` so both ends have an explicit, animatable radius.
+**Fix in `ProjectsCarousel.tsx`:**
+- Import `LayoutGroup` from `framer-motion`.
+- Wrap the `<Swiper>` block in `<LayoutGroup id={swiperKey}>…</LayoutGroup>`. Each filter context becomes its own layout group; on filter change the old group unmounts and the new one mounts fresh with no prior position to animate from. Card → detail morph still works because it occurs within a single LayoutGroup instance (no remount on navigation).
 
-In `ProjectDetail.tsx`, the hero image wrapper (`layoutId={`card-image-${project.slug}`}`) currently uses `rounded-3xl` — switch to inline `style={{ borderRadius: '1.5rem' }}` to match.
+### 2. Preserve rounded corners through the entire morph
 
-### 2. Unify content block widths in detail view
+**Problem:** Detail view stays `fixed inset-0` (desired fullscreen). Both endpoints have `borderRadius: 1.5rem`, but Framer Motion's layout animation isn't interpolating the radius continuously — corners flicker sharp mid-morph. This typically happens when the radius isn't on the same animated element as the layout, or an ancestor's clipping strips it.
 
-**Problem:** `BlockRenderer` cases use mixed `max-w-3xl` / full-width layouts, creating inconsistent left edges.
+**Fix in both files — apply identical inline style at both endpoints of every shared `layoutId`:**
 
-**Fix:** In `ProjectDetail.tsx`:
-- The `<article>` already uses `max-w-5xl mx-auto px-6 md:px-10` — keep it as the single shared container.
-- Remove per-block `max-w-3xl` constraints from `context`, `pullQuote`, and `outcome` blocks so they fill the article width.
-- `gallery`, `embed`, `process` already span full width — leave their internal layout intact.
-- Result: every block aligns to the same left/right edges defined by the parent article.
+On the **outer panel** (`card-${slug}`):
+- Carousel side (`ProjectsCarousel.tsx`): the `motion.div` already has `style={{ borderRadius: '1.5rem' }}`. Add `overflow: 'hidden'` to the inline style so radius + clipping are both animated together: `style={{ borderRadius: '1.5rem', overflow: 'hidden' }}`. Remove the `overflow-hidden` Tailwind class from that element's `className` so there's only one source of truth for clipping (inline). Keep `rounded-3xl` removed in favor of inline radius.
+- Detail side (`ProjectDetail.tsx`): the outer `motion.div` (`fixed inset-0 z-[60] bg-background overflow-y-auto`). Change inline style from `{ borderRadius: '1.5rem' }` to `{ borderRadius: '1.5rem', overflow: 'hidden' }`. Remove `overflow-y-auto` from className and move scrolling to an **inner wrapper** (a plain `div` with `h-full overflow-y-auto`) that holds the close button + `<article>`. This way the morphing element has stable `overflow: hidden` + radius at both ends; scrolling is delegated to a child that doesn't participate in the layout animation.
 
-### 3. Shorter hero via aspect ratio (not fixed height)
+On the **hero image wrapper** (`card-image-${slug}`):
+- Carousel side: currently a `motion.img` with `style={{ objectPosition, borderRadius: '1.5rem' }}`. Add `overflow: 'hidden'` to the inline style (harmless on `img` but keeps endpoints symmetric).
+- Detail side: the hero `motion.div` already has `style={{ borderRadius: '1.5rem' }}`. Add `overflow: 'hidden'` inline and remove the `overflow-hidden` Tailwind class so the inline value is the only one Framer interpolates.
 
-**Fix:** In `ProjectDetail.tsx` hero `motion.div`, replace `aspect-[16/10] md:aspect-[16/9]` with `aspect-[21/9]` (cinematic widescreen). Keeps the aspect ratio stable through the morph (no mid-animation recrop/stretch) while making the hero shorter so a hint of content below is visible.
+**Why this works:** Framer Motion animates inline `borderRadius` as a continuous numeric value when set via `style` on the layoutId element. By making both endpoints expose identical inline `{ borderRadius: '1.5rem', overflow: 'hidden' }` — with no competing Tailwind classes on the same element and no ancestor `overflow: hidden` stripping the radius mid-flight — the radius interpolates smoothly the entire way.
 
-### 4. Rounded corners on outer detail container
+**Ancestor check:** No parent of the outer panel applies `overflow: hidden`. `main` in `Index.tsx` uses `overflow-x-hidden` only, which doesn't clip the radius (the morph happens within the viewport rectangle).
 
-**Fix:** In `ProjectDetail.tsx`, change the outer `motion.div`'s `style={{ borderRadius: 0 }}` to `style={{ borderRadius: '1.5rem' }}` so the rounded corners persist through the entire morph and match the site's visual language.
+### 3. Smaller hero image in expanded view
+
+**Fix in `ProjectDetail.tsx`:**
+- On the hero `motion.div`: change `className="relative w-full aspect-[21/9] overflow-hidden border border-white/15"` to `className="relative w-full max-w-2xl mx-auto aspect-[21/9] border border-white/15"` (removed `overflow-hidden` per #2; added `max-w-2xl mx-auto`).
+- Keep `aspect-[21/9]` so the aspect ratio stays stable through the morph.
+- Keep inline `style={{ borderRadius: '1.5rem', overflow: 'hidden' }}`.
+- Title, subtitle, tags below remain full article width — only the hero image is constrained.
 
 ### Out of scope
-- Close button styling/position (untouched per request).
-- Carousel scroll, swiper config, hover behavior, typography, or any other animation timing.
+- Detail view stays fullscreen (`fixed inset-0`). No inset, no backdrop.
+- Close button stays `fixed top-6 right-6 md:top-8 md:right-8`.
+- Block layouts, typography, animation timing, carousel scroll/swiper config — untouched.
 
 ### Files to edit
-- `src/components/ProjectsCarousel.tsx` — inline `borderRadius` on card + image motion elements.
-- `src/components/ProjectDetail.tsx` — inline `borderRadius` on outer container and hero image, remove per-block max-widths, change hero aspect to 21/9.
+- `src/components/ProjectsCarousel.tsx` — wrap Swiper in `LayoutGroup`; add `overflow: 'hidden'` inline on card + image motion elements; remove redundant `overflow-hidden` Tailwind on the card motion.div.
+- `src/components/ProjectDetail.tsx` — add `overflow: 'hidden'` inline on outer panel and hero; move scrolling to an inner wrapper; constrain hero to `max-w-2xl mx-auto`; drop `overflow-hidden` Tailwind class on hero.

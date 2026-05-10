@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Swiper as SwiperType } from 'swiper';
 import { EffectCoverflow, Mousewheel, FreeMode, Keyboard } from 'swiper/modules';
+import { LayoutGroup } from 'framer-motion';
 
 // @ts-ignore
 import 'swiper/css';
