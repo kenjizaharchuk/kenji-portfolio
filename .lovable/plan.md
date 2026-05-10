@@ -1,37 +1,45 @@
-## Refinements to Project Detail View
+## Fix border-radius corner toggling during card↔hero morph
 
-Three targeted fixes, scoped to `ProjectsCarousel.tsx` and `ProjectDetail.tsx`. No other files touched.
+Root cause: border-radius lives on the Framer Motion `layoutId` animated elements, so it gets stripped/un-interpolated mid-morph. Fix structurally — move the radius onto a static (non-motion) wrapper with `overflow: hidden`. The animated parent resizes around it; the wrapper's radius is never interpolated, so corners stay visually constant throughout.
 
-### 1. Fix carousel card border-radius after close
+### `src/components/ProjectsCarousel.tsx`
 
-**Problem:** Framer Motion's `layoutId` animation overrides `rounded-3xl` during the shared transition, leaving the card with sharp corners on return.
+In `cardInner`:
+- Remove `rounded-3xl` from `cardClass` on the outer `motion.div`.
+- Remove inline `style={{ borderRadius: '1.5rem' }}` from the outer `motion.div`.
+- Remove inline `borderRadius` from the `motion.img` style (keep `objectPosition`).
+- Wrap **all** inner content of the outer `motion.div` (the `motion.img`, the gradient overlay, the relative `z-10` text/title/tags block, and the hover overlay) inside a single static `<div className="absolute inset-0" style={{ borderRadius: '1.5rem', overflow: 'hidden' }}>`.
 
-**Fix:** In `ProjectsCarousel.tsx`, on the `motion.div` with `layoutId={`card-${slug}`}`, add inline `style={{ borderRadius: '1.5rem' }}` (matches `rounded-3xl` = 24px). Apply the same inline radius on the `motion.img` for `card-image-${slug}` so both ends have an explicit, animatable radius.
+Resulting structure:
+```
+motion.div (layoutId card-{slug})     ← NO radius, NO overflow-hidden
+  static div [borderRadius 1.5rem, overflow hidden, absolute inset-0]
+    motion.img (layoutId card-image-{slug})    ← no radius
+    gradient overlay
+    relative z-10 content (subtitle, motion.h3, motion.div tags)
+    hover overlay
+```
 
-In `ProjectDetail.tsx`, the hero image wrapper (`layoutId={`card-image-${project.slug}`}`) currently uses `rounded-3xl` — switch to inline `style={{ borderRadius: '1.5rem' }}` to match.
+The outer animated element has no radius at all. All clipping happens on the static wrapper, which never animates → corners are visually identical at every frame of the morph.
 
-### 2. Unify content block widths in detail view
+### `src/components/ProjectDetail.tsx`
 
-**Problem:** `BlockRenderer` cases use mixed `max-w-3xl` / full-width layouts, creating inconsistent left edges.
+- Remove `style={{ borderRadius: '1.5rem' }}` from the outer detail `motion.div` (layoutId `card-${slug}`).
+- On the hero `motion.div` (layoutId `card-image-${slug}`): remove `style={{ borderRadius: '1.5rem' }}` and remove `overflow-hidden` from its className.
+- Wrap the inner `<img>` in a static `<div className="absolute inset-0" style={{ borderRadius: '1.5rem', overflow: 'hidden' }}>`.
+- Keep `aspect-[21/9]` and the `border border-white/15` on the hero `motion.div`.
 
-**Fix:** In `ProjectDetail.tsx`:
-- The `<article>` already uses `max-w-5xl mx-auto px-6 md:px-10` — keep it as the single shared container.
-- Remove per-block `max-w-3xl` constraints from `context`, `pullQuote`, and `outcome` blocks so they fill the article width.
-- `gallery`, `embed`, `process` already span full width — leave their internal layout intact.
-- Result: every block aligns to the same left/right edges defined by the parent article.
-
-### 3. Shorter hero via aspect ratio (not fixed height)
-
-**Fix:** In `ProjectDetail.tsx` hero `motion.div`, replace `aspect-[16/10] md:aspect-[16/9]` with `aspect-[21/9]` (cinematic widescreen). Keeps the aspect ratio stable through the morph (no mid-animation recrop/stretch) while making the hero shorter so a hint of content below is visible.
-
-### 4. Rounded corners on outer detail container
-
-**Fix:** In `ProjectDetail.tsx`, change the outer `motion.div`'s `style={{ borderRadius: 0 }}` to `style={{ borderRadius: '1.5rem' }}` so the rounded corners persist through the entire morph and match the site's visual language.
+Resulting structure:
+```
+motion.div (layoutId card-image-{slug}) [aspect-[21/9], border]  ← no radius
+  static div [borderRadius 1.5rem, overflow hidden, absolute inset-0]
+    <img ... />
+```
 
 ### Out of scope
-- Close button styling/position (untouched per request).
-- Carousel scroll, swiper config, hover behavior, typography, or any other animation timing.
+- Aspect ratio stays `aspect-[21/9]`.
+- No changes to block layouts, filters, content, close button, or any other animation.
 
-### Files to edit
-- `src/components/ProjectsCarousel.tsx` — inline `borderRadius` on card + image motion elements.
-- `src/components/ProjectDetail.tsx` — inline `borderRadius` on outer container and hero image, remove per-block max-widths, change hero aspect to 21/9.
+### Files
+- `src/components/ProjectsCarousel.tsx`
+- `src/components/ProjectDetail.tsx`

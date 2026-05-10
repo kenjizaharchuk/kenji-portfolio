@@ -72,7 +72,6 @@ export function ProjectDetail({ slug, skipEnterAnimation = false }: ProjectDetai
       layoutId={`card-${project.slug}`}
       transition={transition}
       className="fixed inset-0 z-[60] bg-background overflow-y-auto"
-      style={{ borderRadius: '1.5rem' }}
     >
       {/* Close button */}
       <motion.button
@@ -93,15 +92,19 @@ export function ProjectDetail({ slug, skipEnterAnimation = false }: ProjectDetai
           <motion.div
             layoutId={`card-image-${project.slug}`}
             transition={transition}
-            className="relative w-full aspect-[21/9] overflow-hidden border border-white/15"
-            style={{ borderRadius: '1.5rem' }}
+            className="relative w-full aspect-[21/9] border border-white/15"
           >
-            <img
-              src={project.heroImage}
-              alt={project.title}
-              className="absolute inset-0 w-full h-full object-cover"
-              style={{ objectPosition: project.heroImagePosition || 'center' }}
-            />
+            <div
+              className="absolute inset-0"
+              style={{ borderRadius: '1.5rem', overflow: 'hidden' }}
+            >
+              <img
+                src={project.heroImage}
+                alt={project.title}
+                className="absolute inset-0 w-full h-full object-cover"
+                style={{ objectPosition: project.heroImagePosition || 'center' }}
+              />
+            </div>
           </motion.div>
 
           <div className="mt-8">
