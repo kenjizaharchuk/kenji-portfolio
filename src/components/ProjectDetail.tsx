@@ -72,7 +72,7 @@ export function ProjectDetail({ slug, skipEnterAnimation = false }: ProjectDetai
       layoutId={`card-${project.slug}`}
       transition={transition}
       className="fixed inset-0 z-[60] bg-background overflow-y-auto"
-      style={{ borderRadius: 0 }}
+      style={{ borderRadius: '1.5rem' }}
     >
       {/* Close button */}
       <motion.button
