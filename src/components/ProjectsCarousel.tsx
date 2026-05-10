@@ -351,7 +351,7 @@ export function ProjectsCarousel() {
                     layoutId={hasSlug ? `card-${project.slug}` : undefined}
                     transition={transition}
                     className={cardClass}
-                    style={hasSlug ? { borderRadius: '1.5rem' } : undefined}
+                    style={hasSlug ? { borderRadius: '1.5rem', overflow: 'hidden' } : undefined}
                   >
                     {project.image && (
                       <motion.img
