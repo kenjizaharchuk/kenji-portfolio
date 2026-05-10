@@ -69,8 +69,10 @@ export function ProjectDetail({ slug, skipEnterAnimation = false }: ProjectDetai
 
   return (
     <motion.div
-      layoutId={`card-${project.slug}`}
-      transition={transition}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0, transition: { duration: 0.25 } }}
+      transition={{ duration: 0.3 }}
       className="fixed inset-0 z-[60] bg-background overflow-y-auto"
     >
       {/* Close button */}
@@ -87,67 +89,54 @@ export function ProjectDetail({ slug, skipEnterAnimation = false }: ProjectDetai
       </motion.button>
 
       <article className="max-w-5xl mx-auto px-6 md:px-10 pt-16 md:pt-24 pb-24">
-        {/* Hero */}
-        <div className="mb-10 md:mb-14">
-          <motion.div
-            layoutId={`card-image-${project.slug}`}
-            transition={transition}
-            className="relative w-full aspect-[21/9] border border-white/15"
-          >
-            <div
-              className="absolute inset-0"
-              style={{ borderRadius: '1.5rem', overflow: 'hidden' }}
-            >
-              <img
-                src={project.heroImage}
-                alt={project.title}
-                className="absolute inset-0 w-full h-full object-cover"
-                style={{ objectPosition: project.heroImagePosition || 'center' }}
-              />
-            </div>
-          </motion.div>
+        {/* Hero — the shared morph element */}
+        <motion.div
+          layoutId={`card-${project.slug}`}
+          transition={transition}
+          className="relative w-full aspect-[21/9] border border-white/15"
+          style={{ borderRadius: '1.5rem', overflow: 'hidden' }}
+        >
+          <img
+            src={project.heroImage}
+            alt={project.title}
+            className="absolute inset-0 w-full h-full object-cover"
+            style={{ objectPosition: project.heroImagePosition || 'center' }}
+          />
+        </motion.div>
 
-          <div className="mt-8">
-            <motion.p
-              initial={contentInitial}
-              animate={contentAnimate}
-              exit={contentExit}
-              transition={{ ...transition, delay: skipEnterAnimation ? 0 : 0.3 }}
-              className="font-display text-white/60 text-sm md:text-base font-semibold tracking-wide uppercase mb-3"
-            >
-              {project.subtitle} · {project.category}
-            </motion.p>
-            <motion.h1
-              layoutId={`card-title-${project.slug}`}
-              transition={transition}
-              className="font-display text-white text-4xl md:text-6xl font-bold mb-5"
-            >
-              {project.title}
-            </motion.h1>
-            <motion.div
-              layoutId={`card-tags-${project.slug}`}
-              transition={transition}
-              className="flex flex-wrap gap-2"
-            >
-              {project.tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="font-display px-3 py-1 text-sm font-medium rounded-full border border-white/30 text-white/80 bg-white/10 backdrop-blur-sm"
-                >
-                  {tag}
-                </span>
-              ))}
-            </motion.div>
+        {/* Title block — fades in below the hero after morph */}
+        <motion.div
+          initial={contentInitial}
+          animate={contentAnimate}
+          exit={contentExit}
+          transition={{ ...transition, delay: skipEnterAnimation ? 0 : 0.35 }}
+          className="mt-8"
+        >
+          <p className="font-display text-white/60 text-sm md:text-base font-semibold tracking-wide uppercase mb-3">
+            {project.subtitle} · {project.category}
+          </p>
+          <h1 className="font-display text-white text-4xl md:text-6xl font-bold mb-5">
+            {project.title}
+          </h1>
+          <div className="flex flex-wrap gap-2">
+            {project.tags.map((tag) => (
+              <span
+                key={tag}
+                className="font-display px-3 py-1 text-sm font-medium rounded-full border border-white/30 text-white/80 bg-white/10 backdrop-blur-sm"
+              >
+                {tag}
+              </span>
+            ))}
           </div>
-        </div>
+        </motion.div>
 
         {/* Blocks */}
         <motion.div
           initial={contentInitial}
           animate={contentAnimate}
           exit={contentExit}
-          transition={{ ...transition, delay: skipEnterAnimation ? 0 : 0.4 }}
-          className="space-y-16 md:space-y-24"
+          transition={{ ...transition, delay: skipEnterAnimation ? 0 : 0.45 }}
+          className="space-y-16 md:space-y-24 mt-10 md:mt-14"
         >
           {project.blocks.map((block, i) => (
             <BlockRenderer key={i} block={block} />
