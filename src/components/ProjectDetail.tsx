@@ -1,8 +1,9 @@
-import { useEffect } from 'react';
+import { useEffect, useLayoutEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Minimize2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { getProjectBySlug, type Block } from '@/data/projects';
+import { useMorph, rectFromDOMRect } from '@/lib/morphContext';
 
 interface ProjectDetailProps {
   slug: string;
@@ -15,8 +16,31 @@ const transition = { duration: 0.8, ease: [0.22, 1, 0.36, 1] as const };
 export function ProjectDetail({ slug, skipEnterAnimation = false }: ProjectDetailProps) {
   const navigate = useNavigate();
   const project = getProjectBySlug(slug);
+  const morph = useMorph();
+  const heroSlotRef = useRef<HTMLDivElement | null>(null);
+
+  // Measure the hero slot once mounted so the ghost can fly there.
+  useLayoutEffect(() => {
+    if (!heroSlotRef.current) return;
+    if (morph.phase !== 'opening') return;
+    const rect = rectFromDOMRect(heroSlotRef.current.getBoundingClientRect());
+    morph.setTargetRect(rect);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [morph.phase]);
 
   const close = () => {
+    // If a ghost morph is feasible (we have a card on the page), animate the close.
+    const cardEl = document.querySelector(
+      `[data-card-slug="${slug}"]`
+    ) as HTMLElement | null;
+    const heroEl = heroSlotRef.current;
+    if (cardEl && heroEl && morph.phase !== 'idle') {
+      const heroRect = rectFromDOMRect(heroEl.getBoundingClientRect());
+      const cardRect = rectFromDOMRect(cardEl.getBoundingClientRect());
+      morph.startClose(heroRect, cardRect);
+    } else {
+      morph.reset();
+    }
     if (window.history.state && window.history.state.idx > 0) {
       navigate(-1);
     } else {
@@ -44,12 +68,7 @@ export function ProjectDetail({ slug, skipEnterAnimation = false }: ProjectDetai
 
   if (!project) {
     return (
-      <motion.div
-        className="fixed inset-0 z-[60] bg-background flex items-center justify-center"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-      >
+      <div className="fixed inset-0 z-[60] bg-background flex items-center justify-center">
         <div className="text-center">
           <p className="font-display text-white/80 text-xl mb-4">Project not found</p>
           <button
@@ -59,7 +78,7 @@ export function ProjectDetail({ slug, skipEnterAnimation = false }: ProjectDetai
             Back to home
           </button>
         </div>
-      </motion.div>
+      </div>
     );
   }
 
@@ -67,14 +86,11 @@ export function ProjectDetail({ slug, skipEnterAnimation = false }: ProjectDetai
   const contentAnimate = { opacity: 1, y: 0 };
   const contentExit = { opacity: 0, transition: { duration: 0.18 } };
 
+  // Show the real hero image only when the morph is done (or we skipped it entirely).
+  const showRealHero = skipEnterAnimation || morph.phase === 'open' || morph.phase === 'idle';
+
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0, transition: { duration: 0.25 } }}
-      transition={{ duration: 0.3 }}
-      className="fixed inset-0 z-[60] bg-background overflow-y-auto"
-    >
+    <div className="fixed inset-0 z-[60] bg-background overflow-y-auto">
       {/* Close button */}
       <motion.button
         onClick={close}
@@ -82,34 +98,35 @@ export function ProjectDetail({ slug, skipEnterAnimation = false }: ProjectDetai
         initial={contentInitial}
         animate={contentAnimate}
         exit={contentExit}
-        transition={{ ...transition, delay: skipEnterAnimation ? 0 : 0.35 }}
+        transition={{ ...transition, delay: skipEnterAnimation ? 0 : 0.45 }}
         className="fixed top-6 right-6 md:top-8 md:right-8 z-[70] p-3 rounded-full border border-white/20 bg-black/40 backdrop-blur-sm text-white/80 hover:text-white hover:bg-white/10 transition-colors"
       >
         <Minimize2 size={20} />
       </motion.button>
 
       <article className="max-w-5xl mx-auto px-6 md:px-10 pt-16 md:pt-24 pb-24">
-        {/* Hero — the shared morph element */}
-        <motion.div
-          layoutId={`card-${project.slug}`}
-          transition={transition}
+        {/* Hero slot — reserves layout space, ghost flies on top during morph */}
+        <div
+          ref={heroSlotRef}
           className="relative w-full aspect-[21/9] border border-white/15"
           style={{ borderRadius: '1.5rem', overflow: 'hidden' }}
         >
-          <img
-            src={project.heroImage}
-            alt={project.title}
-            className="absolute inset-0 w-full h-full object-cover"
-            style={{ objectPosition: project.heroImagePosition || 'center' }}
-          />
-        </motion.div>
+          {showRealHero && (
+            <img
+              src={project.heroImage}
+              alt={project.title}
+              className="absolute inset-0 w-full h-full object-cover"
+              style={{ objectPosition: project.heroImagePosition || 'center' }}
+            />
+          )}
+        </div>
 
-        {/* Title block — fades in below the hero after morph */}
+        {/* Title block — fades in after morph */}
         <motion.div
           initial={contentInitial}
           animate={contentAnimate}
           exit={contentExit}
-          transition={{ ...transition, delay: skipEnterAnimation ? 0 : 0.35 }}
+          transition={{ ...transition, delay: skipEnterAnimation ? 0 : 0.5 }}
           className="mt-8"
         >
           <p className="font-display text-white/60 text-sm md:text-base font-semibold tracking-wide uppercase mb-3">
@@ -135,7 +152,7 @@ export function ProjectDetail({ slug, skipEnterAnimation = false }: ProjectDetai
           initial={contentInitial}
           animate={contentAnimate}
           exit={contentExit}
-          transition={{ ...transition, delay: skipEnterAnimation ? 0 : 0.45 }}
+          transition={{ ...transition, delay: skipEnterAnimation ? 0 : 0.6 }}
           className="space-y-16 md:space-y-24 mt-10 md:mt-14"
         >
           {project.blocks.map((block, i) => (
@@ -143,7 +160,7 @@ export function ProjectDetail({ slug, skipEnterAnimation = false }: ProjectDetai
           ))}
         </motion.div>
       </article>
-    </motion.div>
+    </div>
   );
 }
 
