@@ -53,7 +53,7 @@ interface Project {
   tags: string[];
   categories: FilterCategory[];
   link?: string;
-}
+  slug?: string;
 
 const projects: Project[] = [
   {
