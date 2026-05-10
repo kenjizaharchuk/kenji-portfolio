@@ -1,4 +1,6 @@
 import { useState, useMemo, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Swiper as SwiperType } from 'swiper';
 import { EffectCoverflow, Mousewheel, FreeMode, Keyboard } from 'swiper/modules';
