@@ -152,6 +152,7 @@ export function ProjectDetail({ slug, skipEnterAnimation = false }: ProjectDetai
           ))}
         </motion.div>
       </article>
+      </div>
     </motion.div>
   );
 }
