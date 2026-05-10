@@ -1,6 +1,6 @@
 import { useState, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, LayoutGroup } from 'framer-motion';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Swiper as SwiperType } from 'swiper';
 import { EffectCoverflow, Mousewheel, FreeMode, Keyboard } from 'swiper/modules';
@@ -301,6 +301,7 @@ export function ProjectsCarousel() {
               </button>
             </div>
           ) : (
+            <LayoutGroup id={swiperKey}>
             <Swiper
               key={swiperKey}
               onSwiper={(swiper) => { swiperRef.current = swiper; }}
@@ -341,7 +342,8 @@ export function ProjectsCarousel() {
                 const showHover = !isActive || !!project.link || hasSlug;
                 const hoverOverlayClass = showHover ? 'group-hover:bg-black/20' : '';
                 const cursorClass = isActive && !project.link && !hasSlug ? 'cursor-default' : 'cursor-pointer';
-                const cardClass = `relative w-[340px] md:w-[600px] h-[260px] md:h-[420px] rounded-3xl overflow-hidden border border-white/15 group ${cursorClass} ${!project.image ? `bg-gradient-to-br ${project.gradient}` : ''}`;
+                const overflowClass = hasSlug ? '' : 'overflow-hidden';
+                const cardClass = `relative w-[340px] md:w-[600px] h-[260px] md:h-[420px] rounded-3xl ${overflowClass} border border-white/15 group ${cursorClass} ${!project.image ? `bg-gradient-to-br ${project.gradient}` : ''}`;
 
                 const transition = { duration: 0.8, ease: [0.22, 1, 0.36, 1] as const };
 
@@ -350,7 +352,7 @@ export function ProjectsCarousel() {
                     layoutId={hasSlug ? `card-${project.slug}` : undefined}
                     transition={transition}
                     className={cardClass}
-                    style={hasSlug ? { borderRadius: '1.5rem' } : undefined}
+                    style={hasSlug ? { borderRadius: '1.5rem', overflow: 'hidden' } : undefined}
                   >
                     {project.image && (
                       <motion.img
@@ -359,7 +361,7 @@ export function ProjectsCarousel() {
                         src={project.image}
                         alt={project.title}
                         className="absolute inset-0 w-full h-full object-cover"
-                        style={{ objectPosition: project.imagePosition || 'center', ...(hasSlug ? { borderRadius: '1.5rem' } : {}) }}
+                        style={{ objectPosition: project.imagePosition || 'center', ...(hasSlug ? { borderRadius: '1.5rem', overflow: 'hidden' } : {}) }}
                       />
                     )}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
@@ -425,6 +427,7 @@ export function ProjectsCarousel() {
                 );
               })}
             </Swiper>
+            </LayoutGroup>
           )}
         </div>
 
