@@ -115,6 +115,7 @@ const projects: Project[] = [
     image: planetMoney,
     tags: ['User Research', 'Brand Development', 'UI/UX', 'A/B Testing', 'Figma'],
     categories: ['Digital Design', 'Work Experience'],
+    slug: 'planet-money-bot',
   },
   {
     id: 21,
