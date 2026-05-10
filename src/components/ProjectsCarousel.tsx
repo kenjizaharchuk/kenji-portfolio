@@ -54,6 +54,7 @@ interface Project {
   categories: FilterCategory[];
   link?: string;
   slug?: string;
+}
 
 const projects: Project[] = [
   {
