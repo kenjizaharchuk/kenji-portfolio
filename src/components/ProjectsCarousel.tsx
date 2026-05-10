@@ -1,9 +1,10 @@
 import { useState, useMemo, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { motion } from 'framer-motion';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Swiper as SwiperType } from 'swiper';
 import { EffectCoverflow, Mousewheel, FreeMode, Keyboard } from 'swiper/modules';
+import { useMorph, rectFromDOMRect } from '@/lib/morphContext';
+import { getProjectBySlug } from '@/data/projects';
 
 // @ts-ignore
 import 'swiper/css';
@@ -233,6 +234,7 @@ export function ProjectsCarousel() {
   const swiperRef = useRef<SwiperType | null>(null);
   const navigate = useNavigate();
   const { slug: activeSlug } = useParams();
+  const morph = useMorph();
 
   // Filter projects based on active filters (OR logic)
   const filteredProjects = useMemo(() => {
@@ -344,15 +346,18 @@ export function ProjectsCarousel() {
                 const cursorClass = isActive && !project.link && !hasSlug ? 'cursor-default' : 'cursor-pointer';
                 const cardClass = `relative w-[340px] md:w-[600px] h-[260px] md:h-[420px] border border-white/15 group ${cursorClass} ${!project.image ? `bg-gradient-to-br ${project.gradient}` : ''}`;
 
-                const transition = { duration: 0.8, ease: [0.22, 1, 0.36, 1] as const };
-                const isMorphing = hasSlug && activeSlug === project.slug;
+                const isHidden =
+                  hasSlug && morph.slug === project.slug && morph.phase !== 'idle';
 
                 const cardInner = (
-                  <motion.div
-                    layoutId={hasSlug ? `card-${project.slug}` : undefined}
-                    transition={transition}
+                  <div
+                    data-card-slug={project.slug}
                     className={cardClass}
-                    style={{ borderRadius: '1.5rem', overflow: 'hidden' }}
+                    style={{
+                      borderRadius: '1.5rem',
+                      overflow: 'hidden',
+                      opacity: isHidden ? 0 : 1,
+                    }}
                   >
                     {project.image && (
                       <img
@@ -363,10 +368,7 @@ export function ProjectsCarousel() {
                       />
                     )}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-                    <div
-                      className="relative z-10 h-full p-6 md:p-8 flex flex-col justify-end transition-opacity duration-300"
-                      style={{ opacity: isMorphing ? 0 : 1 }}
-                    >
+                    <div className="relative z-10 h-full p-6 md:p-8 flex flex-col justify-end">
                       <p className="font-display text-white/70 text-base font-semibold tracking-wide uppercase mb-2">
                         {project.subtitle}
                       </p>
@@ -385,7 +387,7 @@ export function ProjectsCarousel() {
                       </div>
                     </div>
                     <div className={`absolute inset-0 bg-black/0 ${hoverOverlayClass} transition-colors duration-300`} />
-                  </motion.div>
+                  </div>
                 );
 
                 return (
@@ -396,6 +398,20 @@ export function ProjectsCarousel() {
                         onClick={(e) => {
                           if (!isActive) return;
                           e.preventDefault();
+                          // Find the card element to measure its current screen rect.
+                          const cardEl = (e.currentTarget as HTMLElement).querySelector(
+                            `[data-card-slug="${project.slug}"]`
+                          ) as HTMLElement | null;
+                          const detail = getProjectBySlug(project.slug!);
+                          if (cardEl && detail) {
+                            const rect = rectFromDOMRect(cardEl.getBoundingClientRect());
+                            morph.startOpen(
+                              project.slug!,
+                              rect,
+                              detail.heroImage,
+                              detail.heroImagePosition
+                            );
+                          }
                           navigate(`/projects/${project.slug}`);
                         }}
                       >

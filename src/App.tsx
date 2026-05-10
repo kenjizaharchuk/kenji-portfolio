@@ -8,6 +8,8 @@ import NotFound from "./pages/NotFound";
 import PhysicalDesign from "./pages/PhysicalDesign";
 import DigitalDesign from "./pages/DigitalDesign";
 import Art from "./pages/Art";
+import { MorphProvider } from "./lib/morphContext";
+import { MorphGhost } from "./components/MorphGhost";
 
 const queryClient = new QueryClient();
 
@@ -17,7 +19,9 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Routes>
+        <MorphProvider>
+          <MorphGhost />
+          <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/projects/:slug" element={<Index />} />
           <Route path="/physical-design" element={<PhysicalDesign />} />
@@ -26,6 +30,7 @@ const App = () => (
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
+        </MorphProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
