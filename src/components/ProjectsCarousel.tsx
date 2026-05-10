@@ -301,6 +301,7 @@ export function ProjectsCarousel() {
               </button>
             </div>
           ) : (
+            <LayoutGroup id={swiperKey}>
             <Swiper
               key={swiperKey}
               onSwiper={(swiper) => { swiperRef.current = swiper; }}
