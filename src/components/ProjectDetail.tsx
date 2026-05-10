@@ -72,7 +72,7 @@ export function ProjectDetail({ slug, skipEnterAnimation = false }: ProjectDetai
       layoutId={`card-${project.slug}`}
       transition={transition}
       className="fixed inset-0 z-[60] bg-background overflow-y-auto"
-      style={{ borderRadius: 0 }}
+      style={{ borderRadius: '1.5rem' }}
     >
       {/* Close button */}
       <motion.button
@@ -93,7 +93,8 @@ export function ProjectDetail({ slug, skipEnterAnimation = false }: ProjectDetai
           <motion.div
             layoutId={`card-image-${project.slug}`}
             transition={transition}
-            className="relative w-full aspect-[16/10] md:aspect-[16/9] rounded-3xl overflow-hidden border border-white/15"
+            className="relative w-full aspect-[21/9] overflow-hidden border border-white/15"
+            style={{ borderRadius: '1.5rem' }}
           >
             <img
               src={project.heroImage}
@@ -158,7 +159,7 @@ function BlockRenderer({ block }: { block: Block }) {
   switch (block.type) {
     case 'context':
       return (
-        <p className="font-display text-foreground/85 text-lg md:text-xl leading-relaxed max-w-3xl">
+        <p className="font-display text-foreground/85 text-lg md:text-xl leading-relaxed">
           {block.content}
         </p>
       );
@@ -177,7 +178,7 @@ function BlockRenderer({ block }: { block: Block }) {
       );
     case 'pullQuote':
       return (
-        <blockquote className="border-l-4 border-primary pl-6 md:pl-8 max-w-3xl">
+        <blockquote className="border-l-4 border-primary pl-6 md:pl-8">
           <p className="font-display text-white/95 text-2xl md:text-4xl font-semibold leading-snug">
             “{block.content}”
           </p>
@@ -211,7 +212,7 @@ function BlockRenderer({ block }: { block: Block }) {
       );
     case 'outcome':
       return (
-        <p className="font-display text-foreground/90 text-lg md:text-2xl leading-relaxed font-semibold max-w-3xl">
+        <p className="font-display text-foreground/90 text-lg md:text-2xl leading-relaxed font-semibold">
           {block.content}
         </p>
       );
