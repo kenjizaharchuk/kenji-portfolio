@@ -159,7 +159,7 @@ function BlockRenderer({ block }: { block: Block }) {
   switch (block.type) {
     case 'context':
       return (
-        <p className="font-display text-foreground/85 text-lg md:text-xl leading-relaxed max-w-3xl">
+        <p className="font-display text-foreground/85 text-lg md:text-xl leading-relaxed">
           {block.content}
         </p>
       );
@@ -178,7 +178,7 @@ function BlockRenderer({ block }: { block: Block }) {
       );
     case 'pullQuote':
       return (
-        <blockquote className="border-l-4 border-primary pl-6 md:pl-8 max-w-3xl">
+        <blockquote className="border-l-4 border-primary pl-6 md:pl-8">
           <p className="font-display text-white/95 text-2xl md:text-4xl font-semibold leading-snug">
             “{block.content}”
           </p>
@@ -212,7 +212,7 @@ function BlockRenderer({ block }: { block: Block }) {
       );
     case 'outcome':
       return (
-        <p className="font-display text-foreground/90 text-lg md:text-2xl leading-relaxed font-semibold max-w-3xl">
+        <p className="font-display text-foreground/90 text-lg md:text-2xl leading-relaxed font-semibold">
           {block.content}
         </p>
       );
