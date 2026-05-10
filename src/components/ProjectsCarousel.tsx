@@ -427,6 +427,7 @@ export function ProjectsCarousel() {
                 );
               })}
             </Swiper>
+            </LayoutGroup>
           )}
         </div>
 
