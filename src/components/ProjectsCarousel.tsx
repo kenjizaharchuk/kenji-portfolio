@@ -1,5 +1,5 @@
 import { useState, useMemo, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Swiper as SwiperType } from 'swiper';
@@ -232,6 +232,7 @@ export function ProjectsCarousel() {
   const [currentProjectId, setCurrentProjectId] = useState<number>(projects[2].id);
   const swiperRef = useRef<SwiperType | null>(null);
   const navigate = useNavigate();
+  const { slug: activeSlug } = useParams();
 
   // Filter projects based on active filters (OR logic)
   const filteredProjects = useMemo(() => {
@@ -344,56 +345,46 @@ export function ProjectsCarousel() {
                 const cardClass = `relative w-[340px] md:w-[600px] h-[260px] md:h-[420px] border border-white/15 group ${cursorClass} ${!project.image ? `bg-gradient-to-br ${project.gradient}` : ''}`;
 
                 const transition = { duration: 0.8, ease: [0.22, 1, 0.36, 1] as const };
+                const isMorphing = hasSlug && activeSlug === project.slug;
 
                 const cardInner = (
                   <motion.div
                     layoutId={hasSlug ? `card-${project.slug}` : undefined}
                     transition={transition}
                     className={cardClass}
+                    style={{ borderRadius: '1.5rem', overflow: 'hidden' }}
                   >
+                    {project.image && (
+                      <img
+                        src={project.image}
+                        alt={project.title}
+                        className="absolute inset-0 w-full h-full object-cover"
+                        style={{ objectPosition: project.imagePosition || 'center' }}
+                      />
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
                     <div
-                      className="absolute inset-0"
-                      style={{ borderRadius: '1.5rem', overflow: 'hidden' }}
+                      className="relative z-10 h-full p-6 md:p-8 flex flex-col justify-end transition-opacity duration-300"
+                      style={{ opacity: isMorphing ? 0 : 1 }}
                     >
-                      {project.image && (
-                        <motion.img
-                          layoutId={hasSlug ? `card-image-${project.slug}` : undefined}
-                          transition={transition}
-                          src={project.image}
-                          alt={project.title}
-                          className="absolute inset-0 w-full h-full object-cover"
-                          style={{ objectPosition: project.imagePosition || 'center' }}
-                        />
-                      )}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-                      <div className="relative z-10 h-full p-6 md:p-8 flex flex-col justify-end">
-                        <p className="font-display text-white/70 text-base font-semibold tracking-wide uppercase mb-2">
-                          {project.subtitle}
-                        </p>
-                        <motion.h3
-                          layoutId={hasSlug ? `card-title-${project.slug}` : undefined}
-                          transition={transition}
-                          className="font-display text-white text-2xl md:text-3xl font-bold mb-3"
-                        >
-                          {project.title}
-                        </motion.h3>
-                        <motion.div
-                          layoutId={hasSlug ? `card-tags-${project.slug}` : undefined}
-                          transition={transition}
-                          className="flex flex-wrap gap-2"
-                        >
-                          {project.tags.map((tag) => (
-                            <span
-                              key={tag}
-                              className="font-display px-3 py-1 text-sm font-medium rounded-full border border-white/30 text-white/80 bg-white/10 backdrop-blur-sm"
-                            >
-                              {tag}
-                            </span>
-                          ))}
-                        </motion.div>
+                      <p className="font-display text-white/70 text-base font-semibold tracking-wide uppercase mb-2">
+                        {project.subtitle}
+                      </p>
+                      <h3 className="font-display text-white text-2xl md:text-3xl font-bold mb-3">
+                        {project.title}
+                      </h3>
+                      <div className="flex flex-wrap gap-2">
+                        {project.tags.map((tag) => (
+                          <span
+                            key={tag}
+                            className="font-display px-3 py-1 text-sm font-medium rounded-full border border-white/30 text-white/80 bg-white/10 backdrop-blur-sm"
+                          >
+                            {tag}
+                          </span>
+                        ))}
                       </div>
-                      <div className={`absolute inset-0 bg-black/0 ${hoverOverlayClass} transition-colors duration-300`} />
                     </div>
+                    <div className={`absolute inset-0 bg-black/0 ${hoverOverlayClass} transition-colors duration-300`} />
                   </motion.div>
                 );
 
