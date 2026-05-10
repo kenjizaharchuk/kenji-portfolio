@@ -360,7 +360,7 @@ export function ProjectsCarousel() {
                         src={project.image}
                         alt={project.title}
                         className="absolute inset-0 w-full h-full object-cover"
-                        style={{ objectPosition: project.imagePosition || 'center', ...(hasSlug ? { borderRadius: '1.5rem' } : {}) }}
+                        style={{ objectPosition: project.imagePosition || 'center', ...(hasSlug ? { borderRadius: '1.5rem', overflow: 'hidden' } : {}) }}
                       />
                     )}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
