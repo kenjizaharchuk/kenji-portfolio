@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 interface NavItem {
   label: string;
@@ -20,6 +20,7 @@ export function HeroSidebar({ isPreloaderActive = false }: HeroSidebarProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [isCompact, setIsCompact] = useState(false);
+  const navRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     const checkWidth = () => setIsCompact(window.innerWidth < 1100);
@@ -31,19 +32,15 @@ export function HeroSidebar({ isPreloaderActive = false }: HeroSidebarProps) {
   useEffect(() => {
     const aboutSection = document.getElementById('about');
     const contactSection = document.getElementById('contact');
-    const thingsSection = document.getElementById('things');
-    const thingsContent = document.getElementById('things-content');
 
     if (!aboutSection || !contactSection) return;
 
     let inAbout = false;
     let inContact = false;
-    let inProjectsOuter = false;
-    let inProjectsInner = false;
+    let overlapsCarousel = false;
 
     const updateVisibility = () => {
-      const inProjects = inProjectsOuter || inProjectsInner;
-      setIsVisible((inAbout || inContact) && !inProjects);
+      setIsVisible((inAbout || inContact) && !overlapsCarousel);
     };
 
     const aboutObserver = new IntersectionObserver(
@@ -62,43 +59,50 @@ export function HeroSidebar({ isPreloaderActive = false }: HeroSidebarProps) {
       { threshold: 0 }
     );
 
-    // Strict, early-triggering Projects rule: as soon as any slice of
-    // the Projects area enters the viewport, hide the sidebar.
-    const projectsOptions: IntersectionObserverInit = {
-      threshold: 0,
-      rootMargin: '-5% 0px -5% 0px',
-    };
-
-    const projectsOuterObserver = thingsSection
-      ? new IntersectionObserver(
-          ([entry]) => {
-            inProjectsOuter = entry.isIntersecting;
-            updateVisibility();
-          },
-          projectsOptions
-        )
-      : null;
-
-    const projectsInnerObserver = thingsContent
-      ? new IntersectionObserver(
-          ([entry]) => {
-            inProjectsInner = entry.isIntersecting;
-            updateVisibility();
-          },
-          projectsOptions
-        )
-      : null;
-
     aboutObserver.observe(aboutSection);
     contactObserver.observe(contactSection);
-    if (projectsOuterObserver && thingsSection) projectsOuterObserver.observe(thingsSection);
-    if (projectsInnerObserver && thingsContent) projectsInnerObserver.observe(thingsContent);
+
+    // Real bounding-box overlap check between the sidebar nav and the
+    // visible carousel/cards area (`.projects-carousel`).
+    let rafId: number | null = null;
+    const checkOverlap = () => {
+      rafId = null;
+      const nav = navRef.current;
+      const carousel = document.querySelector('.projects-carousel') as HTMLElement | null;
+      if (!nav || !carousel) {
+        if (overlapsCarousel) {
+          overlapsCarousel = false;
+          updateVisibility();
+        }
+        return;
+      }
+      const a = nav.getBoundingClientRect();
+      const b = carousel.getBoundingClientRect();
+      const overlap =
+        a.left < b.right &&
+        a.right > b.left &&
+        a.top < b.bottom &&
+        a.bottom > b.top;
+      if (overlap !== overlapsCarousel) {
+        overlapsCarousel = overlap;
+        updateVisibility();
+      }
+    };
+
+    const schedule = () => {
+      if (rafId === null) rafId = requestAnimationFrame(checkOverlap);
+    };
+
+    schedule();
+    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule);
 
     return () => {
       aboutObserver.disconnect();
       contactObserver.disconnect();
-      projectsOuterObserver?.disconnect();
-      projectsInnerObserver?.disconnect();
+      window.removeEventListener('scroll', schedule);
+      window.removeEventListener('resize', schedule);
+      if (rafId !== null) cancelAnimationFrame(rafId);
     };
   }, []);
 
@@ -132,6 +136,7 @@ export function HeroSidebar({ isPreloaderActive = false }: HeroSidebarProps) {
 
   return (
     <nav
+      ref={navRef}
       className={`
         fixed left-6 md:left-10 lg:left-14 top-1/2 -translate-y-1/2 z-50
         hidden md:flex flex-col gap-3
