@@ -158,54 +158,70 @@ export const projectDetails: ProjectDetail[] = [
   },
   {
     slug: 'spiber',
-    title: 'Spiber Brewed Protein',
+    title: 'Spiber',
     subtitle: 'Creative Intern',
     category: 'Digital Design · Work Experience',
-    tags: ['Wireframing', 'Interface Design', 'Figma'],
+    tags: ['Information Architecture', 'Wireframing', 'Sitemap Design', 'Figma'],
     heroImage: spiberProject,
     blocks: [
       {
         type: 'context',
         content:
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Placeholder context paragraph for the Spiber case study. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+          "Spiber is a Japanese biotech company creating Brewed Protein materials. As an intern at UltraSuperNew, I worked alongside my mentor on a B2B-focused website refresh, helping translate disorganized information into a clear, structured site for business audiences. Goal: restructure the site to make Spiber's technology and applications legible to potential B2B partners.",
       },
       {
         type: 'processNarrative',
-        heading: 'Early Exploration',
+        heading: 'Initial Sitemap',
         content:
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Placeholder narrative for the early phase. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+          "Early sitemap exploration mapped Spiber's content into a navigable structure. We worked through the existing site, identified gaps, and proposed new top-level sections.",
         images: [
-          { alt: 'Spiber early exploration 1', aspect: '4/3' },
-          { alt: 'Spiber early exploration 2', aspect: '4/3' },
+          {
+            src: spiberInitialSitemap,
+            alt: 'Initial sitemap exploration for Spiber',
+            aspect: '16/9',
+            fit: 'contain',
+          },
         ],
       },
       {
         type: 'figmaEmbed',
-        heading: 'Interactive prototype',
-        url: FIGMA_PLACEHOLDER_URL,
+        heading: 'Final Sitemap',
+        content:
+          'Iterated structure with mobile considerations baked in. Reorganized content into clearer hubs for Discover, Sustainability, About Us, and Careers, with subpages mapped for each.',
+        url: 'https://embed.figma.com/design/NKAgY4tM2uA6gjMtBG9VVe/Spiber---For-Client--Copy-?node-id=827-4244&embed-host=share',
+        externalUrl:
+          'https://www.figma.com/design/NKAgY4tM2uA6gjMtBG9VVe/Spiber---For-Client--Copy-?node-id=827-4244&t=eEYNp2ZyP6b2azcp-1',
       },
       {
         type: 'processNarrative',
-        heading: 'Final Direction',
+        heading: 'Example Wireframes',
         content:
-          'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Placeholder narrative for the final phase.',
+          'Wireframed key pages across desktop and mobile, establishing layout patterns for the top page, product detail pages, content hubs, and forms.',
         images: [
-          { alt: 'Spiber final direction 1', aspect: '4/3' },
-          { alt: 'Spiber final direction 2', aspect: '4/3' },
+          {
+            src: spiberWireframe1,
+            alt: 'Spiber wireframes: top page and protein fiber detail',
+            aspect: '16/10',
+            fit: 'contain',
+          },
+          {
+            src: spiberWireframe2,
+            alt: 'Spiber wireframes: Discover hub and content pages',
+            aspect: '16/9',
+            fit: 'contain',
+          },
         ],
       },
       {
         type: 'outcome',
         content:
-          'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium. Placeholder outcome line.',
+          "Final site went live on Spiber's domain at spiber.inc/en.",
       },
       {
-        type: 'featuredArticle',
-        source: 'Publication Placeholder',
-        title: 'Placeholder Article Title',
-        description: 'Placeholder description line for the featured article card.',
-        date: 'Jan 1, 2024',
-        url: '#',
+        type: 'liveLink',
+        label: 'Visit the live site',
+        description: 'spiber.inc/en',
+        url: 'https://spiber.inc/en',
       },
     ],
   },
