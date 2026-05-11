@@ -47,27 +47,31 @@ export function ProjectDetail({ slug, skipEnterAnimation = false }: ProjectDetai
     const cardEl = document.querySelector(
       `[data-card-slug="${slug}"]`
     ) as HTMLElement | null;
-    const textEl = cardEl?.querySelector('[data-card-part="text"]') as HTMLElement | null;
+    const cardSubtitleEl = cardEl?.querySelector('[data-card-part="subtitle"]') as HTMLElement | null;
+    const cardTitleEl = cardEl?.querySelector('[data-card-part="title"]') as HTMLElement | null;
     const tagsEl = cardEl?.querySelector('[data-card-part="tags"]') as HTMLElement | null;
     const heroEl = heroSlotRef.current;
-    const titleEl = titleBlockRef.current;
+    const subtitleEl = subtitleRef.current;
+    const titleEl = titleTextRef.current;
     const detailTagsEl = tagsBlockRef.current;
 
     const canMorph =
-      cardEl && textEl && tagsEl && heroEl && titleEl && detailTagsEl && morph.phase !== 'idle';
+      cardEl && cardSubtitleEl && cardTitleEl && tagsEl && heroEl && subtitleEl && titleEl && detailTagsEl && morph.phase !== 'idle';
 
     if (canMorph) {
       const frameRect = rectFromDOMRect(cardEl.getBoundingClientRect());
       const cardRects: MorphRects = {
         frame: frameRect,
         image: frameRect,
-        title: rectFromDOMRect(textEl.getBoundingClientRect()),
+        subtitle: rectFromDOMRect(cardSubtitleEl.getBoundingClientRect()),
+        titleText: rectFromDOMRect(cardTitleEl.getBoundingClientRect()),
         tags: rectFromDOMRect(tagsEl.getBoundingClientRect()),
       };
       const detailRects: MorphRects = {
         frame: { top: 0, left: 0, width: window.innerWidth, height: window.innerHeight },
         image: rectFromDOMRect(heroEl.getBoundingClientRect()),
-        title: rectFromDOMRect(titleEl.getBoundingClientRect()),
+        subtitle: rectFromDOMRect(subtitleEl.getBoundingClientRect()),
+        titleText: rectFromDOMRect(titleEl.getBoundingClientRect()),
         tags: rectFromDOMRect(detailTagsEl.getBoundingClientRect()),
       };
 
