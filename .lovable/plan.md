@@ -1,68 +1,80 @@
 ## Diagnosis
 
-### Issue 1: Browser back leaves carousel card hidden
+`overscroll-behavior-x: contain` only takes effect on **native scroll containers** — i.e. an element with `overflow-x: auto/scroll` whose content is wider than its box. Swiper is not a native scroll container: it uses CSS transforms on a flex track and consumes wheel/touch events via JS handlers. The Swiper wrapper never actually scrolls in the browser's eyes, so the overscroll mechanism never engages. Putting `overscroll-behavior-x: contain` on it is a no-op.
 
-**Why it happens.** The carousel hides the source card while a morph is active:
+The browser's trackpad-swipe back/forward gesture (macOS Safari/Chrome) is triggered when:
+- A horizontal-dominant wheel/swipe event reaches an element that **isn't a horizontally-scrollable native container**, OR
+- The horizontal scroll on such a container reaches its edge without `contain`/`none` set.
 
-```ts
-const isHidden = hasSlug && morph.slug === project.slug && morph.phase !== 'idle';
-```
+In our case the page itself has no horizontal scroll, and Swiper doesn't qualify as a scroll container, so every horizontal trackpad gesture is eligible for navigation — explaining why it triggers so easily, not only at edges.
 
-The morph state is only cleared by `MorphLayer.onFrameComplete` at the end of the closing animation. The close button flow drives that:
-
-1. `close()` sets `isClosing` → calls `morph.startClose(...)` (phase becomes `'closing'`)
-2. `close()` calls `navigate(-1)` → `ProjectDetail` unmounts
-3. `MorphLayer` (mounted in `App`) keeps animating, then calls `reset()` on completion → card reappears
-
-When the user presses browser back instead, React Router immediately changes the route, `ProjectDetail` unmounts before `startClose` is ever called, so `morph.phase` stays `'open'` forever and the source card stays hidden.
-
-**Why the previous fix broke the close button.** Any `popstate` interceptor that calls `close()` re-enters: `close()` itself calls `navigate(-1)`, which fires `popstate` again. Without a guard, the second `popstate` either cancels the navigation (close button appears to do nothing) or skips the animation.
-
-### Issue 2: Trackpad horizontal swipe triggers browser back/forward
-
-The Swiper container doesn't set `overscroll-behavior-x`, so horizontal wheel/swipe deltas that hit the page edge are interpreted by the browser as a navigation gesture.
+`touch-action: pan-y` is also irrelevant here: it governs touch (finger) gestures, not trackpad wheel events.
 
 ---
 
 ## Proposed approach
 
-### Fix 1 — intercept `popstate` in `ProjectDetail`
+Two layered fixes — together they make browser-swipe-nav impossible while interacting with the page, without breaking Swiper or mouse-clicked back/forward.
 
-On mount, push a sentinel history entry (`history.pushState({ morphSentinel: true }, '', location.href)`) and attach a `popstate` listener. When it fires:
+### Fix A — Disable swipe-nav globally via CSS
 
-- If `isClosingRef.current` is `true`, the popstate was triggered by `close()`'s own `navigate(-1)`. Do nothing — let the browser go back normally.
-- Otherwise the user pressed browser back. Re-push the URL (`history.pushState(null, '', /projects/${slug})`) to cancel the navigation in place, then call `close()`. `close()` sets `isClosingRef`, plays the morph, then `navigate(-1)`; the listener sees the flag and lets that one through.
+Add to `src/index.css`:
 
-Cleanup on unmount: remove the listener. Also pop the sentinel entry if we're unmounting via the close-button flow (clean history).
-
-**Safety net.** Add a `useEffect` cleanup in `ProjectDetail` that, on unmount, checks `morph.phase !== 'idle' && !isClosingRef.current` and calls `morph.reset()`. This guarantees the card is never left hidden even if any edge case slips past the popstate interceptor (e.g. browser-specific quirks, programmatic navigation).
-
-**Why this won't re-break the close button.**
-- The sentinel pushState happens once on mount; close button never touches it.
-- `close()` is unchanged.
-- The popstate listener short-circuits when `isClosingRef.current` is set, so `close()`'s `navigate(-1)` proceeds untouched and the animation runs.
-
-### Fix 2 — contain horizontal overscroll on the carousel section
-
-In `ProjectsCarousel.tsx`, add Tailwind arbitrary classes to the Swiper wrapper / section:
-
-```tsx
-className="projects-carousel w-full max-w-7xl [overscroll-behavior-x:contain] [touch-action:pan-y]"
+```css
+html, body {
+  overscroll-behavior-x: none;
+}
 ```
 
-`overscroll-behavior-x: contain` prevents horizontal scroll chaining to the browser (kills the gesture-back behavior on macOS trackpads, Chrome/Safari/Firefox). `touch-action: pan-y` does the same for touch devices. Mouse-clicked back/forward buttons are unaffected — those don't go through the gesture path.
+Setting it on the root scrolling element (`html`/`body`) tells the browser: never treat horizontal overscroll on this document as a navigation gesture. This is the documented, supported way to opt out of swipe-back across Chrome, Edge, Firefox, and Safari (Safari 16+). It does **not** affect:
+- The browser's back/forward toolbar buttons (those are explicit navigations, not gestures).
+- Keyboard shortcuts.
+- Swiper's own horizontal interaction (Swiper handles wheel/touch in JS; this property only governs the browser's overscroll/gesture behavior).
+
+This single change typically fixes the issue completely. The earlier attempt failed only because it was scoped to a non-scrolling element.
+
+### Fix B — Belt-and-suspenders: preventDefault on horizontal wheel inside the carousel section
+
+In case any browser/version still slips through (older Safari, or future regressions), attach a non-passive `wheel` listener to the `#things` section that calls `preventDefault()` when the gesture is horizontal-dominant:
+
+```ts
+useEffect(() => {
+  const el = sectionRef.current;
+  if (!el) return;
+  const onWheel = (e: WheelEvent) => {
+    if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) e.preventDefault();
+  };
+  el.addEventListener('wheel', onWheel, { passive: false });
+  return () => el.removeEventListener('wheel', onWheel);
+}, []);
+```
+
+Calling `preventDefault()` on the wheel event blocks the browser's gesture interpretation. Swiper's mousewheel module reads `deltaX` from the same event (event listeners are independent — preventDefault doesn't stop other listeners from receiving the event), so carousel scrolling continues to work normally.
+
+Scoping this to the `#things` section (not the whole document) means vertical-dominant scrolls outside the carousel are untouched, and only horizontal-dominant wheel deltas over the carousel section are swallowed.
+
+### Why this won't break things
+
+- Fix A is a single declarative CSS property; it only changes overscroll/gesture behavior, not scrolling itself.
+- Fix B preventDefaults only horizontal-dominant wheel events, and only within the carousel section. Swiper's own handler still receives the event and reads `deltaX`. Vertical page scrolling (`deltaY`-dominant) is untouched, so users can still scroll the page with a trackpad while the cursor is over the carousel.
+- Mouse-clicked back/forward buttons go through a different code path (explicit navigation, not gesture) and are unaffected by both fixes.
+
+### Cleanup
+
+Remove the now-useless `[overscroll-behavior-x:contain] [touch-action:pan-y]` from the Swiper's className in `ProjectsCarousel.tsx` (it's a no-op on a non-scroll container).
 
 ---
 
 ## Files to change
 
-- `src/components/ProjectDetail.tsx` — add popstate interceptor with `isClosingRef`, sentinel pushState on mount, unmount safety-net `morph.reset()`.
-- `src/components/ProjectsCarousel.tsx` — add `[overscroll-behavior-x:contain] [touch-action:pan-y]` to the Swiper.
+- `src/index.css` — add `overscroll-behavior-x: none` to `html, body`.
+- `src/components/ProjectsCarousel.tsx` — add `sectionRef` + non-passive wheel listener on the `#things` section; remove the inert arbitrary classes from the Swiper.
 
 ## Verification checklist
 
-1. Click close button → morph animation plays → carousel returns with card visible. (must still work)
-2. Press browser back → same morph animation plays → carousel returns with card visible.
-3. Trackpad swipe-left/right in carousel → carousel scrolls, browser does NOT navigate back.
-4. Clicking the actual back-arrow button in the browser chrome bar → still works (gesture-only is blocked, but explicit popstate is still handled by the same interceptor and runs the close animation).
-5. Direct URL visit to `/projects/:slug` then back → no morph in flight, listener still cleans up, lands on homepage.
+1. Trackpad swipe left/right while hovering the carousel → carousel scrolls, browser does NOT navigate.
+2. Trackpad swipe left/right while hovering above/below the carousel → browser does NOT navigate (Fix A covers this too).
+3. Trackpad scroll vertically anywhere → page scrolls normally.
+4. Mouse-click the browser back button → still navigates back.
+5. Keyboard Alt+Left / Cmd+Left → still navigates back.
+6. Open a project → close via button → returns to homepage, card visible (regression check on prior fix).
