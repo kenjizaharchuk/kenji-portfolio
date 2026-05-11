@@ -251,9 +251,9 @@ export function MorphLayer() {
           width: cardRects.tags.width,
           transformOrigin: 'top left',
         }}
-        initial={{ ...tagsPair.cardInitial, opacity: tagsPair.cardInitialOpacity }}
-        animate={{ ...tagsPair.cardAnimate, opacity: tagsPair.cardAnimateOpacity }}
-        transition={TRANSITION}
+        initial={{ ...tagsPair.cardInitial, opacity: cardInitialOpacity }}
+        animate={{ ...tagsPair.cardAnimate, opacity: cardOpacityKeyframes }}
+        transition={transitionWithSwap}
       >
         <div className="flex flex-wrap gap-2">
           {tags?.map((tag) => (
