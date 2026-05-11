@@ -511,8 +511,9 @@ function BlockRenderer({ block }: { block: Block }) {
   }
 }
 
-// Prevents the outer scroll container from jumping when users click into the
-// Figma iframe (browser focus-scroll behavior on iframes).
+// Prevents the outer scroll container from jumping when users interact with
+// the Figma iframe (the browser scrolls the focused iframe — or its focused
+// internal element — into view, scrolling our [data-detail-scroll] container).
 function useFigmaScrollGuard() {
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
@@ -520,20 +521,41 @@ function useFigmaScrollGuard() {
     if (!wrapper) return;
     const scrollEl = wrapper.closest('[data-detail-scroll]') as HTMLElement | null;
     if (!scrollEl) return;
+
     let saved = scrollEl.scrollTop;
-    const onMouseDown = () => {
+    let guardedUntil = 0;
+    const GUARD_MS = 1000;
+
+    const arm = () => {
       saved = scrollEl.scrollTop;
+      guardedUntil = performance.now() + GUARD_MS;
     };
-    const restore = () => {
-      requestAnimationFrame(() => {
-        if (scrollEl.scrollTop !== saved) scrollEl.scrollTop = saved;
-      });
+
+    const onScroll = () => {
+      if (performance.now() < guardedUntil && scrollEl.scrollTop !== saved) {
+        scrollEl.scrollTop = saved;
+      }
     };
-    wrapper.addEventListener('mousedown', onMouseDown, true);
-    window.addEventListener('blur', restore);
+
+    const onFocusIn = (e: FocusEvent) => {
+      // Focus moved to the iframe (or something inside the wrapper) — arm guard.
+      if (e.target === wrapper || wrapper.contains(e.target as Node) || e.target === document.body) {
+        arm();
+      }
+    };
+
+    wrapper.addEventListener('mousedown', arm, true);
+    wrapper.addEventListener('pointerdown', arm, true);
+    scrollEl.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('focusin', onFocusIn, true);
+    window.addEventListener('blur', arm);
+
     return () => {
-      wrapper.removeEventListener('mousedown', onMouseDown, true);
-      window.removeEventListener('blur', restore);
+      wrapper.removeEventListener('mousedown', arm, true);
+      wrapper.removeEventListener('pointerdown', arm, true);
+      scrollEl.removeEventListener('scroll', onScroll);
+      window.removeEventListener('focusin', onFocusIn, true);
+      window.removeEventListener('blur', arm);
     };
   }, []);
   return wrapperRef;
