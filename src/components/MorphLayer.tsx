@@ -77,29 +77,14 @@ export function MorphLayer() {
     return {
       cardInitial: openingOrOpen ? cardAtCard : cardAtDetail,
       cardAnimate: openingOrOpen ? cardAtDetail : cardAtCard,
+      cardInitialOpacity: openingOrOpen ? 1 : 0,
+      cardAnimateOpacity: openingOrOpen ? 0 : 1,
       detailInitial: openingOrOpen ? detailAtCard : detailAtDetail,
       detailAnimate: openingOrOpen ? detailAtDetail : detailAtCard,
+      detailInitialOpacity: openingOrOpen ? 0 : 1,
+      detailAnimateOpacity: openingOrOpen ? 1 : 0,
     };
   }
-
-  // Compress the style crossfade into a short window so each variant appears
-  // to physically travel along the full path; the swap happens when both
-  // variants are at near-identical screen size.
-  const swapStart = openingOrOpen ? 0.65 : 0.2;
-  const swapEnd = openingOrOpen ? 0.8 : 0.35;
-  const cardOpacityKeyframes = openingOrOpen ? [1, 1, 0] : [0, 0, 1];
-  const detailOpacityKeyframes = openingOrOpen ? [0, 0, 1] : [1, 1, 0];
-  const opacityTransition = {
-    duration: DURATION,
-    ease: 'linear' as const,
-    times: [0, swapStart, swapEnd],
-  };
-  const transitionWithSwap = {
-    ...TRANSITION,
-    opacity: opacityTransition,
-  };
-  const cardInitialOpacity = cardOpacityKeyframes[0];
-  const detailInitialOpacity = detailOpacityKeyframes[0];
 
   const sub = flipPair(cardRects.subtitle, detailRects.subtitle);
   const titlePair = flipPair(cardRects.titleText, detailRects.titleText);
@@ -181,9 +166,9 @@ export function MorphLayer() {
           transformOrigin: 'top left',
           margin: 0,
         }}
-        initial={{ ...sub.cardInitial, opacity: cardInitialOpacity }}
-        animate={{ ...sub.cardAnimate, opacity: cardOpacityKeyframes }}
-        transition={transitionWithSwap}
+        initial={{ ...sub.cardInitial, opacity: sub.cardInitialOpacity }}
+        animate={{ ...sub.cardAnimate, opacity: sub.cardAnimateOpacity }}
+        transition={TRANSITION}
       >
         {cardSubtitle}
       </motion.p>
@@ -199,9 +184,9 @@ export function MorphLayer() {
           transformOrigin: 'top left',
           margin: 0,
         }}
-        initial={{ ...sub.detailInitial, opacity: detailInitialOpacity }}
-        animate={{ ...sub.detailAnimate, opacity: detailOpacityKeyframes }}
-        transition={transitionWithSwap}
+        initial={{ ...sub.detailInitial, opacity: sub.detailInitialOpacity }}
+        animate={{ ...sub.detailAnimate, opacity: sub.detailAnimateOpacity }}
+        transition={TRANSITION}
       >
         {detailSubtitle}
       </motion.p>
@@ -217,9 +202,9 @@ export function MorphLayer() {
           transformOrigin: 'top left',
           margin: 0,
         }}
-        initial={{ ...titlePair.cardInitial, opacity: cardInitialOpacity }}
-        animate={{ ...titlePair.cardAnimate, opacity: cardOpacityKeyframes }}
-        transition={transitionWithSwap}
+        initial={{ ...titlePair.cardInitial, opacity: titlePair.cardInitialOpacity }}
+        animate={{ ...titlePair.cardAnimate, opacity: titlePair.cardAnimateOpacity }}
+        transition={TRANSITION}
       >
         {title}
       </motion.h1>
@@ -235,9 +220,9 @@ export function MorphLayer() {
           transformOrigin: 'top left',
           margin: 0,
         }}
-        initial={{ ...titlePair.detailInitial, opacity: detailInitialOpacity }}
-        animate={{ ...titlePair.detailAnimate, opacity: detailOpacityKeyframes }}
-        transition={transitionWithSwap}
+        initial={{ ...titlePair.detailInitial, opacity: titlePair.detailInitialOpacity }}
+        animate={{ ...titlePair.detailAnimate, opacity: titlePair.detailAnimateOpacity }}
+        transition={TRANSITION}
       >
         {title}
       </motion.h1>
@@ -251,9 +236,9 @@ export function MorphLayer() {
           width: cardRects.tags.width,
           transformOrigin: 'top left',
         }}
-        initial={{ ...tagsPair.cardInitial, opacity: cardInitialOpacity }}
-        animate={{ ...tagsPair.cardAnimate, opacity: cardOpacityKeyframes }}
-        transition={transitionWithSwap}
+        initial={{ ...tagsPair.cardInitial, opacity: tagsPair.cardInitialOpacity }}
+        animate={{ ...tagsPair.cardAnimate, opacity: tagsPair.cardAnimateOpacity }}
+        transition={TRANSITION}
       >
         <div className="flex flex-wrap gap-2">
           {tags?.map((tag) => (
@@ -271,9 +256,9 @@ export function MorphLayer() {
           width: detailRects.tags.width,
           transformOrigin: 'top left',
         }}
-        initial={{ ...tagsPair.detailInitial, opacity: detailInitialOpacity }}
-        animate={{ ...tagsPair.detailAnimate, opacity: detailOpacityKeyframes }}
-        transition={transitionWithSwap}
+        initial={{ ...tagsPair.detailInitial, opacity: tagsPair.detailInitialOpacity }}
+        animate={{ ...tagsPair.detailAnimate, opacity: tagsPair.detailAnimateOpacity }}
+        transition={TRANSITION}
       >
         <div className="flex flex-wrap gap-2">
           {tags?.map((tag) => (
