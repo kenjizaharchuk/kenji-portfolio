@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef } from 'react';
+import { useState, useMemo, useRef, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Swiper as SwiperType } from 'swiper';
@@ -232,9 +232,21 @@ export function ProjectsCarousel() {
   const [activeFilters, setActiveFilters] = useState<FilterCategory[]>([]);
   const [currentProjectId, setCurrentProjectId] = useState<number>(projects[2].id);
   const swiperRef = useRef<SwiperType | null>(null);
+  const sectionRef = useRef<HTMLElement | null>(null);
   const navigate = useNavigate();
   const { slug: activeSlug } = useParams();
   const morph = useMorph();
+
+  // Block browser swipe-back/forward when horizontal-dominant wheel events occur over the carousel section.
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+    const onWheel = (e: WheelEvent) => {
+      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) e.preventDefault();
+    };
+    el.addEventListener('wheel', onWheel, { passive: false });
+    return () => el.removeEventListener('wheel', onWheel);
+  }, []);
 
   // Filter projects based on active filters (OR logic)
   const filteredProjects = useMemo(() => {
@@ -282,7 +294,7 @@ export function ProjectsCarousel() {
   };
 
   return (
-    <section id="things" className="relative min-h-screen pt-48 pb-16 md:pb-20 flex-col flex items-center justify-center py-[96px]">
+    <section ref={sectionRef} id="things" className="relative min-h-screen pt-48 pb-16 md:pb-20 flex-col flex items-center justify-center py-[96px]">
       <div id="things-content" className="w-full flex flex-col items-center">
         {/* Section Header */}
         <div className="text-center mb-9 mt-8">
@@ -336,7 +348,7 @@ export function ProjectsCarousel() {
               }}
               keyboard={{ enabled: true }}
               modules={[EffectCoverflow, Mousewheel, FreeMode, Keyboard]}
-              className="projects-carousel w-full max-w-7xl [overscroll-behavior-x:contain] [touch-action:pan-y]"
+              className="projects-carousel w-full max-w-7xl"
             >
               {filteredProjects.map((project) => {
                 const isActive = project.id === currentProjectId;
