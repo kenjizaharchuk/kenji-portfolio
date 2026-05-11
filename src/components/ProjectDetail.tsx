@@ -365,9 +365,21 @@ function BlockRenderer({ block }: { block: Block }) {
       );
     case 'outcome':
       return (
-        <p className="font-display text-foreground/90 text-lg md:text-2xl leading-relaxed font-semibold">
-          {block.content}
-        </p>
+        <div className="space-y-4">
+          <p className="font-display text-foreground/90 text-lg md:text-2xl leading-relaxed font-semibold">
+            {block.content}
+          </p>
+          {block.ctaUrl && (
+            <a
+              href={block.ctaUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block font-display text-base md:text-lg text-white/80 hover:text-white transition-colors underline underline-offset-4 decoration-white/30 hover:decoration-white/80"
+            >
+              {block.ctaLabel || 'Visit site'}
+            </a>
+          )}
+        </div>
       );
     case 'processNarrative': {
       const gridCols = block.images.length > 1 ? 'md:grid-cols-2' : 'md:grid-cols-1';
