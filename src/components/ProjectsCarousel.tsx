@@ -370,10 +370,10 @@ export function ProjectsCarousel() {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
                     <div className="relative z-10 h-full p-6 md:p-8 flex flex-col justify-end">
                       <div data-card-part="text">
-                        <p className="font-display text-white/70 text-base font-semibold tracking-wide uppercase mb-2">
+                        <p data-card-part="subtitle" className="font-display text-white/70 text-base font-semibold tracking-wide uppercase mb-2">
                           {project.subtitle}
                         </p>
-                        <h3 className="font-display text-white text-2xl md:text-3xl font-bold">
+                        <h3 data-card-part="title" className="font-display text-white text-2xl md:text-3xl font-bold">
                           {project.title}
                         </h3>
                       </div>
@@ -404,19 +404,23 @@ export function ProjectsCarousel() {
                           const cardEl = root.querySelector(
                             `[data-card-slug="${project.slug}"]`
                           ) as HTMLElement | null;
-                          const textEl = cardEl?.querySelector(
-                            '[data-card-part="text"]'
+                          const subtitleEl = cardEl?.querySelector(
+                            '[data-card-part="subtitle"]'
+                          ) as HTMLElement | null;
+                          const titleEl = cardEl?.querySelector(
+                            '[data-card-part="title"]'
                           ) as HTMLElement | null;
                           const tagsEl = cardEl?.querySelector(
                             '[data-card-part="tags"]'
                           ) as HTMLElement | null;
                           const detail = getProjectBySlug(project.slug!);
-                          if (cardEl && textEl && tagsEl && detail) {
+                          if (cardEl && subtitleEl && titleEl && tagsEl && detail) {
                             const frameRect = rectFromDOMRect(cardEl.getBoundingClientRect());
                             const cardRects: MorphRects = {
                               frame: frameRect,
                               image: frameRect,
-                              title: rectFromDOMRect(textEl.getBoundingClientRect()),
+                              subtitle: rectFromDOMRect(subtitleEl.getBoundingClientRect()),
+                              titleText: rectFromDOMRect(titleEl.getBoundingClientRect()),
                               tags: rectFromDOMRect(tagsEl.getBoundingClientRect()),
                             };
                             morph.startOpen(

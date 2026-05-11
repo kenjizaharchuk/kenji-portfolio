@@ -1,13 +1,12 @@
 import { createPortal } from 'react-dom';
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { useMorph, type Rect, type MorphRects, type MorphPhase } from '@/lib/morphContext';
+import { useMorph, type Rect } from '@/lib/morphContext';
 
 const DURATION = 1.0;
 const EASE = [0.65, 0, 0.35, 1] as const;
 const TRANSITION = { duration: DURATION, ease: EASE };
 
-/** Non-uniform inverse (used for frame and image). */
 function inverseXY(other: Rect, base: Rect) {
   return {
     x: other.left - base.left,
@@ -17,7 +16,6 @@ function inverseXY(other: Rect, base: Rect) {
   };
 }
 
-/** Uniform inverse (used for text/tags — single scale, no distortion). */
 function inverseUniform(other: Rect, base: Rect) {
   return {
     x: other.left - base.left,
@@ -30,9 +28,6 @@ export function MorphLayer() {
   const morph = useMorph();
   const { phase, cardRects, detailRects, image, imagePosition, title, cardSubtitle, detailSubtitle, tags, setOpen, reset } = morph;
 
-  // Linger one paint after phase flips to 'open' so the real underlying
-  // elements (which snap to opacity 1 in the same frame) are guaranteed to
-  // paint before the ghost unmounts. Kills the single-frame black flash.
   const [linger, setLinger] = useState(false);
   useEffect(() => {
     if (phase === 'open') {
@@ -49,62 +44,63 @@ export function MorphLayer() {
   if (phase === 'open' && !linger) return null;
   if (!cardRects || !detailRects) return null;
 
-  // `openingOrOpen` is computed below — `opening`-only branch no longer needed.
-
-  // Each element is rendered at its DETAIL rect (large/final layout).
-  // We animate transforms between (card-relative inverse) and identity.
-  // Opening: initial = inverse(card vs detail), animate = identity
-  // Closing: initial = identity,                animate = inverse(card vs detail)
-
-  const frameStart = inverseXY(cardRects.frame, detailRects.frame);
-  const frameEnd = { x: 0, y: 0, scaleX: 1, scaleY: 1 };
-  // image uses rect interpolation (top/left/width/height); see below
-  const titleStart = inverseUniform(cardRects.title, detailRects.title);
-  const titleEnd = { x: 0, y: 0, scale: 1 };
-  const tagsStart = inverseUniform(cardRects.tags, detailRects.tags);
-  const tagsEnd = { x: 0, y: 0, scale: 1 };
-
-  // Treat the linger frame (phase==='open') as "still opening, at end state" so
-  // nothing re-animates while we wait one paint before unmounting.
+  // Treat the linger frame (phase==='open') as "at end state."
   const openingOrOpen = phase === 'opening' || phase === 'open';
 
+  // Frame & image
+  const frameStart = inverseXY(cardRects.frame, detailRects.frame);
+  const frameEnd = { x: 0, y: 0, scaleX: 1, scaleY: 1 };
   const initialFrame = openingOrOpen ? frameStart : frameEnd;
   const animateFrame = openingOrOpen ? frameEnd : frameStart;
-  // Image animates top/left/width/height directly — no transform-scale, so
-  // `object-cover` re-fits at every interpolated frame (no squish).
+
   const imageRectStart = cardRects.image;
   const imageRectEnd = detailRects.image;
   const initialImageRect = openingOrOpen ? imageRectStart : imageRectEnd;
   const animateImageRect = openingOrOpen ? imageRectEnd : imageRectStart;
-  const initialTitle = openingOrOpen ? titleStart : titleEnd;
-  const animateTitle = openingOrOpen ? titleEnd : titleStart;
-  const initialTags = openingOrOpen ? tagsStart : tagsEnd;
-  const animateTags = openingOrOpen ? tagsEnd : tagsStart;
 
-  // Border radius on the Frame: card-end has 1.5rem, viewport-end has 0.
   const radiusCard = '1.5rem';
   const radiusViewport = '0rem';
   const initialRadius = openingOrOpen ? radiusCard : radiusViewport;
   const animateRadius = openingOrOpen ? radiusViewport : radiusCard;
 
-  // Gradient overlay on the Image: present at card-end (for text contrast), absent at hero-end.
   const initialOverlay = openingOrOpen ? 1 : 0;
   const animateOverlay = openingOrOpen ? 0 : 1;
 
-  // Subtitle crossfade: card-variant visible at card-end; detail-variant visible at hero-end.
-  const initialCardSub = openingOrOpen ? 1 : 0;
-  const animateCardSub = openingOrOpen ? 0 : 1;
-  const initialDetailSub = openingOrOpen ? 0 : 1;
-  const animateDetailSub = openingOrOpen ? 1 : 0;
+  // Helper to build FLIP transform+opacity for a dual-rendered variant.
+  // variant='card': lives at cardRect, identity at card-end, transform-to-detail at detail-end.
+  // variant='detail': lives at detailRect, identity at detail-end, transform-to-card at card-end.
+  function flipPair(cardRect: Rect, detailRect: Rect) {
+    const cardAtCard = { x: 0, y: 0, scale: 1 };
+    const cardAtDetail = inverseUniform(detailRect, cardRect);
+    const detailAtDetail = { x: 0, y: 0, scale: 1 };
+    const detailAtCard = inverseUniform(cardRect, detailRect);
+    return {
+      cardInitial: openingOrOpen ? cardAtCard : cardAtDetail,
+      cardAnimate: openingOrOpen ? cardAtDetail : cardAtCard,
+      cardInitialOpacity: openingOrOpen ? 1 : 0,
+      cardAnimateOpacity: openingOrOpen ? 0 : 1,
+      detailInitial: openingOrOpen ? detailAtCard : detailAtDetail,
+      detailAnimate: openingOrOpen ? detailAtDetail : detailAtCard,
+      detailInitialOpacity: openingOrOpen ? 0 : 1,
+      detailAnimateOpacity: openingOrOpen ? 1 : 0,
+    };
+  }
+
+  const sub = flipPair(cardRects.subtitle, detailRects.subtitle);
+  const titlePair = flipPair(cardRects.titleText, detailRects.titleText);
+  const tagsPair = flipPair(cardRects.tags, detailRects.tags);
 
   const onFrameComplete = () => {
     if (phase === 'opening') setOpen();
     else if (phase === 'closing') reset();
   };
 
+  const tagChipClass =
+    'font-display px-3 py-1 text-sm font-medium rounded-full border border-white/30 text-white/80 bg-white/10 backdrop-blur-sm whitespace-nowrap';
+
   return createPortal(
     <div className="fixed inset-0 pointer-events-none" style={{ zIndex: 65, opacity: phase === 'open' ? 0 : 1 }}>
-      {/* Frame — dark backdrop that grows from card → viewport */}
+      {/* Frame */}
       <motion.div
         className="bg-background border border-white/15"
         style={{
@@ -121,8 +117,7 @@ export function MorphLayer() {
         onAnimationComplete={onFrameComplete}
       />
 
-      {/* Image — animates top/left/width/height (no transform-scale), so
-          object-cover re-fits at every interpolated size with zero distortion. */}
+      {/* Image */}
       <motion.div
         style={{
           position: 'absolute',
@@ -152,7 +147,6 @@ export function MorphLayer() {
             style={{ objectPosition: imagePosition || 'center' }}
           />
         )}
-        {/* Gradient overlay — fades out as we morph toward the hero */}
         <motion.div
           className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent pointer-events-none"
           initial={{ opacity: initialOverlay }}
@@ -161,49 +155,99 @@ export function MorphLayer() {
         />
       </motion.div>
 
-      {/* Title block — rendered at detail layout, uniform-scaled to card at the card-end.
-          Subtitle crossfades (different strings); title is one continuous <h1> (same string). */}
+      {/* Subtitle — card variant */}
+      <motion.p
+        className="font-display text-white/70 text-base font-semibold tracking-wide uppercase"
+        style={{
+          position: 'absolute',
+          top: cardRects.subtitle.top,
+          left: cardRects.subtitle.left,
+          width: cardRects.subtitle.width,
+          transformOrigin: 'top left',
+          margin: 0,
+        }}
+        initial={{ ...sub.cardInitial, opacity: sub.cardInitialOpacity }}
+        animate={{ ...sub.cardAnimate, opacity: sub.cardAnimateOpacity }}
+        transition={TRANSITION}
+      >
+        {cardSubtitle}
+      </motion.p>
+
+      {/* Subtitle — detail variant */}
+      <motion.p
+        className="font-display text-white/60 text-sm md:text-base font-semibold tracking-wide uppercase"
+        style={{
+          position: 'absolute',
+          top: detailRects.subtitle.top,
+          left: detailRects.subtitle.left,
+          width: detailRects.subtitle.width,
+          transformOrigin: 'top left',
+          margin: 0,
+        }}
+        initial={{ ...sub.detailInitial, opacity: sub.detailInitialOpacity }}
+        animate={{ ...sub.detailAnimate, opacity: sub.detailAnimateOpacity }}
+        transition={TRANSITION}
+      >
+        {detailSubtitle}
+      </motion.p>
+
+      {/* Title — card variant */}
+      <motion.h1
+        className="font-display text-white text-2xl md:text-3xl font-bold"
+        style={{
+          position: 'absolute',
+          top: cardRects.titleText.top,
+          left: cardRects.titleText.left,
+          width: cardRects.titleText.width,
+          transformOrigin: 'top left',
+          margin: 0,
+        }}
+        initial={{ ...titlePair.cardInitial, opacity: titlePair.cardInitialOpacity }}
+        animate={{ ...titlePair.cardAnimate, opacity: titlePair.cardAnimateOpacity }}
+        transition={TRANSITION}
+      >
+        {title}
+      </motion.h1>
+
+      {/* Title — detail variant */}
+      <motion.h1
+        className="font-display text-white text-4xl md:text-6xl font-bold leading-[1.05]"
+        style={{
+          position: 'absolute',
+          top: detailRects.titleText.top,
+          left: detailRects.titleText.left,
+          width: detailRects.titleText.width,
+          transformOrigin: 'top left',
+          margin: 0,
+        }}
+        initial={{ ...titlePair.detailInitial, opacity: titlePair.detailInitialOpacity }}
+        animate={{ ...titlePair.detailAnimate, opacity: titlePair.detailAnimateOpacity }}
+        transition={TRANSITION}
+      >
+        {title}
+      </motion.h1>
+
+      {/* Tags — card variant (wraps at card width) */}
       <motion.div
         style={{
           position: 'absolute',
-          top: detailRects.title.top,
-          left: detailRects.title.left,
-          width: detailRects.title.width,
+          top: cardRects.tags.top,
+          left: cardRects.tags.left,
+          width: cardRects.tags.width,
           transformOrigin: 'top left',
         }}
-        initial={initialTitle}
-        animate={animateTitle}
+        initial={{ ...tagsPair.cardInitial, opacity: tagsPair.cardInitialOpacity }}
+        animate={{ ...tagsPair.cardAnimate, opacity: tagsPair.cardAnimateOpacity }}
         transition={TRANSITION}
       >
-        {/* Subtitle slot — two stacked variants, opacity-crossfade */}
-        <div className="relative mb-3">
-          {/* invisible sizer keeps line height correct */}
-          <p className="font-display text-sm md:text-base font-semibold tracking-wide uppercase invisible">
-            {detailSubtitle}
-          </p>
-          <motion.p
-            className="font-display text-white/60 text-sm md:text-base font-semibold tracking-wide uppercase absolute inset-0"
-            initial={{ opacity: initialCardSub }}
-            animate={{ opacity: animateCardSub }}
-            transition={TRANSITION}
-          >
-            {cardSubtitle}
-          </motion.p>
-          <motion.p
-            className="font-display text-white/60 text-sm md:text-base font-semibold tracking-wide uppercase absolute inset-0"
-            initial={{ opacity: initialDetailSub }}
-            animate={{ opacity: animateDetailSub }}
-            transition={TRANSITION}
-          >
-            {detailSubtitle}
-          </motion.p>
+        <div className="flex flex-wrap gap-2">
+          {tags?.map((tag) => (
+            <span key={tag} className={tagChipClass}>{tag}</span>
+          ))}
         </div>
-        <h1 className="font-display text-white text-4xl md:text-6xl font-bold leading-[1.05]">
-          {title}
-        </h1>
       </motion.div>
 
-      {/* Tags — rendered at detail flex-wrap layout (constant width), uniform-scaled. No reflow. */}
+      {/* Tags — detail variant (wraps at detail width) */}
       <motion.div
         style={{
           position: 'absolute',
@@ -212,18 +256,13 @@ export function MorphLayer() {
           width: detailRects.tags.width,
           transformOrigin: 'top left',
         }}
-        initial={initialTags}
-        animate={animateTags}
+        initial={{ ...tagsPair.detailInitial, opacity: tagsPair.detailInitialOpacity }}
+        animate={{ ...tagsPair.detailAnimate, opacity: tagsPair.detailAnimateOpacity }}
         transition={TRANSITION}
       >
         <div className="flex flex-wrap gap-2">
           {tags?.map((tag) => (
-            <span
-              key={tag}
-              className="font-display px-3 py-1 text-sm font-medium rounded-full border border-white/30 text-white/80 bg-white/10 backdrop-blur-sm whitespace-nowrap"
-            >
-              {tag}
-            </span>
+            <span key={tag} className={tagChipClass}>{tag}</span>
           ))}
         </div>
       </motion.div>

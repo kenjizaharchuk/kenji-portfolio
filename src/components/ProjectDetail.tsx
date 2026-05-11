@@ -20,19 +20,21 @@ export function ProjectDetail({ slug, skipEnterAnimation = false }: ProjectDetai
   const morph = useMorph();
 
   const heroSlotRef = useRef<HTMLDivElement | null>(null);
-  const titleBlockRef = useRef<HTMLDivElement | null>(null);
+  const subtitleRef = useRef<HTMLParagraphElement | null>(null);
+  const titleTextRef = useRef<HTMLHeadingElement | null>(null);
   const tagsBlockRef = useRef<HTMLDivElement | null>(null);
 
   const [isClosing, setIsClosing] = useState(false);
 
-  // Measure the four target rects after mount so the ghost can fly there.
+  // Measure the target rects after mount so the ghost can fly there.
   useLayoutEffect(() => {
     if (morph.phase !== 'opening') return;
-    if (!heroSlotRef.current || !titleBlockRef.current || !tagsBlockRef.current) return;
+    if (!heroSlotRef.current || !subtitleRef.current || !titleTextRef.current || !tagsBlockRef.current) return;
     const rects: MorphRects = {
       frame: { top: 0, left: 0, width: window.innerWidth, height: window.innerHeight },
       image: rectFromDOMRect(heroSlotRef.current.getBoundingClientRect()),
-      title: rectFromDOMRect(titleBlockRef.current.getBoundingClientRect()),
+      subtitle: rectFromDOMRect(subtitleRef.current.getBoundingClientRect()),
+      titleText: rectFromDOMRect(titleTextRef.current.getBoundingClientRect()),
       tags: rectFromDOMRect(tagsBlockRef.current.getBoundingClientRect()),
     };
     morph.setDetailRects(rects);
@@ -45,27 +47,31 @@ export function ProjectDetail({ slug, skipEnterAnimation = false }: ProjectDetai
     const cardEl = document.querySelector(
       `[data-card-slug="${slug}"]`
     ) as HTMLElement | null;
-    const textEl = cardEl?.querySelector('[data-card-part="text"]') as HTMLElement | null;
+    const cardSubtitleEl = cardEl?.querySelector('[data-card-part="subtitle"]') as HTMLElement | null;
+    const cardTitleEl = cardEl?.querySelector('[data-card-part="title"]') as HTMLElement | null;
     const tagsEl = cardEl?.querySelector('[data-card-part="tags"]') as HTMLElement | null;
     const heroEl = heroSlotRef.current;
-    const titleEl = titleBlockRef.current;
+    const subtitleEl = subtitleRef.current;
+    const titleEl = titleTextRef.current;
     const detailTagsEl = tagsBlockRef.current;
 
     const canMorph =
-      cardEl && textEl && tagsEl && heroEl && titleEl && detailTagsEl && morph.phase !== 'idle';
+      cardEl && cardSubtitleEl && cardTitleEl && tagsEl && heroEl && subtitleEl && titleEl && detailTagsEl && morph.phase !== 'idle';
 
     if (canMorph) {
       const frameRect = rectFromDOMRect(cardEl.getBoundingClientRect());
       const cardRects: MorphRects = {
         frame: frameRect,
         image: frameRect,
-        title: rectFromDOMRect(textEl.getBoundingClientRect()),
+        subtitle: rectFromDOMRect(cardSubtitleEl.getBoundingClientRect()),
+        titleText: rectFromDOMRect(cardTitleEl.getBoundingClientRect()),
         tags: rectFromDOMRect(tagsEl.getBoundingClientRect()),
       };
       const detailRects: MorphRects = {
         frame: { top: 0, left: 0, width: window.innerWidth, height: window.innerHeight },
         image: rectFromDOMRect(heroEl.getBoundingClientRect()),
-        title: rectFromDOMRect(titleEl.getBoundingClientRect()),
+        subtitle: rectFromDOMRect(subtitleEl.getBoundingClientRect()),
+        titleText: rectFromDOMRect(titleEl.getBoundingClientRect()),
         tags: rectFromDOMRect(detailTagsEl.getBoundingClientRect()),
       };
 
@@ -196,17 +202,22 @@ export function ProjectDetail({ slug, skipEnterAnimation = false }: ProjectDetai
 
         {/* Title block — opacity-toggled. Ghost handles the morph; this is the resting state. */}
         <div
-          ref={titleBlockRef}
           className="mt-8"
           style={{
             opacity: showMorphedElements ? 1 : 0,
             transition: morphedElementsTransition,
           }}
         >
-          <p className="font-display text-white/60 text-sm md:text-base font-semibold tracking-wide uppercase mb-3">
+          <p
+            ref={subtitleRef}
+            className="font-display text-white/60 text-sm md:text-base font-semibold tracking-wide uppercase mb-3"
+          >
             {project.subtitle} · {project.category}
           </p>
-          <h1 className="font-display text-white text-4xl md:text-6xl font-bold leading-[1.05]">
+          <h1
+            ref={titleTextRef}
+            className="font-display text-white text-4xl md:text-6xl font-bold leading-[1.05]"
+          >
             {project.title}
           </h1>
         </div>

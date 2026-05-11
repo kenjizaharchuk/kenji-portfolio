@@ -1,65 +1,77 @@
-## Diagnoses
+# Fixing the card-end visual mismatch
 
-**Issue 1 — Double-image flash on open (root cause):**
-`MorphLayer` lingers one paint at `phase === 'open'` to prevent a black flash. In that same paint, `ProjectDetail` flips `showMorphedElements` to `true` (opacity 1) because the condition fires on `morph.phase === 'open'`. Result: for one frame, both the ghost image AND the real hero image are rendered. The two layers aren't sub-pixel identical (different DOM, different stacking, browser rounding), so the user sees a doubled image.
+## Diagnosis (your hypothesis was correct, with one refinement)
 
-**Issue 2 — Black flash on close (root cause):**
-`close()` sets `isClosing=true` (real elements start fading), then waits `CLOSE_FADE_MS = 160ms` before calling `morph.startClose()`. During that 160ms the real elements are fading toward 0 but no ghost is mounted yet → dark page background is the only thing visible.
+The ghost currently renders **one copy** of each text/tag block using the **detail view's intrinsic styles** (subtitle `text-sm md:text-base`, title `text-4xl md:text-6xl`, tags in detail-width flex-wrap), and uniformly scales that copy down to fit the card at the card-end.
 
-**Issue 3 — Carousel disappears instantly on open (root cause):**
-`ProjectDetail` renders its root as `<div className="fixed inset-0 z-[60] bg-background ...">`. The instant the route mounts at `t=0` of the morph, this opaque dark surface covers the entire viewport, hiding the carousel before the frame ghost has expanded. On close, the inverse works because ProjectDetail unmounts only after `navigate(-1)` runs, which is timed to the retract — but on open, mount is immediate.
+Two sources of mismatch follow from this:
 
----
+1. **Title block** — the measured rect is the wrapper that contains *both* the subtitle and the `h1`. The detail subtitle (`"LEAD DESIGNER · DIGITAL DESIGN · WORK EXPERIENCE"`) is much longer than the card subtitle (`"Lead Designer"`), so the detail wrapper is wider than its title alone. Card-side measures a narrower wrapper. The width ratio used for uniform scale ends up smaller than the true font-size ratio (30/60 = 0.5), so the title shrinks *past* the real card title's size.
 
-## Fixes
+2. **Tags** — chip styles are identical between views, but card and detail containers wrap chips at different widths, into different numbers of rows. Scaling detail-layout chips by `cardTagsWidth / detailTagsWidth` produces chips that are smaller than the real card's chips (which never reflowed and are at intrinsic font size).
 
-### Fix 1 — Eliminate double-image (MorphLayer.tsx)
+The subtitle already crossfades two stacked variants, which is why nobody complained about it.
 
-Replace the "linger then unmount" strategy with "fade ghost to 0 during linger frame". During `phase === 'open'`:
-- Keep the portal mounted for one paint (linger), BUT
-- Set the whole portal's `opacity` to 0 immediately when phase flips to 'open'
+## Fix: dual-render the title slot and the tags, crossfade between them
 
-Real elements are visible (opacity 1) and ghost is invisible (opacity 0) in the same paint. No double image, no black gap. After the 1-paint linger, unmount the portal.
+Render **both** a card-styled variant and a detail-styled variant for the title block and the tags. Each variant is laid out at its own natural size (no width animation, no reflow). Each variant FLIPs between the card rect and the detail rect using its own transform. They crossfade based on phase progress.
 
-Implementation: wrap the portal's outer `<div>` with `style={{ opacity: phase === 'open' ? 0 : 1 }}`. The linger logic stays as-is for safe unmount timing.
+At the card-end: card-variant is opacity 1, detail-variant is opacity 0 — perfect visual match with the real card.
+At the detail-end: inverse — perfect match with the resting case study.
+In the middle: both variants occupy nearly the same screen size and position (the title scales linearly because the string is identical and font weight matches; chips have identical intrinsic sizing). The crossfade therefore reads as a continuous resolve, not a "pop."
 
-### Fix 2 — Start close retract immediately (ProjectDetail.tsx)
+This is the technique the subtitle is already using; we extend it to title and tags.
 
-Restructure `close()`:
-```
-setIsClosing(true);                       // real elements begin fading
-morph.startClose(detailRects, cardRects); // ghost retraction starts NOW
-navigate(-1 or '/');                      // schedule unmount via existing route flow
-```
-Remove the `setTimeout(..., CLOSE_FADE_MS)`. The CSS `transition: opacity 160ms` on real elements still produces a graceful fade, but it now overlaps the start of the 1s ghost retract instead of preceding it. No gap.
+## Implementation
 
-Concern: the ghost mounts and starts animating immediately while real elements are still partly visible behind it for ~160ms. The ghost sits at `z-index: 65` and the page is `z-index: 60`, so the ghost is on top — the cross-dissolve actually reads as a smooth handoff (real elements fading out under a ghost that's just starting to move). This is desirable, not a bug.
+### `morphContext.tsx`
+Extend `MorphRects` so the ghost can position each variant precisely:
 
-### Fix 3 — Don't paint the page background on open (ProjectDetail.tsx)
-
-Make the root `bg-background` conditional on phase. The page background should appear ONLY when the frame ghost has finished expanding (i.e., NOT during `opening`).
-
-```tsx
-const pageBgVisible = skipEnterAnimation || morph.phase !== 'opening';
-// root: className without bg-background; style={{ backgroundColor: pageBgVisible ? 'hsl(var(--background))' : 'transparent' }}
+```ts
+interface MorphRects {
+  frame: Rect;
+  image: Rect;
+  titleText: Rect;   // the <h3>/<h1> element only
+  subtitle: Rect;    // the subtitle <p> element only
+  tags: Rect;        // unchanged role, but tags-of-the-source-view
+}
 ```
 
-During `opening`: root is transparent → carousel/stars visible underneath → frame ghost expands over them (matches the close direction's reveal).
-At `phase === 'open'` (and during `closing`): root has its solid background as today.
+Drop the old combined `title` rect.
 
-The carousel/Index page still renders in the DOM behind ProjectDetail (route is `/projects/:slug` which also renders `<Index>` per App.tsx routing — verify quickly, but the user's observation that close works confirms it). If for any reason the carousel doesn't paint behind ProjectDetail, we can additionally make ProjectDetail mount-skip its content rendering during `opening` and only show the close button + measurement refs in hidden form.
+### Measurement sites
+- `ProjectsCarousel.tsx` (card side): add `data-card-part="subtitle"` to the card's subtitle `<p>` and `data-card-part="title"` to the `<h3>`. Measure both. `tags` rect already measured.
+- `ProjectDetail.tsx`: add refs for the detail subtitle `<p>` and the detail `<h1>`. Measure both into `detailRects.subtitle` and `detailRects.titleText`. `tagsBlockRef` already measured.
 
----
+### `MorphLayer.tsx` — render two variants per slot
 
-## Technical notes
+**Title slot.** Two stacked `<h1>`s:
+- **Card-title variant** — classes `text-2xl md:text-3xl` (matches real card). Positioned at `detailRects.titleText` with transform `inverseUniform(cardRects.titleText, detailRects.titleText)` at card-end and identity at detail-end. *Wait — render it at the card layout instead*: position at `cardRects.titleText`, identity at card-end, transform to `detailRects.titleText` at detail-end. Cleaner mental model.
+- **Detail-title variant** — classes `text-4xl md:text-6xl`. Position at `detailRects.titleText`, identity at detail-end, transform to `cardRects.titleText` at card-end.
+- Opacity: card-variant `1 → 0`; detail-variant `0 → 1`. Reverse for closing.
 
-- No changes to `morphContext.tsx`, `ProjectsCarousel.tsx`, `App.tsx`, or `projects.ts`.
-- Files touched: `src/components/MorphLayer.tsx`, `src/components/ProjectDetail.tsx`.
-- Ordering for #2: dispatching `setIsClosing(true)` and `morph.startClose(...)` in the same tick is safe — React batches; the ghost mounts with `phase: 'closing'` and animates from detailRects → cardRects in 1s, real elements fade 0→1 in 160ms underneath.
-- For #3, verify the route stack does keep `<Index>` mounted under `<ProjectDetail>`. If not, a one-line fallback is to render the carousel route content even on `/projects/:slug` (already the case based on App.tsx — both routes use `<Index />`).
+**Subtitle slot.** Same dual-FLIP, replacing the current "stacked at detail layout" approach. Card-variant uses the card's subtitle classes (`text-base text-white/70`), positioned at `cardRects.subtitle`. Detail-variant uses the detail classes (`text-sm md:text-base text-white/60`), positioned at `detailRects.subtitle`.
 
-## Tradeoffs / concerns
+**Tags slot.** Two stacked tag containers:
+- **Card-tags variant** — rendered inside a `width: cardRects.tags.width` flex-wrap, so chips wrap exactly like the real card. Position at `cardRects.tags`, identity at card-end, uniform scale to `detailRects.tags` at detail-end.
+- **Detail-tags variant** — rendered inside a `width: detailRects.tags.width` flex-wrap. Position at `detailRects.tags`, identity at detail-end, uniform scale to `cardRects.tags` at card-end.
+- Each variant's *own* width is fixed (no animation), so there is no reflow during the morph. The chips on each variant are at their natural intrinsic size when their opacity is 1.
 
-- Fix 1 assumes one `requestAnimationFrame` of `opacity: 0` ghost + opacity-1 real is enough to "cover the handoff." If we still see any flicker, the next iteration is to gate `showMorphedElements` on a context flag set after the linger completes (slightly more wiring).
-- Fix 2's overlap (ghost visible while real fades) is intentional and visually superior to the current sequential gap.
-- Fix 3 only matters for the `opening` phase; during the linger frame at `open`, we want the bg solid so there's no flash if anything goes wrong with the ghost layer.
+**Frame and image** — unchanged.
+
+### `ProjectDetail.tsx`
+- Add the two new refs (subtitle, titleText) and populate `detailRects` accordingly.
+- The "resting" opacity-toggled elements stay as-is.
+
+## What this preserves
+
+- No tag reflow during flight (each variant's container width is constant).
+- No title pop at midpoint (same string, linear scale, near-identical screen size; the crossfade lands on overlapping visuals).
+- Hero border behavior, easing curve (`[0.65, 0, 0.35, 1]`, 1.0s), z-layering, page background, and close-direction overlap from the prior fixes all stay exactly as they are.
+
+## Files touched
+
+- `src/lib/morphContext.tsx` — extend `MorphRects` (add `titleText`, `subtitle`; drop `title`).
+- `src/components/ProjectsCarousel.tsx` — measure card subtitle + title elements; populate new rect shape.
+- `src/components/ProjectDetail.tsx` — add subtitle/titleText refs; populate new rect shape.
+- `src/components/MorphLayer.tsx` — replace single-variant title block + single-variant tags with dual-render + crossfade.
