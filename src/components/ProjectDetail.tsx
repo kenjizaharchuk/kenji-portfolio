@@ -86,6 +86,7 @@ export function ProjectDetail({ slug, skipEnterAnimation = false }: ProjectDetai
         navigate('/');
       }
     } else {
+      isClosingRef.current = true;
       morph.reset();
       if (window.history.state && window.history.state.idx > 0) {
         navigate(-1);
