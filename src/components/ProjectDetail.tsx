@@ -142,8 +142,16 @@ export function ProjectDetail({ slug, skipEnterAnimation = false }: ProjectDetai
     ? { duration: CLOSE_FADE_MS / 1000, ease: 'easeOut' as const }
     : { ...transition, delay: skipEnterAnimation ? 0 : 0.45 };
 
+  // During `opening`, keep the page background transparent so the carousel stays
+  // visible underneath the expanding frame ghost. After the morph completes (or
+  // on direct URL visits), use the solid app background.
+  const pageBgTransparent = !skipEnterAnimation && morph.phase === 'opening';
+
   return (
-    <div className="fixed inset-0 z-[60] bg-background overflow-y-auto">
+    <div
+      className="fixed inset-0 z-[60] overflow-y-auto"
+      style={{ backgroundColor: pageBgTransparent ? 'transparent' : 'hsl(var(--background))' }}
+    >
       {/* Close button */}
       <motion.button
         onClick={close}
