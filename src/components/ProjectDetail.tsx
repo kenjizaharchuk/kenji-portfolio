@@ -2,7 +2,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Minimize2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { getProjectBySlug, type Block } from '@/data/projects';
+import { getProjectBySlug, type Block, type ProjectMeta } from '@/data/projects';
 import { useMorph, rectFromDOMRect, type MorphRects } from '@/lib/morphContext';
 
 interface ProjectDetailProps {
