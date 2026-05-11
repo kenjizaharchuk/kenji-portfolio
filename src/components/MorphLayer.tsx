@@ -49,7 +49,7 @@ export function MorphLayer() {
   if (phase === 'open' && !linger) return null;
   if (!cardRects || !detailRects) return null;
 
-  const opening = phase === 'opening';
+  // `openingOrOpen` is computed below — `opening`-only branch no longer needed.
 
   // Each element is rendered at its DETAIL rect (large/final layout).
   // We animate transforms between (card-relative inverse) and identity.
