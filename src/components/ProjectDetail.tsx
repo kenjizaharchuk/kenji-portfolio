@@ -25,6 +25,8 @@ export function ProjectDetail({ slug, skipEnterAnimation = false }: ProjectDetai
   const tagsBlockRef = useRef<HTMLDivElement | null>(null);
 
   const [isClosing, setIsClosing] = useState(false);
+  const isClosingRef = useRef(false);
+  const closeRef = useRef<() => void>(() => {});
 
   // Measure the target rects after mount so the ghost can fly there.
   useLayoutEffect(() => {
