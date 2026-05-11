@@ -45,6 +45,8 @@ export type Block =
       content?: string;
       externalUrl?: string;
       linkLabel?: string;
+      interactiveHint?: boolean;
+      size?: 'default' | 'contained';
     }
   | {
       type: 'liveLink';
