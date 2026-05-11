@@ -235,9 +235,9 @@ export function MorphLayer() {
           transformOrigin: 'top left',
           margin: 0,
         }}
-        initial={{ ...titlePair.detailInitial, opacity: titlePair.detailInitialOpacity }}
-        animate={{ ...titlePair.detailAnimate, opacity: titlePair.detailAnimateOpacity }}
-        transition={TRANSITION}
+        initial={{ ...titlePair.detailInitial, opacity: detailInitialOpacity }}
+        animate={{ ...titlePair.detailAnimate, opacity: detailOpacityKeyframes }}
+        transition={transitionWithSwap}
       >
         {title}
       </motion.h1>
