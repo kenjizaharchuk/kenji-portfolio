@@ -1,9 +1,10 @@
 import { createPortal } from 'react-dom';
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useMorph, type Rect, type MorphRects, type MorphPhase } from '@/lib/morphContext';
 
-const DURATION = 0.9;
-const EASE = [0.22, 1, 0.36, 1] as const;
+const DURATION = 1.0;
+const EASE = [0.65, 0, 0.35, 1] as const;
 const TRANSITION = { duration: DURATION, ease: EASE };
 
 /** Non-uniform inverse (used for frame and image). */
@@ -29,10 +30,26 @@ export function MorphLayer() {
   const morph = useMorph();
   const { phase, cardRects, detailRects, image, imagePosition, title, cardSubtitle, detailSubtitle, tags, setOpen, reset } = morph;
 
-  if (phase === 'idle' || phase === 'open') return null;
+  // Linger one paint after phase flips to 'open' so the real underlying
+  // elements (which snap to opacity 1 in the same frame) are guaranteed to
+  // paint before the ghost unmounts. Kills the single-frame black flash.
+  const [linger, setLinger] = useState(false);
+  useEffect(() => {
+    if (phase === 'open') {
+      setLinger(true);
+      const id = requestAnimationFrame(() => {
+        requestAnimationFrame(() => setLinger(false));
+      });
+      return () => cancelAnimationFrame(id);
+    }
+    setLinger(false);
+  }, [phase]);
+
+  if (phase === 'idle') return null;
+  if (phase === 'open' && !linger) return null;
   if (!cardRects || !detailRects) return null;
 
-  const opening = phase === 'opening';
+  // `openingOrOpen` is computed below — `opening`-only branch no longer needed.
 
   // Each element is rendered at its DETAIL rect (large/final layout).
   // We animate transforms between (card-relative inverse) and identity.
@@ -41,37 +58,44 @@ export function MorphLayer() {
 
   const frameStart = inverseXY(cardRects.frame, detailRects.frame);
   const frameEnd = { x: 0, y: 0, scaleX: 1, scaleY: 1 };
-  const imageStart = inverseXY(cardRects.image, detailRects.image);
-  const imageEnd = { x: 0, y: 0, scaleX: 1, scaleY: 1 };
+  // image uses rect interpolation (top/left/width/height); see below
   const titleStart = inverseUniform(cardRects.title, detailRects.title);
   const titleEnd = { x: 0, y: 0, scale: 1 };
   const tagsStart = inverseUniform(cardRects.tags, detailRects.tags);
   const tagsEnd = { x: 0, y: 0, scale: 1 };
 
-  const initialFrame = opening ? frameStart : frameEnd;
-  const animateFrame = opening ? frameEnd : frameStart;
-  const initialImage = opening ? imageStart : imageEnd;
-  const animateImage = opening ? imageEnd : imageStart;
-  const initialTitle = opening ? titleStart : titleEnd;
-  const animateTitle = opening ? titleEnd : titleStart;
-  const initialTags = opening ? tagsStart : tagsEnd;
-  const animateTags = opening ? tagsEnd : tagsStart;
+  // Treat the linger frame (phase==='open') as "still opening, at end state" so
+  // nothing re-animates while we wait one paint before unmounting.
+  const openingOrOpen = phase === 'opening' || phase === 'open';
+
+  const initialFrame = openingOrOpen ? frameStart : frameEnd;
+  const animateFrame = openingOrOpen ? frameEnd : frameStart;
+  // Image animates top/left/width/height directly — no transform-scale, so
+  // `object-cover` re-fits at every interpolated frame (no squish).
+  const imageRectStart = cardRects.image;
+  const imageRectEnd = detailRects.image;
+  const initialImageRect = openingOrOpen ? imageRectStart : imageRectEnd;
+  const animateImageRect = openingOrOpen ? imageRectEnd : imageRectStart;
+  const initialTitle = openingOrOpen ? titleStart : titleEnd;
+  const animateTitle = openingOrOpen ? titleEnd : titleStart;
+  const initialTags = openingOrOpen ? tagsStart : tagsEnd;
+  const animateTags = openingOrOpen ? tagsEnd : tagsStart;
 
   // Border radius on the Frame: card-end has 1.5rem, viewport-end has 0.
   const radiusCard = '1.5rem';
   const radiusViewport = '0rem';
-  const initialRadius = opening ? radiusCard : radiusViewport;
-  const animateRadius = opening ? radiusViewport : radiusCard;
+  const initialRadius = openingOrOpen ? radiusCard : radiusViewport;
+  const animateRadius = openingOrOpen ? radiusViewport : radiusCard;
 
   // Gradient overlay on the Image: present at card-end (for text contrast), absent at hero-end.
-  const initialOverlay = opening ? 1 : 0;
-  const animateOverlay = opening ? 0 : 1;
+  const initialOverlay = openingOrOpen ? 1 : 0;
+  const animateOverlay = openingOrOpen ? 0 : 1;
 
   // Subtitle crossfade: card-variant visible at card-end; detail-variant visible at hero-end.
-  const initialCardSub = opening ? 1 : 0;
-  const animateCardSub = opening ? 0 : 1;
-  const initialDetailSub = opening ? 0 : 1;
-  const animateDetailSub = opening ? 1 : 0;
+  const initialCardSub = openingOrOpen ? 1 : 0;
+  const animateCardSub = openingOrOpen ? 0 : 1;
+  const initialDetailSub = openingOrOpen ? 0 : 1;
+  const animateDetailSub = openingOrOpen ? 1 : 0;
 
   const onFrameComplete = () => {
     if (phase === 'opening') setOpen();
@@ -97,20 +121,27 @@ export function MorphLayer() {
         onAnimationComplete={onFrameComplete}
       />
 
-      {/* Image — single continuous element, scales+travels card → hero */}
+      {/* Image — animates top/left/width/height (no transform-scale), so
+          object-cover re-fits at every interpolated size with zero distortion. */}
       <motion.div
         style={{
           position: 'absolute',
-          top: detailRects.image.top,
-          left: detailRects.image.left,
-          width: detailRects.image.width,
-          height: detailRects.image.height,
           transformOrigin: 'top left',
           borderRadius: '1.5rem',
           overflow: 'hidden',
         }}
-        initial={initialImage}
-        animate={animateImage}
+        initial={{
+          top: initialImageRect.top,
+          left: initialImageRect.left,
+          width: initialImageRect.width,
+          height: initialImageRect.height,
+        }}
+        animate={{
+          top: animateImageRect.top,
+          left: animateImageRect.left,
+          width: animateImageRect.width,
+          height: animateImageRect.height,
+        }}
         transition={TRANSITION}
       >
         {image && (

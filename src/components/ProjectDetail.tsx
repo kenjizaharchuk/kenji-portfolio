@@ -128,6 +128,13 @@ export function ProjectDetail({ slug, skipEnterAnimation = false }: ProjectDetai
   const morphedElementsVisible =
     skipEnterAnimation || morph.phase === 'open' || morph.phase === 'idle';
   const showMorphedElements = morphedElementsVisible && !isClosing;
+  // Open direction: snap to opacity 1 the same frame phase flips to 'open'
+  // (the MorphLayer lingers one paint to cover the handoff — no flash).
+  // Close direction: fade out over CLOSE_FADE_MS so the elements gracefully
+  // disappear before the ghost retracts.
+  const morphedElementsTransition = isClosing
+    ? `opacity ${CLOSE_FADE_MS}ms ease-out`
+    : 'none';
 
   // Rest of the case-study content fades in after the morph completes; fades out at start of close.
   const restInitial = skipEnterAnimation ? false : { opacity: 0, y: 12 };
@@ -135,7 +142,7 @@ export function ProjectDetail({ slug, skipEnterAnimation = false }: ProjectDetai
     isClosing || !morphedElementsVisible ? { opacity: 0, y: 0 } : { opacity: 1, y: 0 };
   const restTransition = isClosing
     ? { duration: CLOSE_FADE_MS / 1000, ease: 'easeOut' as const }
-    : { ...transition, delay: skipEnterAnimation ? 0 : 0.55 };
+    : { ...transition, delay: skipEnterAnimation ? 0 : 0.45 };
 
   return (
     <div className="fixed inset-0 z-[60] bg-background overflow-y-auto">
@@ -161,20 +168,22 @@ export function ProjectDetail({ slug, skipEnterAnimation = false }: ProjectDetai
           <img
             src={project.heroImage}
             alt={project.title}
-            className="absolute inset-0 w-full h-full object-cover transition-opacity duration-200"
+            className="absolute inset-0 w-full h-full object-cover"
             style={{
               objectPosition: project.heroImagePosition || 'center',
               borderRadius: '1.5rem',
               opacity: showMorphedElements ? 1 : 0,
+              transition: morphedElementsTransition,
             }}
           />
           {/* Independent hero border — fades in at end of opening, out at start of closing */}
           <div
             aria-hidden
-            className="absolute inset-0 border border-white/15 pointer-events-none transition-opacity duration-200"
+            className="absolute inset-0 border border-white/15 pointer-events-none"
             style={{
               borderRadius: '1.5rem',
               opacity: showMorphedElements ? 1 : 0,
+              transition: morphedElementsTransition,
             }}
           />
         </div>
@@ -182,8 +191,11 @@ export function ProjectDetail({ slug, skipEnterAnimation = false }: ProjectDetai
         {/* Title block — opacity-toggled. Ghost handles the morph; this is the resting state. */}
         <div
           ref={titleBlockRef}
-          className="mt-8 transition-opacity duration-200"
-          style={{ opacity: showMorphedElements ? 1 : 0 }}
+          className="mt-8"
+          style={{
+            opacity: showMorphedElements ? 1 : 0,
+            transition: morphedElementsTransition,
+          }}
         >
           <p className="font-display text-white/60 text-sm md:text-base font-semibold tracking-wide uppercase mb-3">
             {project.subtitle} · {project.category}
@@ -196,8 +208,11 @@ export function ProjectDetail({ slug, skipEnterAnimation = false }: ProjectDetai
         {/* Tags — opacity-toggled. */}
         <div
           ref={tagsBlockRef}
-          className="mt-5 transition-opacity duration-200"
-          style={{ opacity: showMorphedElements ? 1 : 0 }}
+          className="mt-5"
+          style={{
+            opacity: showMorphedElements ? 1 : 0,
+            transition: morphedElementsTransition,
+          }}
         >
           <div className="flex flex-wrap gap-2">
             {project.tags.map((tag) => (
