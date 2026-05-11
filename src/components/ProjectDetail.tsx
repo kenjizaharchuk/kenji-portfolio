@@ -434,6 +434,17 @@ function BlockRenderer({ block }: { block: Block }) {
           </div>
         </div>
       );
+    case 'centeredImage':
+      return (
+        <div className="flex justify-center">
+          <img
+            src={block.src}
+            alt={block.alt}
+            className="w-full h-auto"
+            style={{ maxWidth: block.maxWidth || '720px' }}
+          />
+        </div>
+      );
     case 'featuredArticle':
       return (
         <a
