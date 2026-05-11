@@ -72,7 +72,22 @@ export function MorphLayer() {
   const initialTitle = opening ? titleStart : titleEnd;
   const animateTitle = opening ? titleEnd : titleStart;
   const initialTags = opening ? tagsStart : tagsEnd;
-  const animateTags = opening ? tagsEnd : tagsStart;
+  // Treat the linger frame (phase==='open') as "still opening, at end state" so
+  // nothing re-animates while we wait one paint before unmounting.
+  const openingOrOpen = phase === 'opening' || phase === 'open';
+
+  const initialFrame = openingOrOpen ? frameStart : frameEnd;
+  const animateFrame = openingOrOpen ? frameEnd : frameStart;
+  // Image animates top/left/width/height directly — no transform-scale, so
+  // `object-cover` re-fits at every interpolated frame (no squish).
+  const imageRectStart = cardRects.image;
+  const imageRectEnd = detailRects.image;
+  const initialImageRect = openingOrOpen ? imageRectStart : imageRectEnd;
+  const animateImageRect = openingOrOpen ? imageRectEnd : imageRectStart;
+  const initialTitle = openingOrOpen ? titleStart : titleEnd;
+  const animateTitle = openingOrOpen ? titleEnd : titleStart;
+  const initialTags = openingOrOpen ? tagsStart : tagsEnd;
+  const animateTags = openingOrOpen ? tagsEnd : tagsStart;
 
   // Border radius on the Frame: card-end has 1.5rem, viewport-end has 0.
   const radiusCard = '1.5rem';
