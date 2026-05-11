@@ -483,6 +483,8 @@ function BlockRenderer({ block }: { block: Block }) {
     }
     case 'figmaEmbed': {
       const wrapperRef = useFigmaScrollGuard();
+      const contained = block.size === 'contained';
+      const promotedLink = block.interactiveHint && block.externalUrl;
       return (
         <div className="space-y-4">
           {block.heading && (
@@ -495,30 +497,49 @@ function BlockRenderer({ block }: { block: Block }) {
               {block.content}
             </p>
           )}
-          <div
-            ref={wrapperRef}
-            className="w-full aspect-[16/10] rounded-2xl overflow-hidden border border-white/10 bg-white/[0.02]"
-          >
-            <iframe
-              src={block.url}
-              title={block.title || block.heading || 'Figma embed'}
-              className="w-full h-full"
-              allowFullScreen
-              tabIndex={-1}
-            />
-          </div>
-          {block.externalUrl && (
-            <div className="flex justify-end pt-1">
-              <a
-                href={block.externalUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-display text-sm text-white/50 hover:text-white/90 transition-colors underline underline-offset-4 decoration-white/20 hover:decoration-white/60"
-              >
-                {block.linkLabel || 'See the full Figma file'} ↗
-              </a>
+          <div className={contained ? 'mx-auto w-full md:max-w-[70%]' : 'w-full'}>
+            <div
+              ref={wrapperRef}
+              className="w-full aspect-[16/10] rounded-2xl overflow-hidden border border-white/10 bg-white/[0.02]"
+            >
+              <iframe
+                src={block.url}
+                title={block.title || block.heading || 'Figma embed'}
+                className="w-full h-full"
+                allowFullScreen
+                tabIndex={-1}
+              />
             </div>
-          )}
+            {block.interactiveHint && (
+              <p className="font-display text-sm text-white/55 pt-3">
+                This embed is interactive. Click through to explore the deck.
+              </p>
+            )}
+            {promotedLink && (
+              <div className="pt-2">
+                <a
+                  href={block.externalUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-display text-base md:text-lg text-white/85 hover:text-white transition-colors underline underline-offset-4 decoration-white/40 hover:decoration-white"
+                >
+                  {block.linkLabel || 'See the full Figma file'} ↗
+                </a>
+              </div>
+            )}
+            {!promotedLink && block.externalUrl && (
+              <div className="flex justify-end pt-1">
+                <a
+                  href={block.externalUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-display text-sm text-white/50 hover:text-white/90 transition-colors underline underline-offset-4 decoration-white/20 hover:decoration-white/60"
+                >
+                  {block.linkLabel || 'See the full Figma file'} ↗
+                </a>
+              </div>
+            )}
+          </div>
         </div>
       );
     }
