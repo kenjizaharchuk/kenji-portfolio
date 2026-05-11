@@ -476,36 +476,37 @@ function BlockRenderer({ block }: { block: Block }) {
     }
     case 'featuredArticle':
       return (
-        <a
-          href={block.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="block rounded-2xl bg-white overflow-hidden transition-all duration-300 hover:-translate-y-0.5 hover:shadow-2xl border border-transparent hover:border-black/10"
-        >
-          {block.thumbnail && (
-            <div className="w-full bg-white border-b border-black/5">
+        <div className="mx-auto w-full md:max-w-[60%]">
+          <a
+            href={block.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block rounded-2xl bg-white overflow-hidden transition-all duration-300 hover:-translate-y-0.5 hover:shadow-2xl border border-transparent hover:border-black/10"
+          >
+            {block.thumbnail ? (
               <img
                 src={block.thumbnail}
                 alt={block.title}
                 className="w-full h-auto object-contain"
               />
-            </div>
-          )}
-          <div className="p-6 md:p-8">
-            <p className="font-display text-black/50 text-xs md:text-sm font-semibold tracking-wide uppercase mb-3">
-              Published in {block.source}
-            </p>
-            <h3 className="font-display text-black text-2xl md:text-3xl font-bold leading-tight mb-3">
-              {block.title}
-            </h3>
-            <p className="font-display text-black/70 text-base md:text-lg leading-relaxed mb-5">
-              {block.description}
-            </p>
-            <p className="font-display text-black/50 text-xs md:text-sm uppercase tracking-wide">
-              {block.date}
-            </p>
-          </div>
-        </a>
+            ) : (
+              <div className="p-6 md:p-8">
+                <p className="font-display text-black/50 text-xs md:text-sm font-semibold tracking-wide uppercase mb-3">
+                  Published in {block.source}
+                </p>
+                <h3 className="font-display text-black text-2xl md:text-3xl font-bold leading-tight mb-3">
+                  {block.title}
+                </h3>
+                <p className="font-display text-black/70 text-base md:text-lg leading-relaxed mb-5">
+                  {block.description}
+                </p>
+                <p className="font-display text-black/50 text-xs md:text-sm uppercase tracking-wide">
+                  {block.date}
+                </p>
+              </div>
+            )}
+          </a>
+        </div>
       );
   }
 }
