@@ -20,7 +20,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <MorphProvider>
-          <MorphGhost />
+          <MorphLayer />
           <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/projects/:slug" element={<Index />} />
