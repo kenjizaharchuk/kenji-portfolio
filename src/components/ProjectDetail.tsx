@@ -194,7 +194,7 @@ export function ProjectDetail({ slug, skipEnterAnimation = false }: ProjectDetai
     >
       {/* Close button */}
       <motion.button
-        onClick={close}
+        onClick={() => close()}
         aria-label="Close project"
         initial={restInitial}
         animate={restAnimate}
