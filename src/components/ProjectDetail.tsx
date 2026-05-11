@@ -299,6 +299,7 @@ export function ProjectDetail({ slug, skipEnterAnimation = false }: ProjectDetai
           transition={restTransition}
           className="space-y-16 md:space-y-24 mt-10 md:mt-14"
         >
+          {project.meta && <MetaStrip meta={project.meta} />}
           {project.blocks.map((block, i) => (
             <BlockRenderer key={i} block={block} />
           ))}
