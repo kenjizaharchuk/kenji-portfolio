@@ -69,16 +69,14 @@ export function ProjectDetail({ slug, skipEnterAnimation = false }: ProjectDetai
         tags: rectFromDOMRect(detailTagsEl.getBoundingClientRect()),
       };
 
-      // Start content fade-out, then hand off to the morph layer.
+      // Start retract immediately AND fade content in parallel — no gap.
       setIsClosing(true);
-      window.setTimeout(() => {
-        morph.startClose(detailRects, cardRects);
-        if (window.history.state && window.history.state.idx > 0) {
-          navigate(-1);
-        } else {
-          navigate('/');
-        }
-      }, CLOSE_FADE_MS);
+      morph.startClose(detailRects, cardRects);
+      if (window.history.state && window.history.state.idx > 0) {
+        navigate(-1);
+      } else {
+        navigate('/');
+      }
     } else {
       morph.reset();
       if (window.history.state && window.history.state.idx > 0) {
