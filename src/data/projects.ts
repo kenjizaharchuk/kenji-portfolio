@@ -8,6 +8,7 @@ import pmbMidFidelity1 from '@/assets/pmb-mid-fidelity-1.png';
 import pmbMidFidelity2 from '@/assets/pmb-mid-fidelity-2.png';
 import pmbFinalScreens from '@/assets/pmb-final-screens.jpg';
 import pmbArticleThumb from '@/assets/pmb-article-thumb.png';
+import pmbLaptopHero from '@/assets/pmb-laptop-hero.png';
 
 export type Block =
   | { type: 'context'; content: string }
