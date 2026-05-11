@@ -82,21 +82,64 @@ export function ProjectDetail({ slug, skipEnterAnimation = false }: ProjectDetai
       setIsClosing(true);
       isClosingRef.current = true;
       morph.startClose(detailRects, cardRects);
-      if (window.history.state && window.history.state.idx > 0) {
-        navigate(-1);
-      } else {
-        navigate('/');
-      }
+      goBackToHome();
     } else {
       isClosingRef.current = true;
       morph.reset();
-      if (window.history.state && window.history.state.idx > 0) {
-        navigate(-1);
-      } else {
-        navigate('/');
-      }
+      goBackToHome();
     }
   };
+
+  // Navigate back to the previous entry (or '/'), accounting for the sentinel
+  // history entry we push on mount to intercept browser back gestures.
+  const goBackToHome = () => {
+    const steps = sentinelOnStackRef.current ? -2 : -1;
+    sentinelOnStackRef.current = false;
+    const idx = window.history.state?.idx ?? 0;
+    if (idx >= Math.abs(steps)) {
+      navigate(steps);
+    } else {
+      navigate('/');
+    }
+  };
+
+  // Keep a ref to the latest close() so the popstate listener (registered once)
+  // always calls the current closure.
+  closeRef.current = close;
+
+  // Intercept browser back / trackpad swipe-back so it triggers the same
+  // close animation as the close button.
+  useEffect(() => {
+    // Only push a sentinel if there's a prior entry to fall back to. Preserve
+    // React Router's history state (idx/usr/key) so RR keeps working.
+    const idx = window.history.state?.idx ?? 0;
+    if (idx > 0) {
+      window.history.pushState(
+        { ...window.history.state, morphSentinel: true },
+        '',
+        window.location.href
+      );
+      sentinelOnStackRef.current = true;
+    }
+
+    const onPop = () => {
+      // Sentinel (if any) was just consumed by the browser.
+      sentinelOnStackRef.current = false;
+      if (isClosingRef.current) return; // our own navigate(-N); let it through
+      closeRef.current();
+    };
+    window.addEventListener('popstate', onPop);
+
+    return () => {
+      window.removeEventListener('popstate', onPop);
+      // Safety net: if we somehow unmount with morph still active and no
+      // close in flight, reset so the carousel card isn't left hidden.
+      if (!isClosingRef.current && morph.phase !== 'idle') {
+        morph.reset();
+      }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
