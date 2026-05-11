@@ -324,7 +324,7 @@ function BlockRenderer({ block }: { block: Block }) {
               key={i}
               className="relative aspect-[4/3] rounded-2xl overflow-hidden border border-white/10"
             >
-              <img src={img.src} alt={img.alt} className="absolute inset-0 w-full h-full object-cover" />
+              <img src={img.src} alt={img.alt} className="absolute inset-0 w-full h-full object-fill" />
             </div>
           ))}
         </div>
