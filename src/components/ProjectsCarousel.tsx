@@ -369,17 +369,19 @@ export function ProjectsCarousel() {
                     )}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
                     <div className="relative z-10 h-full p-6 md:p-8 flex flex-col justify-end">
-                      <p className="font-display text-white/70 text-base font-semibold tracking-wide uppercase mb-2">
-                        {project.subtitle}
-                      </p>
-                      <h3 className="font-display text-white text-2xl md:text-3xl font-bold mb-3">
-                        {project.title}
-                      </h3>
-                      <div className="flex flex-wrap gap-2">
+                      <div data-card-part="text">
+                        <p className="font-display text-white/70 text-base font-semibold tracking-wide uppercase mb-2">
+                          {project.subtitle}
+                        </p>
+                        <h3 className="font-display text-white text-2xl md:text-3xl font-bold">
+                          {project.title}
+                        </h3>
+                      </div>
+                      <div data-card-part="tags" className="flex flex-wrap gap-2 mt-3">
                         {project.tags.map((tag) => (
                           <span
                             key={tag}
-                            className="font-display px-3 py-1 text-sm font-medium rounded-full border border-white/30 text-white/80 bg-white/10 backdrop-blur-sm"
+                            className="font-display px-3 py-1 text-sm font-medium rounded-full border border-white/30 text-white/80 bg-white/10 backdrop-blur-sm whitespace-nowrap"
                           >
                             {tag}
                           </span>
