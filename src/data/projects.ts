@@ -63,7 +63,7 @@ export type Block =
       url: string;
       thumbnail?: string;
     }
-  | { type: 'outcome'; content: string };
+  | { type: 'outcome'; content: string; ctaUrl?: string; ctaLabel?: string };
 
 export interface ProjectDetail {
   slug: string;
