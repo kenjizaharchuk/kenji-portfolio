@@ -400,7 +400,7 @@ function BlockRenderer({ block }: { block: Block }) {
                     <img
                       src={img.src}
                       alt={img.alt}
-                      className="absolute inset-0 w-full h-full object-cover"
+                      className="absolute inset-0 w-full h-full object-fill"
                     />
                   </div>
                 ) : (
