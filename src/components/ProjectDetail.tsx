@@ -202,17 +202,22 @@ export function ProjectDetail({ slug, skipEnterAnimation = false }: ProjectDetai
 
         {/* Title block — opacity-toggled. Ghost handles the morph; this is the resting state. */}
         <div
-          ref={titleBlockRef}
           className="mt-8"
           style={{
             opacity: showMorphedElements ? 1 : 0,
             transition: morphedElementsTransition,
           }}
         >
-          <p className="font-display text-white/60 text-sm md:text-base font-semibold tracking-wide uppercase mb-3">
+          <p
+            ref={subtitleRef}
+            className="font-display text-white/60 text-sm md:text-base font-semibold tracking-wide uppercase mb-3"
+          >
             {project.subtitle} · {project.category}
           </p>
-          <h1 className="font-display text-white text-4xl md:text-6xl font-bold leading-[1.05]">
+          <h1
+            ref={titleTextRef}
+            className="font-display text-white text-4xl md:text-6xl font-bold leading-[1.05]"
+          >
             {project.title}
           </h1>
         </div>
