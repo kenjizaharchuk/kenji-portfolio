@@ -189,21 +189,44 @@ export const projectDetails: ProjectDetail[] = [
     category: 'Digital Design · Work Experience',
     tags: ['Information Architecture', 'Wireframing', 'Sitemap Design', 'Figma'],
     heroImage: spiberProject,
+    meta: {
+      client: 'Spiber (via UltraSuperNew)',
+      timeline: 'Summer 2024 (6 weeks)',
+      outcome: 'Site went live at spiber.inc/en',
+      quickLinks: [
+        { label: 'Visit live site', url: 'https://spiber.inc/en' },
+        {
+          label: 'View pitch deck',
+          url: 'https://www.figma.com/proto/NKAgY4tM2uA6gjMtBG9VVe/Spiber---For-Client--Copy-?node-id=1-196&t=eEYNp2ZyP6b2azcp-1',
+        },
+        {
+          label: 'View Figma file',
+          url: 'https://www.figma.com/design/NKAgY4tM2uA6gjMtBG9VVe/Spiber---For-Client--Copy-?node-id=827-4244&t=eEYNp2ZyP6b2azcp-1',
+        },
+      ],
+    },
     blocks: [
       {
         type: 'context',
         content:
-          "Spiber is a Japanese biotech company creating Brewed Protein materials. As an intern at UltraSuperNew, I worked alongside my mentor on a B2B-focused website refresh over six weeks: three weeks on content strategy and structure, three weeks on wireframing, with weekly client check-ins throughout. The goal was to translate disorganized information into a clear, navigable site for business audiences including investors, sustainability-focused brands, and potential hires.",
+          "Spiber is a Japanese biotech company making Brewed Protein materials, a new class of sustainable fiber grown through microbial fermentation. They came to UltraSuperNew with a clear ambition: grow the company. Their existing site was dense and B2C-flavored, and it wasn't speaking to the audiences that would actually move the business forward. We spent six weeks with them in Summer 2024, three weeks on content strategy and structure and three weeks on wireframing, meeting with the client every week.",
+      },
+      {
+        type: 'featuredImage',
+        src: spiberFinalSite,
+        alt: 'Live Spiber homepage at spiber.inc/en',
+        aspect: '16/9',
+        width: 'md',
       },
       {
         type: 'figmaEmbed',
         heading: 'Research and Proposals',
         content:
-          'Work started with audience research and page-by-page content proposals. We mapped what each audience type needed to find on the site, then proposed structural and content changes for key pages, presenting to the client weekly.',
+          "We began by interviewing the Spiber team to understand who they actually needed to reach and what those people needed from the site. From those conversations we mapped four audience types: investors, brands and designers and mills, academia, and future talent. Each came with distinct questions the site had to answer. In parallel we audited the existing site to find the gaps and friction points, and reviewed how peer biotech and materials companies presented themselves to similar audiences. Those inputs shaped six objectives for the project: brand alignment, user engagement, mobile responsiveness, content optimization, backend management, and HR requirements. From there we worked page by page. We proposed adding Protein Fiber as a top-level section so the core product had its own home, introduced an Impact and Sustainability section to give the company's stance a clear place to live, trimmed the homepage's featured projects down to three or four for focus, and added a clear Contact Us at the bottom of the homepage. The Innovation page grew from three sections to six (Hero, Research Areas, Research Highlights, Index Filters, Papers Grid, Join Us), and we moved the papers index from two columns to one so it could actually be read. Every move was tied back to an audience need, not a preference.",
         url: 'https://embed.figma.com/design/NKAgY4tM2uA6gjMtBG9VVe/Spiber---For-Client--Copy-?node-id=1-196&embed-host=share',
         externalUrl:
           'https://www.figma.com/proto/NKAgY4tM2uA6gjMtBG9VVe/Spiber---For-Client--Copy-?node-id=1-196&t=eEYNp2ZyP6b2azcp-1',
-        linkLabel: 'See the full deck',
+        linkLabel: 'Check out the full Figma file here.',
         interactiveHint: true,
         size: 'contained',
       },
@@ -211,7 +234,7 @@ export const projectDetails: ProjectDetail[] = [
         type: 'processNarrative',
         heading: 'Sitemap',
         content:
-          'With content strategy aligned, we mapped the full site structure. Early exploration identified gaps in the existing architecture. The final sitemap reorganized content into clearer hubs for Discover, Sustainability, About Us, and Careers.',
+          "Once the content strategy was aligned, we translated it into structure. The goal was a site a first-time visitor could navigate without a guide, with each audience finding their path within a click or two. We grouped content into clear hubs: Discover for the product story, Sustainability for impact and stance, About Us for the company and team, and Careers as a real destination rather than a footer link. Pages that had been doing too much got split. Pages that had been buried got pulled up.",
         images: [
           {
             src: spiberInitialSitemap,
@@ -223,7 +246,8 @@ export const projectDetails: ProjectDetail[] = [
       {
         type: 'figmaEmbed',
         heading: 'Final Sitemap',
-        content: 'Iterated structure with mobile considerations baked in.',
+        content:
+          'The final structure factored in mobile from the start, treating it as a primary surface rather than a downstream concern. Navigation hierarchy, section depth, and call-to-action placement were all checked against a small screen before being signed off.',
         url: 'https://embed.figma.com/design/NKAgY4tM2uA6gjMtBG9VVe/Spiber---For-Client--Copy-?node-id=827-4244&embed-host=share',
         externalUrl:
           'https://www.figma.com/design/NKAgY4tM2uA6gjMtBG9VVe/Spiber---For-Client--Copy-?node-id=827-4244&t=eEYNp2ZyP6b2azcp-1',
@@ -233,7 +257,7 @@ export const projectDetails: ProjectDetail[] = [
         type: 'processNarrative',
         heading: 'Wireframes',
         content:
-          'With structure approved, we wireframed key pages across desktop and mobile, establishing layout patterns for the top page, product detail pages, content hubs, and forms.',
+          'With the structure approved, we wireframed the key page types across desktop and mobile to set reusable patterns: the top page, product detail pages for Brewed Protein, content hubs like Discover and Sustainability, and the contact and careers forms. Each layout was drawn for both breakpoints in parallel so the responsive behavior was a design decision rather than an afterthought.',
         images: [
           {
             src: spiberWireframe1,
