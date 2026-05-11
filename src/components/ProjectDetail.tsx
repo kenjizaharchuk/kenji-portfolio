@@ -25,8 +25,6 @@ export function ProjectDetail({ slug, skipEnterAnimation = false }: ProjectDetai
   const tagsBlockRef = useRef<HTMLDivElement | null>(null);
 
   const [isClosing, setIsClosing] = useState(false);
-  const isClosingRef = useRef(false);
-  const closeRef = useRef<(sentinelAlreadyConsumed?: boolean) => void>(() => {});
 
   // Measure the target rects after mount so the ghost can fly there.
   useLayoutEffect(() => {
@@ -43,21 +41,8 @@ export function ProjectDetail({ slug, skipEnterAnimation = false }: ProjectDetai
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [morph.phase]);
 
-  // When closing, we need to pop both the sentinel entry and the /projects/:slug
-  // entry to land at home. If the back gesture already consumed the sentinel,
-  // we only need to pop once.
-  const popHome = (sentinelAlreadyConsumed: boolean) => {
-    const stepsBack = sentinelAlreadyConsumed ? 1 : 2;
-    const idx = (window.history.state && window.history.state.idx) ?? 0;
-    if (idx >= stepsBack) {
-      window.history.go(-stepsBack);
-    } else {
-      navigate('/', { replace: true });
-    }
-  };
-
-  const close = (sentinelAlreadyConsumed = false) => {
-    if (isClosingRef.current) return;
+  const close = () => {
+    if (isClosing) return;
 
     const cardEl = document.querySelector(
       `[data-card-slug="${slug}"]`
@@ -72,8 +57,6 @@ export function ProjectDetail({ slug, skipEnterAnimation = false }: ProjectDetai
 
     const canMorph =
       cardEl && cardSubtitleEl && cardTitleEl && tagsEl && heroEl && subtitleEl && titleEl && detailTagsEl && morph.phase !== 'idle';
-
-    isClosingRef.current = true;
 
     if (canMorph) {
       const frameRect = rectFromDOMRect(cardEl.getBoundingClientRect());
@@ -92,40 +75,23 @@ export function ProjectDetail({ slug, skipEnterAnimation = false }: ProjectDetai
         tags: rectFromDOMRect(detailTagsEl.getBoundingClientRect()),
       };
 
+      // Start retract immediately AND fade content in parallel — no gap.
       setIsClosing(true);
       morph.startClose(detailRects, cardRects);
-      popHome(sentinelAlreadyConsumed);
+      if (window.history.state && window.history.state.idx > 0) {
+        navigate(-1);
+      } else {
+        navigate('/');
+      }
     } else {
       morph.reset();
-      popHome(sentinelAlreadyConsumed);
+      if (window.history.state && window.history.state.idx > 0) {
+        navigate(-1);
+      } else {
+        navigate('/');
+      }
     }
   };
-  closeRef.current = close;
-
-  // Intercept browser back / swipe-back: route it through close() so the back
-  // gesture gets the same animation as the close button.
-  useEffect(() => {
-    // Push a sentinel state so the first back fires popstate while staying on
-    // the same URL — gives close() a chance to animate before we leave.
-    window.history.pushState({ ...window.history.state, __morphSentinel: true }, '');
-    const onPop = () => {
-      if (isClosingRef.current) return;
-      closeRef.current(/* sentinelAlreadyConsumed */ true);
-    };
-    window.addEventListener('popstate', onPop);
-    return () => window.removeEventListener('popstate', onPop);
-  }, []);
-
-  // Safety net: if we unmount with morph state still active, reset so cards
-  // are not left hidden.
-  useEffect(() => {
-    return () => {
-      if (morph.phase !== 'idle' && morph.phase !== 'closing') {
-        morph.reset();
-      }
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -194,7 +160,7 @@ export function ProjectDetail({ slug, skipEnterAnimation = false }: ProjectDetai
     >
       {/* Close button */}
       <motion.button
-        onClick={() => close()}
+        onClick={close}
         aria-label="Close project"
         initial={restInitial}
         animate={restAnimate}
