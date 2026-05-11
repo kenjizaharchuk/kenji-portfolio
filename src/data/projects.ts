@@ -26,7 +26,7 @@ export type Block =
       images: {
         src?: string;
         alt: string;
-        aspect?: '4/3' | '16/9' | '1/1' | '21/9' | '16/10' | '3/2';
+        aspect?: '4/3' | '16/9' | '1/1' | '21/9' | '16/10' | '3/2' | 'natural';
         fit?: 'cover' | 'contain';
       }[];
     }
