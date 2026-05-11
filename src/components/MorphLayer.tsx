@@ -199,9 +199,9 @@ export function MorphLayer() {
           transformOrigin: 'top left',
           margin: 0,
         }}
-        initial={{ ...sub.detailInitial, opacity: sub.detailInitialOpacity }}
-        animate={{ ...sub.detailAnimate, opacity: sub.detailAnimateOpacity }}
-        transition={TRANSITION}
+        initial={{ ...sub.detailInitial, opacity: detailInitialOpacity }}
+        animate={{ ...sub.detailAnimate, opacity: detailOpacityKeyframes }}
+        transition={transitionWithSwap}
       >
         {detailSubtitle}
       </motion.p>
