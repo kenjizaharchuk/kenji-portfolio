@@ -6,7 +6,6 @@ import pmbEarlySketches1 from '@/assets/pmb-early-sketches-1.png';
 import pmbEarlySketches2 from '@/assets/pmb-early-sketches-2.png';
 import pmbMidFidelity1 from '@/assets/pmb-mid-fidelity-1.png';
 import pmbMidFidelity2 from '@/assets/pmb-mid-fidelity-2.png';
-import pmbHeroShot from '@/assets/pmb-hero-shot-new.png';
 
 export type Block =
   | { type: 'context'; content: string }
@@ -21,7 +20,6 @@ export type Block =
       images: { src?: string; alt: string; aspect?: '4/3' | '16/9' | '1/1' }[];
     }
   | { type: 'figmaEmbed'; url: string; heading?: string; title?: string }
-  | { type: 'centeredImage'; src: string; alt: string; maxWidth?: string }
   | {
       type: 'featuredArticle';
       source: string;
@@ -61,11 +59,6 @@ export const projectDetails: ProjectDetail[] = [
           "Planet Money Bot is a conversational chatbot that lets users explore economics through NPR's Planet Money archive. In partnership with NPR, I led the UX and interface design from raw prototype to launch, focusing on usability, transparency, and play. Goal: build a website to boost engagement with the extensive Planet Money podcast archives.",
       },
       {
-        type: 'centeredImage',
-        src: pmbHeroShot,
-        alt: 'Planet Money Bot landing page shown on a laptop, below the NPR logo',
-      },
-      {
         type: 'processNarrative',
         heading: 'Early Experiments & Wireframes',
         content:
@@ -81,8 +74,8 @@ export const projectDetails: ProjectDetail[] = [
         content:
           'Mid-fidelity iterations tested answer states, feedback flows, accessibility, and error handling. A/B testing with FullStory on hundreds of users informed each round of refinement.',
         images: [
-          { src: pmbMidFidelity1, alt: 'Mid-fidelity Figma screen 1', aspect: '4/3' },
-          { src: pmbMidFidelity2, alt: 'Mid-fidelity Figma screen 2', aspect: '4/3' },
+          { src: pmbMidFidelity1, alt: 'Mid-fidelity Figma screen 1', aspect: '16/9' },
+          { src: pmbMidFidelity2, alt: 'Mid-fidelity Figma screen 2', aspect: '16/9' },
         ],
       },
       {
