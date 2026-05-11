@@ -26,7 +26,7 @@ export function ProjectDetail({ slug, skipEnterAnimation = false }: ProjectDetai
 
   const [isClosing, setIsClosing] = useState(false);
   const isClosingRef = useRef(false);
-  const closeRef = useRef<() => void>(() => {});
+  const closeRef = useRef<(sentinelAlreadyConsumed?: boolean) => void>(() => {});
 
   // Measure the target rects after mount so the ghost can fly there.
   useLayoutEffect(() => {
