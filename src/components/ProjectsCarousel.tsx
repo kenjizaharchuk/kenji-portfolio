@@ -292,7 +292,10 @@ export function ProjectsCarousel() {
         </div>
 
         {/* Carousel Container */}
-        <div className="w-full">
+        <div
+          className="w-full [overscroll-behavior-x:contain]"
+          style={{ touchAction: 'pan-y' }}
+        >
           {filteredProjects.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-20 text-center">
               <p className="font-display text-white/70 text-xl mb-4">No projects match these filters</p>
