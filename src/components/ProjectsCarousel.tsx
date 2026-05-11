@@ -400,18 +400,36 @@ export function ProjectsCarousel() {
                         onClick={(e) => {
                           if (!isActive) return;
                           e.preventDefault();
-                          // Find the card element to measure its current screen rect.
-                          const cardEl = (e.currentTarget as HTMLElement).querySelector(
+                          const root = e.currentTarget as HTMLElement;
+                          const cardEl = root.querySelector(
                             `[data-card-slug="${project.slug}"]`
                           ) as HTMLElement | null;
+                          const textEl = cardEl?.querySelector(
+                            '[data-card-part="text"]'
+                          ) as HTMLElement | null;
+                          const tagsEl = cardEl?.querySelector(
+                            '[data-card-part="tags"]'
+                          ) as HTMLElement | null;
                           const detail = getProjectBySlug(project.slug!);
-                          if (cardEl && detail) {
-                            const rect = rectFromDOMRect(cardEl.getBoundingClientRect());
+                          if (cardEl && textEl && tagsEl && detail) {
+                            const frameRect = rectFromDOMRect(cardEl.getBoundingClientRect());
+                            const cardRects: MorphRects = {
+                              frame: frameRect,
+                              image: frameRect,
+                              title: rectFromDOMRect(textEl.getBoundingClientRect()),
+                              tags: rectFromDOMRect(tagsEl.getBoundingClientRect()),
+                            };
                             morph.startOpen(
-                              project.slug!,
-                              rect,
-                              detail.heroImage,
-                              detail.heroImagePosition
+                              {
+                                slug: project.slug!,
+                                image: detail.heroImage,
+                                imagePosition: detail.heroImagePosition,
+                                title: detail.title,
+                                cardSubtitle: project.subtitle,
+                                detailSubtitle: `${detail.subtitle} · ${detail.category}`,
+                                tags: detail.tags,
+                              },
+                              cardRects
                             );
                           }
                           navigate(`/projects/${project.slug}`);
