@@ -12,7 +12,8 @@ export interface Rect {
 export interface MorphRects {
   frame: Rect;
   image: Rect;
-  title: Rect;
+  subtitle: Rect;
+  titleText: Rect;
   tags: Rect;
 }
 
