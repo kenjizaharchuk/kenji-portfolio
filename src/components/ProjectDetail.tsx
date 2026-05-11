@@ -476,42 +476,44 @@ function BlockRenderer({ block }: { block: Block }) {
     }
     case 'featuredArticle':
       return (
-        <a
-          href={block.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="block rounded-2xl bg-white overflow-hidden transition-all duration-300 hover:-translate-y-0.5 hover:shadow-2xl border border-transparent hover:border-black/10"
-        >
-          {block.thumbnail && (
-            <div className="w-full bg-white border-b border-black/5">
+        <div className="mx-auto w-full md:max-w-[60%]">
+          <a
+            href={block.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block rounded-2xl bg-white overflow-hidden transition-all duration-300 hover:-translate-y-0.5 hover:shadow-2xl border border-transparent hover:border-black/10"
+          >
+            {block.thumbnail ? (
               <img
                 src={block.thumbnail}
                 alt={block.title}
                 className="w-full h-auto object-contain"
               />
-            </div>
-          )}
-          <div className="p-6 md:p-8">
-            <p className="font-display text-black/50 text-xs md:text-sm font-semibold tracking-wide uppercase mb-3">
-              Published in {block.source}
-            </p>
-            <h3 className="font-display text-black text-2xl md:text-3xl font-bold leading-tight mb-3">
-              {block.title}
-            </h3>
-            <p className="font-display text-black/70 text-base md:text-lg leading-relaxed mb-5">
-              {block.description}
-            </p>
-            <p className="font-display text-black/50 text-xs md:text-sm uppercase tracking-wide">
-              {block.date}
-            </p>
-          </div>
-        </a>
+            ) : (
+              <div className="p-6 md:p-8">
+                <p className="font-display text-black/50 text-xs md:text-sm font-semibold tracking-wide uppercase mb-3">
+                  Published in {block.source}
+                </p>
+                <h3 className="font-display text-black text-2xl md:text-3xl font-bold leading-tight mb-3">
+                  {block.title}
+                </h3>
+                <p className="font-display text-black/70 text-base md:text-lg leading-relaxed mb-5">
+                  {block.description}
+                </p>
+                <p className="font-display text-black/50 text-xs md:text-sm uppercase tracking-wide">
+                  {block.date}
+                </p>
+              </div>
+            )}
+          </a>
+        </div>
       );
   }
 }
 
-// Prevents the outer scroll container from jumping when users click into the
-// Figma iframe (browser focus-scroll behavior on iframes).
+// Prevents the outer scroll container from jumping when users interact with
+// the Figma iframe (the browser scrolls the focused iframe — or its focused
+// internal element — into view, scrolling our [data-detail-scroll] container).
 function useFigmaScrollGuard() {
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
@@ -519,20 +521,41 @@ function useFigmaScrollGuard() {
     if (!wrapper) return;
     const scrollEl = wrapper.closest('[data-detail-scroll]') as HTMLElement | null;
     if (!scrollEl) return;
+
     let saved = scrollEl.scrollTop;
-    const onMouseDown = () => {
+    let guardedUntil = 0;
+    const GUARD_MS = 1000;
+
+    const arm = () => {
       saved = scrollEl.scrollTop;
+      guardedUntil = performance.now() + GUARD_MS;
     };
-    const restore = () => {
-      requestAnimationFrame(() => {
-        if (scrollEl.scrollTop !== saved) scrollEl.scrollTop = saved;
-      });
+
+    const onScroll = () => {
+      if (performance.now() < guardedUntil && scrollEl.scrollTop !== saved) {
+        scrollEl.scrollTop = saved;
+      }
     };
-    wrapper.addEventListener('mousedown', onMouseDown, true);
-    window.addEventListener('blur', restore);
+
+    const onFocusIn = (e: FocusEvent) => {
+      // Focus moved to the iframe (or something inside the wrapper) — arm guard.
+      if (e.target === wrapper || wrapper.contains(e.target as Node) || e.target === document.body) {
+        arm();
+      }
+    };
+
+    wrapper.addEventListener('mousedown', arm, true);
+    wrapper.addEventListener('pointerdown', arm, true);
+    scrollEl.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('focusin', onFocusIn, true);
+    window.addEventListener('blur', arm);
+
     return () => {
-      wrapper.removeEventListener('mousedown', onMouseDown, true);
-      window.removeEventListener('blur', restore);
+      wrapper.removeEventListener('mousedown', arm, true);
+      wrapper.removeEventListener('pointerdown', arm, true);
+      scrollEl.removeEventListener('scroll', onScroll);
+      window.removeEventListener('focusin', onFocusIn, true);
+      window.removeEventListener('blur', arm);
     };
   }, []);
   return wrapperRef;

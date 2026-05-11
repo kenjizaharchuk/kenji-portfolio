@@ -8,6 +8,7 @@ import pmbMidFidelity1 from '@/assets/pmb-mid-fidelity-1.png';
 import pmbMidFidelity2 from '@/assets/pmb-mid-fidelity-2.png';
 import pmbFinalScreens from '@/assets/pmb-final-screens.jpg';
 import pmbArticleThumb from '@/assets/pmb-article-thumb.png';
+import pmbLaptopHero from '@/assets/pmb-laptop-hero.png';
 
 export type Block =
   | { type: 'context'; content: string }
@@ -69,6 +70,13 @@ export const projectDetails: ProjectDetail[] = [
           "Planet Money Bot is a conversational chatbot that lets users explore economics through NPR's Planet Money archive. In partnership with NPR, I led the UX and interface design from raw prototype to launch, focusing on usability, transparency, and play. Goal: build a website to boost engagement with the extensive Planet Money podcast archives.",
       },
       {
+        type: 'featuredImage',
+        src: pmbLaptopHero,
+        alt: 'Planet Money Bot landing page on a laptop',
+        aspect: '16/10',
+        width: 'md',
+      },
+      {
         type: 'processNarrative',
         heading: 'Early Experiments & Wireframes',
         content:
@@ -98,13 +106,14 @@ export const projectDetails: ProjectDetail[] = [
         heading: 'Final UI & Visual Language',
         content:
           "The final system used soft greens and retro typography to reflect Planet Money's tone. Engagement scaled from hundreds to thousands of users.",
-        images: [
-          {
-            src: pmbFinalScreens,
-            alt: 'Final Planet Money Bot screens across phone and laptop',
-            aspect: '21/9',
-          },
-        ],
+        images: [],
+      },
+      {
+        type: 'featuredImage',
+        src: pmbFinalScreens,
+        alt: 'Final Planet Money Bot screens across phone and laptop',
+        aspect: '21/9',
+        width: 'lg',
       },
       {
         type: 'outcome',
