@@ -391,16 +391,21 @@ function BlockRenderer({ block }: { block: Block }) {
                     ? 'aspect-[21/9]'
                     : img.aspect === '1/1'
                     ? 'aspect-square'
+                    : img.aspect === '16/10'
+                    ? 'aspect-[16/10]'
+                    : img.aspect === '3/2'
+                    ? 'aspect-[3/2]'
                     : 'aspect-[4/3]';
+                const fitClass = img.fit === 'contain' ? 'object-contain' : 'object-cover';
                 return img.src ? (
                   <div
                     key={i}
-                    className={`relative ${aspect} rounded-2xl overflow-hidden border border-white/10`}
+                    className={`relative ${aspect} rounded-2xl overflow-hidden border border-white/10 ${img.fit === 'contain' ? 'bg-white/[0.02]' : ''}`}
                   >
                     <img
                       src={img.src}
                       alt={img.alt}
-                      className="absolute inset-0 w-full h-full object-cover"
+                      className={`absolute inset-0 w-full h-full ${fitClass}`}
                     />
                   </div>
                 ) : (
