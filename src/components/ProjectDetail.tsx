@@ -43,7 +43,20 @@ export function ProjectDetail({ slug, skipEnterAnimation = false }: ProjectDetai
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [morph.phase]);
 
-  const close = () => {
+  // When closing, we need to pop both the sentinel entry and the /projects/:slug
+  // entry to land at home. If the back gesture already consumed the sentinel,
+  // we only need to pop once.
+  const popHome = (sentinelAlreadyConsumed: boolean) => {
+    const stepsBack = sentinelAlreadyConsumed ? 1 : 2;
+    const idx = (window.history.state && window.history.state.idx) ?? 0;
+    if (idx >= stepsBack) {
+      window.history.go(-stepsBack);
+    } else {
+      navigate('/', { replace: true });
+    }
+  };
+
+  const close = (sentinelAlreadyConsumed = false) => {
     if (isClosingRef.current) return;
 
     const cardEl = document.querySelector(
@@ -59,6 +72,8 @@ export function ProjectDetail({ slug, skipEnterAnimation = false }: ProjectDetai
 
     const canMorph =
       cardEl && cardSubtitleEl && cardTitleEl && tagsEl && heroEl && subtitleEl && titleEl && detailTagsEl && morph.phase !== 'idle';
+
+    isClosingRef.current = true;
 
     if (canMorph) {
       const frameRect = rectFromDOMRect(cardEl.getBoundingClientRect());
@@ -77,42 +92,32 @@ export function ProjectDetail({ slug, skipEnterAnimation = false }: ProjectDetai
         tags: rectFromDOMRect(detailTagsEl.getBoundingClientRect()),
       };
 
-      // Start retract immediately AND fade content in parallel — no gap.
-      isClosingRef.current = true;
       setIsClosing(true);
       morph.startClose(detailRects, cardRects);
-      if (window.history.state && window.history.state.idx > 0) {
-        navigate(-1);
-      } else {
-        navigate('/');
-      }
+      popHome(sentinelAlreadyConsumed);
     } else {
-      isClosingRef.current = true;
       morph.reset();
-      if (window.history.state && window.history.state.idx > 0) {
-        navigate(-1);
-      } else {
-        navigate('/');
-      }
+      popHome(sentinelAlreadyConsumed);
     }
   };
   closeRef.current = close;
 
-  // Intercept browser back / swipe-back: cancel the pop and route through close()
-  // so the back gesture gets the same animation as the close button.
+  // Intercept browser back / swipe-back: route it through close() so the back
+  // gesture gets the same animation as the close button.
   useEffect(() => {
-    // Push a sentinel state so the next back fires popstate without leaving the route.
+    // Push a sentinel state so the first back fires popstate while staying on
+    // the same URL — gives close() a chance to animate before we leave.
     window.history.pushState({ ...window.history.state, __morphSentinel: true }, '');
     const onPop = () => {
       if (isClosingRef.current) return;
-      closeRef.current();
+      closeRef.current(/* sentinelAlreadyConsumed */ true);
     };
     window.addEventListener('popstate', onPop);
     return () => window.removeEventListener('popstate', onPop);
   }, []);
 
-  // Safety net: if we unmount with morph state still active (e.g., unexpected route
-  // change), reset so the carousel cards are not left hidden.
+  // Safety net: if we unmount with morph state still active, reset so cards
+  // are not left hidden.
   useEffect(() => {
     return () => {
       if (morph.phase !== 'idle' && morph.phase !== 'closing') {
