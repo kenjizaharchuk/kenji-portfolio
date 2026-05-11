@@ -1,77 +1,45 @@
-# Fixing the card-end visual mismatch
+## Diagnosis
 
-## Diagnosis (your hypothesis was correct, with one refinement)
+### Issue 1 — Back button leaves carousel hidden
 
-The ghost currently renders **one copy** of each text/tag block using the **detail view's intrinsic styles** (subtitle `text-sm md:text-base`, title `text-4xl md:text-6xl`, tags in detail-width flex-wrap), and uniformly scales that copy down to fit the card at the card-end.
+The card sets `opacity: 0` when `morph.slug === project.slug && morph.phase !== 'idle'`. The morph state is only reset by the close-button flow (`close()` in `ProjectDetail.tsx`), which calls `morph.startClose()` → animation → `morph.reset()` via `MorphLayer.onFrameComplete`.
 
-Two sources of mismatch follow from this:
+Browser back fires `popstate` → React Router updates `slug` to undefined → `ProjectDetail` unmounts. Nothing calls `morph.reset()`, so `morph.phase` stays `'open'` and the matching card stays hidden. (The MorphLayer itself is invisible because `phase === 'open'` sets opacity to 0, so visually the card just appears "missing.")
 
-1. **Title block** — the measured rect is the wrapper that contains *both* the subtitle and the `h1`. The detail subtitle (`"LEAD DESIGNER · DIGITAL DESIGN · WORK EXPERIENCE"`) is much longer than the card subtitle (`"Lead Designer"`), so the detail wrapper is wider than its title alone. Card-side measures a narrower wrapper. The width ratio used for uniform scale ends up smaller than the true font-size ratio (30/60 = 0.5), so the title shrinks *past* the real card title's size.
+### Issue 2 — Horizontal trackpad swipe triggers browser navigation
 
-2. **Tags** — chip styles are identical between views, but card and detail containers wrap chips at different widths, into different numbers of rows. Scaling detail-layout chips by `cardTagsWidth / detailTagsWidth` produces chips that are smaller than the real card's chips (which never reflowed and are at intrinsic font size).
+The Swiper container doesn't set `overscroll-behavior-x`, so when the carousel hits an edge (or even mid-scroll in some browsers/Swiper modes), the horizontal wheel/swipe deltas bubble to the page and trigger the browser's two-finger swipe back/forward gesture.
 
-The subtitle already crossfades two stacked variants, which is why nobody complained about it.
+## Fix
 
-## Fix: dual-render the title slot and the tags, crossfade between them
+### 1. Reset morph on back-navigation (and animate when possible)
 
-Render **both** a card-styled variant and a detail-styled variant for the title block and the tags. Each variant is laid out at its own natural size (no width animation, no reflow). Each variant FLIPs between the card rect and the detail rect using its own transform. They crossfade based on phase progress.
+**Preferred path: intercept `popstate` inside `ProjectDetail` and route it through `close()`** so the back-button gets the same close animation as the close button.
 
-At the card-end: card-variant is opacity 1, detail-variant is opacity 0 — perfect visual match with the real card.
-At the detail-end: inverse — perfect match with the resting case study.
-In the middle: both variants occupy nearly the same screen size and position (the title scales linearly because the string is identical and font weight matches; chips have identical intrinsic sizing). The crossfade therefore reads as a continuous resolve, not a "pop."
+- Add a `popstate` listener in `ProjectDetail` that:
+  1. Pushes the current `/projects/:slug` URL back onto history via `history.pushState` (cancels the user's back navigation in-place, without a real navigation).
+  2. Calls `close()`, which already handles the close morph and then calls `navigate(-1)` at the right time.
+  3. A small ref guards against re-entry while closing.
+- This makes back-button behavior identical to clicking the close button.
 
-This is the technique the subtitle is already using; we extend it to title and tags.
+**Safety net: unmount cleanup.** If for any reason the component unmounts while `morph.phase !== 'idle'` and not already closing (e.g., direct URL change, edge cases), call `morph.reset()` in a `useEffect` cleanup. This guarantees the carousel can never be left in the broken state.
 
-## Implementation
+### 2. Contain horizontal swipe in the carousel
 
-### `morphContext.tsx`
-Extend `MorphRects` so the ghost can position each variant precisely:
+In `ProjectsCarousel.tsx`, on the Swiper element (or a wrapping `div`):
 
-```ts
-interface MorphRects {
-  frame: Rect;
-  image: Rect;
-  titleText: Rect;   // the <h3>/<h1> element only
-  subtitle: Rect;    // the subtitle <p> element only
-  tags: Rect;        // unchanged role, but tags-of-the-source-view
-}
-```
+- Add inline style / Tailwind: `overscroll-behavior-x: contain` (using `[overscroll-behavior-x:contain]` arbitrary class, since there's no built-in token for x-axis only).
+- Add `touch-action: pan-y` on the carousel container so horizontal touch/trackpad gestures are consumed by Swiper and not interpreted as page-level horizontal scroll/back-swipe.
 
-Drop the old combined `title` rect.
+These two CSS properties together are the standard fix and don't affect the manual back/forward buttons.
 
-### Measurement sites
-- `ProjectsCarousel.tsx` (card side): add `data-card-part="subtitle"` to the card's subtitle `<p>` and `data-card-part="title"` to the `<h3>`. Measure both. `tags` rect already measured.
-- `ProjectDetail.tsx`: add refs for the detail subtitle `<p>` and the detail `<h1>`. Measure both into `detailRects.subtitle` and `detailRects.titleText`. `tagsBlockRef` already measured.
+## Files to change
 
-### `MorphLayer.tsx` — render two variants per slot
+- `src/components/ProjectDetail.tsx` — add popstate interceptor + unmount safety reset.
+- `src/components/ProjectsCarousel.tsx` — add `overscroll-behavior-x: contain` and `touch-action: pan-y` to the Swiper wrapper.
 
-**Title slot.** Two stacked `<h1>`s:
-- **Card-title variant** — classes `text-2xl md:text-3xl` (matches real card). Positioned at `detailRects.titleText` with transform `inverseUniform(cardRects.titleText, detailRects.titleText)` at card-end and identity at detail-end. *Wait — render it at the card layout instead*: position at `cardRects.titleText`, identity at card-end, transform to `detailRects.titleText` at detail-end. Cleaner mental model.
-- **Detail-title variant** — classes `text-4xl md:text-6xl`. Position at `detailRects.titleText`, identity at detail-end, transform to `cardRects.titleText` at card-end.
-- Opacity: card-variant `1 → 0`; detail-variant `0 → 1`. Reverse for closing.
+## Risks / notes
 
-**Subtitle slot.** Same dual-FLIP, replacing the current "stacked at detail layout" approach. Card-variant uses the card's subtitle classes (`text-base text-white/70`), positioned at `cardRects.subtitle`. Detail-variant uses the detail classes (`text-sm md:text-base text-white/60`), positioned at `detailRects.subtitle`.
-
-**Tags slot.** Two stacked tag containers:
-- **Card-tags variant** — rendered inside a `width: cardRects.tags.width` flex-wrap, so chips wrap exactly like the real card. Position at `cardRects.tags`, identity at card-end, uniform scale to `detailRects.tags` at detail-end.
-- **Detail-tags variant** — rendered inside a `width: detailRects.tags.width` flex-wrap. Position at `detailRects.tags`, identity at detail-end, uniform scale to `cardRects.tags` at card-end.
-- Each variant's *own* width is fixed (no animation), so there is no reflow during the morph. The chips on each variant are at their natural intrinsic size when their opacity is 1.
-
-**Frame and image** — unchanged.
-
-### `ProjectDetail.tsx`
-- Add the two new refs (subtitle, titleText) and populate `detailRects` accordingly.
-- The "resting" opacity-toggled elements stay as-is.
-
-## What this preserves
-
-- No tag reflow during flight (each variant's container width is constant).
-- No title pop at midpoint (same string, linear scale, near-identical screen size; the crossfade lands on overlapping visuals).
-- Hero border behavior, easing curve (`[0.65, 0, 0.35, 1]`, 1.0s), z-layering, page background, and close-direction overlap from the prior fixes all stay exactly as they are.
-
-## Files touched
-
-- `src/lib/morphContext.tsx` — extend `MorphRects` (add `titleText`, `subtitle`; drop `title`).
-- `src/components/ProjectsCarousel.tsx` — measure card subtitle + title elements; populate new rect shape.
-- `src/components/ProjectDetail.tsx` — add subtitle/titleText refs; populate new rect shape.
-- `src/components/MorphLayer.tsx` — replace single-variant title block + single-variant tags with dual-render + crossfade.
+- The popstate interceptor must guard against infinite loops: the `pushState` we do to cancel the back must not itself fire popstate (it won't — `pushState` doesn't), and `close()`'s own `navigate(-1)` must be allowed to proceed. A simple `isClosingRef` flag handles this.
+- If the user mashes back rapidly, the cleanup `morph.reset()` in unmount is the backstop.
+- `overscroll-behavior-x: contain` is supported in all modern browsers; no regression risk for keyboard/manual back navigation.
