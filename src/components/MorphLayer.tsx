@@ -93,10 +93,10 @@ export function MorphLayer() {
   const animateOverlay = openingOrOpen ? 0 : 1;
 
   // Subtitle crossfade: card-variant visible at card-end; detail-variant visible at hero-end.
-  const initialCardSub = opening ? 1 : 0;
-  const animateCardSub = opening ? 0 : 1;
-  const initialDetailSub = opening ? 0 : 1;
-  const animateDetailSub = opening ? 1 : 0;
+  const initialCardSub = openingOrOpen ? 1 : 0;
+  const animateCardSub = openingOrOpen ? 0 : 1;
+  const initialDetailSub = openingOrOpen ? 0 : 1;
+  const animateDetailSub = openingOrOpen ? 1 : 0;
 
   const onFrameComplete = () => {
     if (phase === 'opening') setOpen();
