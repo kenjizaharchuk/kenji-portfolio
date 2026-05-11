@@ -2,6 +2,10 @@ import planetMoney from '@/assets/planet-money.png';
 import spotifyFeature from '@/assets/spotify-feature.png';
 import geniusRedesign from '@/assets/genius-redesign.png';
 import spiberProject from '@/assets/spiber-project.png';
+import pmbEarlySketches1 from '@/assets/pmb-early-sketches-1.png';
+import pmbEarlySketches2 from '@/assets/pmb-early-sketches-2.png';
+import pmbMidFidelity1 from '@/assets/pmb-mid-fidelity-1.png';
+import pmbMidFidelity2 from '@/assets/pmb-mid-fidelity-2.png';
 
 export type Block =
   | { type: 'context'; content: string }
@@ -60,8 +64,8 @@ export const projectDetails: ProjectDetail[] = [
         content:
           'Early wireframes explored interface flows: preloading sources before LLM answers, expanding transcripts in Spotify-like formats. These mapped user intent and clarified feature hierarchy.',
         images: [
-          { alt: 'Early wireframe sketch 1', aspect: '4/3' },
-          { alt: 'Early wireframe sketch 2', aspect: '4/3' },
+          { src: pmbEarlySketches1, alt: 'Early wireframe sketch 1', aspect: '16/9' },
+          { src: pmbEarlySketches2, alt: 'Early wireframe sketch 2', aspect: '16/9' },
         ],
       },
       {
@@ -70,14 +74,14 @@ export const projectDetails: ProjectDetail[] = [
         content:
           'Mid-fidelity iterations tested answer states, feedback flows, accessibility, and error handling. A/B testing with FullStory on hundreds of users informed each round of refinement.',
         images: [
-          { alt: 'Mid-fidelity Figma screen 1', aspect: '4/3' },
-          { alt: 'Mid-fidelity Figma screen 2', aspect: '4/3' },
+          { src: pmbMidFidelity1, alt: 'Mid-fidelity Figma screen 1', aspect: '16/9' },
+          { src: pmbMidFidelity2, alt: 'Mid-fidelity Figma screen 2', aspect: '16/9' },
         ],
       },
       {
         type: 'figmaEmbed',
         heading: 'Interactive prototype',
-        url: FIGMA_PLACEHOLDER_URL,
+        url: 'https://embed.figma.com/design/90QF6KkETnDvmy85j9h2xL/Planet-Money-Design--Copy-?node-id=1051-2710&embed-host=share',
       },
       {
         type: 'processNarrative',
