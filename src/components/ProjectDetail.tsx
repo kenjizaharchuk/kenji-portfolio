@@ -444,17 +444,27 @@ function BlockRenderer({ block }: { block: Block }) {
           {block.images.length > 0 && (
             <div className={`grid grid-cols-1 ${gridCols} gap-4 md:gap-6`}>
               {block.images.map((img, i) => {
+                const widthClass =
+                  img.width === 'sm'
+                    ? 'md:max-w-[50%]'
+                    : img.width === 'md'
+                    ? 'md:max-w-[65%]'
+                    : img.width === 'lg'
+                    ? 'md:max-w-[80%]'
+                    : img.width === 'full'
+                    ? ''
+                    : '';
+                const widthWrap = widthClass ? `mx-auto w-full ${widthClass}` : '';
                 if (img.aspect === 'natural' && img.src) {
                   return (
-                    <div
-                      key={i}
-                      className="rounded-2xl overflow-hidden border border-white/10 bg-white/[0.02]"
-                    >
-                      <img
-                        src={img.src}
-                        alt={img.alt}
-                        className="block w-full h-auto"
-                      />
+                    <div key={i} className={widthWrap || undefined}>
+                      <div className="rounded-2xl overflow-hidden border border-white/10 bg-white/[0.02]">
+                        <img
+                          src={img.src}
+                          alt={img.alt}
+                          className="block w-full h-auto"
+                        />
+                      </div>
                     </div>
                   );
                 }
@@ -471,9 +481,8 @@ function BlockRenderer({ block }: { block: Block }) {
                     ? 'aspect-[3/2]'
                     : 'aspect-[4/3]';
                 const fitClass = img.fit === 'contain' ? 'object-contain' : 'object-cover';
-                return img.src ? (
+                const inner = img.src ? (
                   <div
-                    key={i}
                     className={`relative ${aspect} rounded-2xl overflow-hidden border border-white/10 ${img.fit === 'contain' ? 'bg-white/[0.02]' : ''}`}
                   >
                     <img
@@ -484,13 +493,17 @@ function BlockRenderer({ block }: { block: Block }) {
                   </div>
                 ) : (
                   <div
-                    key={i}
                     className={`relative ${aspect} rounded-2xl border border-dashed border-white/20 bg-white/[0.02] flex items-center justify-center`}
                   >
                     <span className="font-display text-white/40 text-sm md:text-base px-4 text-center">
                       {img.alt}
                     </span>
                   </div>
+                );
+                return widthWrap ? (
+                  <div key={i} className={widthWrap}>{inner}</div>
+                ) : (
+                  <div key={i}>{inner}</div>
                 );
               })}
             </div>
