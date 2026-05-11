@@ -511,82 +511,51 @@ function BlockRenderer({ block }: { block: Block }) {
   }
 }
 
-// TEMPORARY DIAGNOSTIC: log every event that might cause the scroll jump
-// when interacting with the Figma iframe. No restoration — we want to see
-// the raw trigger order. Remove once root cause is identified.
+// Prevents the outer scroll container from jumping when users interact with
+// the Figma iframe (the browser scrolls the focused iframe — or its focused
+// internal element — into view, scrolling our [data-detail-scroll] container).
 function useFigmaScrollGuard() {
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
     const wrapper = wrapperRef.current;
     if (!wrapper) return;
     const scrollEl = wrapper.closest('[data-detail-scroll]') as HTMLElement | null;
-    const iframe = wrapper.querySelector('iframe');
-    const tag = '[FIGMA-DIAG]';
-    const t0 = performance.now();
-    const ts = () => `+${(performance.now() - t0).toFixed(1)}ms`;
-    const active = () => {
-      const a = document.activeElement;
-      return a ? `${a.tagName}${(a as HTMLElement).id ? '#' + (a as HTMLElement).id : ''}` : 'null';
+    if (!scrollEl) return;
+
+    let saved = scrollEl.scrollTop;
+    let guardedUntil = 0;
+    const GUARD_MS = 1000;
+
+    const arm = () => {
+      saved = scrollEl.scrollTop;
+      guardedUntil = performance.now() + GUARD_MS;
     };
 
-    let lastScrollTop = scrollEl?.scrollTop ?? 0;
-    let lastWindowY = window.scrollY;
-
-    const onContainerScroll = () => {
-      const cur = scrollEl?.scrollTop ?? 0;
-      console.log(tag, ts(), 'CONTAINER scroll', { from: lastScrollTop, to: cur, delta: cur - lastScrollTop, active: active() });
-      lastScrollTop = cur;
-    };
-    const onWindowScroll = () => {
-      console.log(tag, ts(), 'WINDOW scroll', { from: lastWindowY, to: window.scrollY, delta: window.scrollY - lastWindowY, active: active() });
-      lastWindowY = window.scrollY;
-    };
-    const log = (name: string) => (e: Event) => {
-      const tgt = e.target as Element | null;
-      console.log(tag, ts(), name, {
-        target: tgt && tgt instanceof Element ? `${tgt.tagName}` : String(tgt),
-        active: active(),
-        containerTop: scrollEl?.scrollTop,
-        windowY: window.scrollY,
-      });
-    };
-    const onMessage = (e: MessageEvent) => {
-      if (typeof e.origin === 'string' && /figma/i.test(e.origin)) {
-        let preview: string = '';
-        try { preview = typeof e.data === 'string' ? e.data.slice(0, 120) : JSON.stringify(e.data).slice(0, 120); } catch { preview = '[unserializable]'; }
-        console.log(tag, ts(), 'postMessage from figma', { origin: e.origin, data: preview, containerTop: scrollEl?.scrollTop });
+    const onScroll = () => {
+      if (performance.now() < guardedUntil && scrollEl.scrollTop !== saved) {
+        scrollEl.scrollTop = saved;
       }
     };
 
-    scrollEl?.addEventListener('scroll', onContainerScroll, { passive: true });
-    window.addEventListener('scroll', onWindowScroll, { passive: true });
-    window.addEventListener('focus', log('window FOCUS'), true);
-    window.addEventListener('blur', log('window BLUR'), true);
-    window.addEventListener('focusin', log('window FOCUSIN'), true);
-    window.addEventListener('focusout', log('window FOCUSOUT'), true);
-    window.addEventListener('message', onMessage);
-    wrapper.addEventListener('pointerdown', log('wrapper POINTERDOWN'), true);
-    wrapper.addEventListener('mousedown', log('wrapper MOUSEDOWN'), true);
-    iframe?.addEventListener('load', log('iframe LOAD'));
+    const onFocusIn = (e: FocusEvent) => {
+      // Focus moved to the iframe (or something inside the wrapper) — arm guard.
+      if (e.target === wrapper || wrapper.contains(e.target as Node) || e.target === document.body) {
+        arm();
+      }
+    };
 
-    let ro: ResizeObserver | undefined;
-    if (typeof ResizeObserver !== 'undefined') {
-      ro = new ResizeObserver((entries) => {
-        for (const en of entries) {
-          console.log(tag, ts(), 'RESIZE', { el: (en.target as Element).tagName, w: en.contentRect.width, h: en.contentRect.height, containerTop: scrollEl?.scrollTop });
-        }
-      });
-      ro.observe(wrapper);
-      if (iframe) ro.observe(iframe);
-    }
-
-    console.log(tag, ts(), 'INIT', { scrollEl: !!scrollEl, iframe: !!iframe, containerTop: scrollEl?.scrollTop });
+    wrapper.addEventListener('mousedown', arm, true);
+    wrapper.addEventListener('pointerdown', arm, true);
+    scrollEl.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('focusin', onFocusIn, true);
+    window.addEventListener('blur', arm);
 
     return () => {
-      scrollEl?.removeEventListener('scroll', onContainerScroll);
-      window.removeEventListener('scroll', onWindowScroll);
-      window.removeEventListener('message', onMessage);
-      ro?.disconnect();
+      wrapper.removeEventListener('mousedown', arm, true);
+      wrapper.removeEventListener('pointerdown', arm, true);
+      scrollEl.removeEventListener('scroll', onScroll);
+      window.removeEventListener('focusin', onFocusIn, true);
+      window.removeEventListener('blur', arm);
     };
   }, []);
   return wrapperRef;
