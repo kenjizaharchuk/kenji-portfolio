@@ -1,80 +1,86 @@
-## Diagnosis
 
-`overscroll-behavior-x: contain` only takes effect on **native scroll containers** — i.e. an element with `overflow-x: auto/scroll` whose content is wider than its box. Swiper is not a native scroll container: it uses CSS transforms on a flex track and consumes wheel/touch events via JS handlers. The Swiper wrapper never actually scrolls in the browser's eyes, so the overscroll mechanism never engages. Putting `overscroll-behavior-x: contain` on it is a no-op.
+## Scope
 
-The browser's trackpad-swipe back/forward gesture (macOS Safari/Chrome) is triggered when:
-- A horizontal-dominant wheel/swipe event reaches an element that **isn't a horizontally-scrollable native container**, OR
-- The horizontal scroll on such a container reaches its edge without `contain`/`none` set.
+Two files change: `src/data/projects.ts` (data + types) and `src/components/ProjectDetail.tsx` (renderer additions). `ProjectsCarousel.tsx` gets one tiny edit to add `slug: 'spiber'` to the existing Spiber card.
 
-In our case the page itself has no horizontal scroll, and Swiper doesn't qualify as a scroll container, so every horizontal trackpad gesture is eligible for navigation — explaining why it triggers so easily, not only at edges.
+## 1. New + revised block types
 
-`touch-action: pan-y` is also irrelevant here: it governs touch (finger) gestures, not trackpad wheel events.
+### `figmaEmbed`
+```ts
+{ type: 'figmaEmbed'; url: string; title?: string; heading?: string }
+```
+- `url` is a Figma embed URL (typically `https://www.figma.com/embed?embed_host=share&url=...`).
+- Renders a full-width responsive iframe (aspect 16/10, rounded, bordered) with `allowfullscreen`. Standard Figma embed gives pan, zoom, page nav inline.
+- Optional `heading` rendered above the iframe.
 
----
+### `featuredArticle`
+```ts
+{ type: 'featuredArticle'; source: string; title: string; description: string; date: string; url: string }
+```
+- Renders a single clickable `<a target="_blank" rel="noopener noreferrer">` styled as a clean white card on dark background.
+- Layout: small uppercase "Published in {source}" eyebrow, title (large, dark), description (muted dark), date footer.
+- Hover: subtle lift + border darken. Whole card is the link.
 
-## Proposed approach
-
-Two layered fixes — together they make browser-swipe-nav impossible while interacting with the page, without breaking Swiper or mouse-clicked back/forward.
-
-### Fix A — Disable swipe-nav globally via CSS
-
-Add to `src/index.css`:
-
-```css
-html, body {
-  overscroll-behavior-x: none;
+### `processNarrative` (new, replaces use of `process` for Planet Money sections)
+Existing `process` block only allows one image and no heading. The user needs headed sections with multiple placeholder image slots. New block:
+```ts
+{
+  type: 'processNarrative';
+  heading: string;
+  content: string;
+  images: { src?: string; alt: string; aspect?: '4/3' | '16/9' | '1/1' }[];
 }
 ```
+- When `src` is undefined, the slot renders as a dashed-bordered empty placeholder with the alt text faintly shown. Lets the user drop real images in later without restructuring.
+- Layout: heading + paragraph on top, image grid below (1 col mobile, 2 col md when >1 image, 1 col when only 1).
+- The existing `process` block stays in the union for back-compat but is unused after this change.
 
-Setting it on the root scrolling element (`html`/`body`) tells the browser: never treat horizontal overscroll on this document as a navigation gesture. This is the documented, supported way to opt out of swipe-back across Chrome, Edge, Firefox, and Safari (Safari 16+). It does **not** affect:
-- The browser's back/forward toolbar buttons (those are explicit navigations, not gestures).
-- Keyboard shortcuts.
-- Swiper's own horizontal interaction (Swiper handles wheel/touch in JS; this property only governs the browser's overscroll/gesture behavior).
+## 2. Planet Money Bot content
 
-This single change typically fixes the issue completely. The earlier attempt failed only because it was scoped to a non-scrolling element.
+Update the existing `planet-money-bot` entry in `projectDetails`:
 
-### Fix B — Belt-and-suspenders: preventDefault on horizontal wheel inside the carousel section
+- `subtitle`: `Lead Designer`
+- `category`: `Digital Design · Work Experience`
+- `tags`: unchanged
+- `blocks`, in order:
+  1. `context` — combined paragraph: "Planet Money Bot is a conversational chatbot... usability, transparency, and play. Goal: build a website to boost engagement with the extensive Planet Money podcast archives." (two sentences, no emdashes)
+  2. `processNarrative` heading `Early Experiments & Wireframes`, body as supplied, 2 placeholder image slots (alt: "Early wireframe sketch 1/2")
+  3. `processNarrative` heading `Mid-Fidelity Iterations & UX Decisions`, body as supplied, 2 placeholder image slots (alt: "Mid-fidelity Figma screen 1/2")
+  4. `figmaEmbed` — placeholder URL pointing to a public Figma community file so the block renders. Heading: `Interactive prototype`. Placeholder URL: `https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Ffile%2FFP7lqd1V00LUaT5zvdklkkkk%2FFigma-Basics`. (Easy to swap.)
+  5. `processNarrative` heading `Final UI & Visual Language`, body as supplied, 2 placeholder image slots (alt: "Final UI mockup 1/2")
+  6. `outcome` — exact text supplied.
+  7. `featuredArticle` — source: `JSK Fellows`, title: `Can We Build An AI Chatbot For Journalism?`, description: `Early Lessons In Accuracy, Sourcing, and Delight From A (Draft) Chatbot Based on NPR's Planet Money Archives`, date: `Apr 17, 2023`, url: `#` (placeholder, user will supply real URL).
 
-In case any browser/version still slips through (older Safari, or future regressions), attach a non-passive `wheel` listener to the `#things` section that calls `preventDefault()` when the gesture is horizontal-dominant:
+## 3. Spiber placeholder case study
 
-```ts
-useEffect(() => {
-  const el = sectionRef.current;
-  if (!el) return;
-  const onWheel = (e: WheelEvent) => {
-    if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) e.preventDefault();
-  };
-  el.addEventListener('wheel', onWheel, { passive: false });
-  return () => el.removeEventListener('wheel', onWheel);
-}, []);
-```
+- Add a new `ProjectDetail` with `slug: 'spiber'`, title `Spiber Brewed Protein`, subtitle `Creative Intern`, category `Digital Design · Work Experience`, tags from the carousel entry. `heroImage` = the `spiberProject` asset already imported in the carousel (re-import in projects.ts).
+- Blocks: lorem-ipsum modeled on current PMB placeholder structure: `context`, `processNarrative` (one heading + 2 placeholder slots), `figmaEmbed` (same placeholder URL), `processNarrative` (one heading + 2 placeholder slots), `outcome`, `featuredArticle` (lorem placeholders).
+- In `ProjectsCarousel.tsx`, add `slug: 'spiber'` to the existing project id 9 (`Spiber Brewed Protein`). No other carousel changes.
 
-Calling `preventDefault()` on the wheel event blocks the browser's gesture interpretation. Swiper's mousewheel module reads `deltaX` from the same event (event listeners are independent — preventDefault doesn't stop other listeners from receiving the event), so carousel scrolling continues to work normally.
+## 4. BlockRenderer changes (`ProjectDetail.tsx`)
 
-Scoping this to the `#things` section (not the whole document) means vertical-dominant scrolls outside the carousel are untouched, and only horizontal-dominant wheel deltas over the carousel section are swallowed.
+Add three cases to the existing `switch (block.type)`:
 
-### Why this won't break things
+- `figmaEmbed`: render heading (if any) + `<div class="aspect-[16/10] rounded-2xl overflow-hidden border border-white/10"><iframe src={url} class="w-full h-full" allowfullscreen /></div>`.
+- `featuredArticle`: render `<a>` card. Container: `rounded-2xl bg-white p-6 md:p-8 block transition hover:-translate-y-0.5 hover:shadow-xl`. Inside: uppercase source eyebrow (muted), title (text-2xl md:text-3xl font-display font-bold text-black), description (text-base md:text-lg text-black/70), date footer (text-sm text-black/50 uppercase tracking-wide).
+- `processNarrative`: heading (`font-display text-3xl md:text-4xl font-bold text-white/90`), content paragraph (matches existing context style), then image grid. Empty slots = dashed-bordered placeholder boxes labeled with their alt text faintly.
 
-- Fix A is a single declarative CSS property; it only changes overscroll/gesture behavior, not scrolling itself.
-- Fix B preventDefaults only horizontal-dominant wheel events, and only within the carousel section. Swiper's own handler still receives the event and reads `deltaX`. Vertical page scrolling (`deltaY`-dominant) is untouched, so users can still scroll the page with a trackpad while the cursor is over the carousel.
-- Mouse-clicked back/forward buttons go through a different code path (explicit navigation, not gesture) and are unaffected by both fixes.
+All Tailwind tokens follow the existing semantic style (no new colors needed; the white-card on dark bg uses literal `bg-white`/`text-black` which is acceptable for an intentional inverted card, consistent with the user's Medium-preview reference).
 
-### Cleanup
+## Voice and formatting
 
-Remove the now-useless `[overscroll-behavior-x:contain] [touch-action:pan-y]` from the Swiper's className in `ProjectsCarousel.tsx` (it's a no-op on a non-scroll container).
+- No emdashes anywhere in new strings or headings. Periods, commas, colons only.
+- Block headings: plain, technical ("Early Experiments & Wireframes" as supplied — note `&` is fine, that's not an emdash).
+- First person, not braggy.
 
----
+## Out of scope
 
-## Files to change
+- No removal of the legacy `process` or `embed` block types (kept to avoid breaking anything else, but unused after this pass).
+- No image uploads. All real images remain placeholders until the user provides them.
+- No styling changes to existing blocks.
 
-- `src/index.css` — add `overscroll-behavior-x: none` to `html, body`.
-- `src/components/ProjectsCarousel.tsx` — add `sectionRef` + non-passive wheel listener on the `#things` section; remove the inert arbitrary classes from the Swiper.
+## Verification
 
-## Verification checklist
-
-1. Trackpad swipe left/right while hovering the carousel → carousel scrolls, browser does NOT navigate.
-2. Trackpad swipe left/right while hovering above/below the carousel → browser does NOT navigate (Fix A covers this too).
-3. Trackpad scroll vertically anywhere → page scrolls normally.
-4. Mouse-click the browser back button → still navigates back.
-5. Keyboard Alt+Left / Cmd+Left → still navigates back.
-6. Open a project → close via button → returns to homepage, card visible (regression check on prior fix).
+- Visit `/projects/planet-money-bot`: all 7 blocks render in order, figma iframe loads, featured article card is clickable and opens in new tab.
+- Visit `/projects/spiber` directly and via the carousel card: morph open/close works, blocks render with lorem.
+- Browser back from either detail page returns to home with carousel intact (existing behavior preserved).

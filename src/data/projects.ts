@@ -1,6 +1,7 @@
 import planetMoney from '@/assets/planet-money.png';
 import spotifyFeature from '@/assets/spotify-feature.png';
 import geniusRedesign from '@/assets/genius-redesign.png';
+import spiberProject from '@/assets/spiber-project.png';
 
 export type Block =
   | { type: 'context'; content: string }
@@ -8,6 +9,21 @@ export type Block =
   | { type: 'pullQuote'; content: string; attribution?: string }
   | { type: 'embed'; label: string; src?: string }
   | { type: 'process'; content: string; image: string; imageAlt: string }
+  | {
+      type: 'processNarrative';
+      heading: string;
+      content: string;
+      images: { src?: string; alt: string; aspect?: '4/3' | '16/9' | '1/1' }[];
+    }
+  | { type: 'figmaEmbed'; url: string; heading?: string; title?: string }
+  | {
+      type: 'featuredArticle';
+      source: string;
+      title: string;
+      description: string;
+      date: string;
+      url: string;
+    }
   | { type: 'outcome'; content: string };
 
 export interface ProjectDetail {
@@ -21,6 +37,9 @@ export interface ProjectDetail {
   blocks: Block[];
 }
 
+const FIGMA_PLACEHOLDER_URL =
+  'https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Ffile%2FFP7lqd1V00LUaT5zvdklkkkk%2FFigma-Basics';
+
 export const projectDetails: ProjectDetail[] = [
   {
     slug: 'planet-money-bot',
@@ -33,36 +52,109 @@ export const projectDetails: ProjectDetail[] = [
       {
         type: 'context',
         content:
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Planet Money Bot was a conversational interface designed to make economic news feel personal and approachable. We started with a simple question — what if listeners could talk back to the show? Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+          "Planet Money Bot is a conversational chatbot that lets users explore economics through NPR's Planet Money archive. In partnership with NPR, I led the UX and interface design from raw prototype to launch, focusing on usability, transparency, and play. Goal: build a website to boost engagement with the extensive Planet Money podcast archives.",
       },
       {
-        type: 'gallery',
+        type: 'processNarrative',
+        heading: 'Early Experiments & Wireframes',
+        content:
+          'Early wireframes explored interface flows: preloading sources before LLM answers, expanding transcripts in Spotify-like formats. These mapped user intent and clarified feature hierarchy.',
         images: [
-          { src: spotifyFeature, alt: 'Early concept exploration' },
-          { src: geniusRedesign, alt: 'Mid-fidelity prototype screen' },
+          { alt: 'Early wireframe sketch 1', aspect: '4/3' },
+          { alt: 'Early wireframe sketch 2', aspect: '4/3' },
         ],
       },
       {
-        type: 'pullQuote',
+        type: 'processNarrative',
+        heading: 'Mid-Fidelity Iterations & UX Decisions',
         content:
-          'The best interfaces feel like a conversation you wanted to have anyway — not a form you have to fill out.',
-        attribution: 'Design principle we returned to often',
+          'Mid-fidelity iterations tested answer states, feedback flows, accessibility, and error handling. A/B testing with FullStory on hundreds of users informed each round of refinement.',
+        images: [
+          { alt: 'Mid-fidelity Figma screen 1', aspect: '4/3' },
+          { alt: 'Mid-fidelity Figma screen 2', aspect: '4/3' },
+        ],
       },
       {
-        type: 'embed',
-        label: 'Figma/CAD embed area',
+        type: 'figmaEmbed',
+        heading: 'Interactive prototype',
+        url: FIGMA_PLACEHOLDER_URL,
       },
       {
-        type: 'process',
+        type: 'processNarrative',
+        heading: 'Final UI & Visual Language',
         content:
-          'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. We ran four rounds of usability testing with real listeners, iterating on tone, pacing, and the bot\'s sense of humor. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-        image: geniusRedesign,
-        imageAlt: 'Process sketch and iteration board',
+          "The final system used soft greens and retro typography to reflect Planet Money's tone. Engagement scaled from hundreds to thousands of users.",
+        images: [
+          { alt: 'Final UI mockup 1', aspect: '4/3' },
+          { alt: 'Final UI mockup 2', aspect: '4/3' },
+        ],
       },
       {
         type: 'outcome',
         content:
-          'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium. The final product shipped to early-access listeners and outperformed the baseline retention metric by a meaningful margin. Totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.',
+          'Planet Money Bot is no longer live. The founder chose to sunset the project in early 2024.',
+      },
+      {
+        type: 'featuredArticle',
+        source: 'JSK Fellows',
+        title: 'Can We Build An AI Chatbot For Journalism?',
+        description:
+          "Early Lessons In Accuracy, Sourcing, and Delight From A (Draft) Chatbot Based on NPR's Planet Money Archives",
+        date: 'Apr 17, 2023',
+        url: '#',
+      },
+    ],
+  },
+  {
+    slug: 'spiber',
+    title: 'Spiber Brewed Protein',
+    subtitle: 'Creative Intern',
+    category: 'Digital Design · Work Experience',
+    tags: ['Wireframing', 'Interface Design', 'Figma'],
+    heroImage: spiberProject,
+    blocks: [
+      {
+        type: 'context',
+        content:
+          'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Placeholder context paragraph for the Spiber case study. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+      },
+      {
+        type: 'processNarrative',
+        heading: 'Early Exploration',
+        content:
+          'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Placeholder narrative for the early phase. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+        images: [
+          { alt: 'Spiber early exploration 1', aspect: '4/3' },
+          { alt: 'Spiber early exploration 2', aspect: '4/3' },
+        ],
+      },
+      {
+        type: 'figmaEmbed',
+        heading: 'Interactive prototype',
+        url: FIGMA_PLACEHOLDER_URL,
+      },
+      {
+        type: 'processNarrative',
+        heading: 'Final Direction',
+        content:
+          'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Placeholder narrative for the final phase.',
+        images: [
+          { alt: 'Spiber final direction 1', aspect: '4/3' },
+          { alt: 'Spiber final direction 2', aspect: '4/3' },
+        ],
+      },
+      {
+        type: 'outcome',
+        content:
+          'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium. Placeholder outcome line.',
+      },
+      {
+        type: 'featuredArticle',
+        source: 'Publication Placeholder',
+        title: 'Placeholder Article Title',
+        description: 'Placeholder description line for the featured article card.',
+        date: 'Jan 1, 2024',
+        url: '#',
       },
     ],
   },
