@@ -20,7 +20,12 @@ export type Block =
       type: 'processNarrative';
       heading: string;
       content: string;
-      images: { src?: string; alt: string; aspect?: '4/3' | '16/9' | '1/1' | '21/9' }[];
+      images: {
+        src?: string;
+        alt: string;
+        aspect?: '4/3' | '16/9' | '1/1' | '21/9' | '16/10' | '3/2';
+        fit?: 'cover' | 'contain';
+      }[];
     }
   | {
       type: 'featuredImage';
@@ -29,7 +34,21 @@ export type Block =
       aspect?: '16/10' | '16/9' | '21/9' | '4/3' | '1/1';
       width?: 'sm' | 'md' | 'lg' | 'full';
     }
-  | { type: 'figmaEmbed'; url: string; heading?: string; title?: string }
+  | {
+      type: 'figmaEmbed';
+      url: string;
+      heading?: string;
+      title?: string;
+      content?: string;
+      externalUrl?: string;
+      linkLabel?: string;
+    }
+  | {
+      type: 'liveLink';
+      url: string;
+      label: string;
+      description?: string;
+    }
   | {
       type: 'featuredArticle';
       source: string;
