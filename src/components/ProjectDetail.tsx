@@ -229,7 +229,7 @@ export function ProjectDetail({ slug, skipEnterAnimation = false }: ProjectDetai
           <img
             src={project.heroImage}
             alt={project.title}
-            className="absolute inset-0 w-full h-full object-fill"
+            className="absolute inset-0 w-full h-full object-cover"
             style={{
               objectPosition: project.heroImagePosition || 'center',
               borderRadius: '1.5rem',
@@ -324,7 +324,7 @@ function BlockRenderer({ block }: { block: Block }) {
               key={i}
               className="relative aspect-[4/3] rounded-2xl overflow-hidden border border-white/10"
             >
-              <img src={img.src} alt={img.alt} className="absolute inset-0 w-full h-full object-fill" />
+              <img src={img.src} alt={img.alt} className="absolute inset-0 w-full h-full object-cover" />
             </div>
           ))}
         </div>
@@ -358,7 +358,7 @@ function BlockRenderer({ block }: { block: Block }) {
             <img
               src={block.image}
               alt={block.imageAlt}
-              className="absolute inset-0 w-full h-full object-fill"
+              className="absolute inset-0 w-full h-full object-cover"
             />
           </div>
         </div>
@@ -400,7 +400,7 @@ function BlockRenderer({ block }: { block: Block }) {
                     <img
                       src={img.src}
                       alt={img.alt}
-                      className="absolute inset-0 w-full h-full object-fill"
+                      className="absolute inset-0 w-full h-full object-cover"
                     />
                   </div>
                 ) : (
@@ -444,7 +444,7 @@ function BlockRenderer({ block }: { block: Block }) {
             <img
               src={block.src}
               alt={block.alt}
-              className="absolute inset-0 w-full h-full object-fill"
+              className="absolute inset-0 w-full h-full object-cover"
             />
           </div>
         </div>
