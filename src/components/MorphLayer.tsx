@@ -271,9 +271,9 @@ export function MorphLayer() {
           width: detailRects.tags.width,
           transformOrigin: 'top left',
         }}
-        initial={{ ...tagsPair.detailInitial, opacity: tagsPair.detailInitialOpacity }}
-        animate={{ ...tagsPair.detailAnimate, opacity: tagsPair.detailAnimateOpacity }}
-        transition={TRANSITION}
+        initial={{ ...tagsPair.detailInitial, opacity: detailInitialOpacity }}
+        animate={{ ...tagsPair.detailAnimate, opacity: detailOpacityKeyframes }}
+        transition={transitionWithSwap}
       >
         <div className="flex flex-wrap gap-2">
           {tags?.map((tag) => (
