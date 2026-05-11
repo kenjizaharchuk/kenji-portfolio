@@ -228,7 +228,7 @@ export function ProjectDetail({ slug, skipEnterAnimation = false }: ProjectDetai
           <img
             src={project.heroImage}
             alt={project.title}
-            className="absolute inset-0 w-full h-full object-cover"
+            className="absolute inset-0 w-full h-full object-fill"
             style={{
               objectPosition: project.heroImagePosition || 'center',
               borderRadius: '1.5rem',

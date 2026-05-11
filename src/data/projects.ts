@@ -6,7 +6,7 @@ import pmbEarlySketches1 from '@/assets/pmb-early-sketches-1.png';
 import pmbEarlySketches2 from '@/assets/pmb-early-sketches-2.png';
 import pmbMidFidelity1 from '@/assets/pmb-mid-fidelity-1.png';
 import pmbMidFidelity2 from '@/assets/pmb-mid-fidelity-2.png';
-import pmbHeroShot from '@/assets/pmb-hero-shot.png';
+import pmbHeroShot from '@/assets/pmb-hero-shot-new.png';
 
 export type Block =
   | { type: 'context'; content: string }
