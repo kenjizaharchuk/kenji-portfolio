@@ -58,8 +58,7 @@ export function MorphLayer() {
 
   const frameStart = inverseXY(cardRects.frame, detailRects.frame);
   const frameEnd = { x: 0, y: 0, scaleX: 1, scaleY: 1 };
-  const imageStart = inverseXY(cardRects.image, detailRects.image);
-  const imageEnd = { x: 0, y: 0, scaleX: 1, scaleY: 1 };
+  // image uses rect interpolation (top/left/width/height); see below
   const titleStart = inverseUniform(cardRects.title, detailRects.title);
   const titleEnd = { x: 0, y: 0, scale: 1 };
   const tagsStart = inverseUniform(cardRects.tags, detailRects.tags);
