@@ -203,6 +203,7 @@ export function ProjectDetail({ slug, skipEnterAnimation = false }: ProjectDetai
 
   return (
     <div
+      data-detail-scroll
       className="fixed inset-0 z-[60] overflow-y-auto"
       style={{ backgroundColor: pageBgTransparent ? 'transparent' : 'hsl(var(--background))' }}
     >
@@ -386,6 +387,8 @@ function BlockRenderer({ block }: { block: Block }) {
                 const aspect =
                   img.aspect === '16/9'
                     ? 'aspect-[16/9]'
+                    : img.aspect === '21/9'
+                    ? 'aspect-[21/9]'
                     : img.aspect === '1/1'
                     ? 'aspect-square'
                     : 'aspect-[4/3]';
@@ -416,7 +419,39 @@ function BlockRenderer({ block }: { block: Block }) {
         </div>
       );
     }
-    case 'figmaEmbed':
+    case 'featuredImage': {
+      const maxW =
+        block.width === 'sm'
+          ? 'md:max-w-[50%]'
+          : block.width === 'lg'
+          ? 'md:max-w-[80%]'
+          : block.width === 'full'
+          ? ''
+          : 'md:max-w-[65%]';
+      const aspect =
+        block.aspect === '16/9'
+          ? 'aspect-[16/9]'
+          : block.aspect === '21/9'
+          ? 'aspect-[21/9]'
+          : block.aspect === '4/3'
+          ? 'aspect-[4/3]'
+          : block.aspect === '1/1'
+          ? 'aspect-square'
+          : 'aspect-[16/10]';
+      return (
+        <div className={`mx-auto w-full ${maxW}`}>
+          <div className={`relative ${aspect} rounded-2xl overflow-hidden border border-white/10`}>
+            <img
+              src={block.src}
+              alt={block.alt}
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+          </div>
+        </div>
+      );
+    }
+    case 'figmaEmbed': {
+      const wrapperRef = useFigmaScrollGuard();
       return (
         <div className="space-y-4">
           {block.heading && (
@@ -424,37 +459,81 @@ function BlockRenderer({ block }: { block: Block }) {
               {block.heading}
             </h2>
           )}
-          <div className="w-full aspect-[16/10] rounded-2xl overflow-hidden border border-white/10 bg-white/[0.02]">
+          <div
+            ref={wrapperRef}
+            className="w-full aspect-[16/10] rounded-2xl overflow-hidden border border-white/10 bg-white/[0.02]"
+          >
             <iframe
               src={block.url}
               title={block.title || block.heading || 'Figma embed'}
               className="w-full h-full"
               allowFullScreen
+              tabIndex={-1}
             />
           </div>
         </div>
       );
+    }
     case 'featuredArticle':
       return (
         <a
           href={block.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="block rounded-2xl bg-white p-6 md:p-8 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-2xl border border-transparent hover:border-black/10"
+          className="block rounded-2xl bg-white overflow-hidden transition-all duration-300 hover:-translate-y-0.5 hover:shadow-2xl border border-transparent hover:border-black/10"
         >
-          <p className="font-display text-black/50 text-xs md:text-sm font-semibold tracking-wide uppercase mb-3">
-            Published in {block.source}
-          </p>
-          <h3 className="font-display text-black text-2xl md:text-3xl font-bold leading-tight mb-3">
-            {block.title}
-          </h3>
-          <p className="font-display text-black/70 text-base md:text-lg leading-relaxed mb-5">
-            {block.description}
-          </p>
-          <p className="font-display text-black/50 text-xs md:text-sm uppercase tracking-wide">
-            {block.date}
-          </p>
+          {block.thumbnail && (
+            <div className="w-full bg-white border-b border-black/5">
+              <img
+                src={block.thumbnail}
+                alt={block.title}
+                className="w-full h-auto object-contain"
+              />
+            </div>
+          )}
+          <div className="p-6 md:p-8">
+            <p className="font-display text-black/50 text-xs md:text-sm font-semibold tracking-wide uppercase mb-3">
+              Published in {block.source}
+            </p>
+            <h3 className="font-display text-black text-2xl md:text-3xl font-bold leading-tight mb-3">
+              {block.title}
+            </h3>
+            <p className="font-display text-black/70 text-base md:text-lg leading-relaxed mb-5">
+              {block.description}
+            </p>
+            <p className="font-display text-black/50 text-xs md:text-sm uppercase tracking-wide">
+              {block.date}
+            </p>
+          </div>
         </a>
       );
   }
+}
+
+// Prevents the outer scroll container from jumping when users click into the
+// Figma iframe (browser focus-scroll behavior on iframes).
+function useFigmaScrollGuard() {
+  const wrapperRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    const wrapper = wrapperRef.current;
+    if (!wrapper) return;
+    const scrollEl = wrapper.closest('[data-detail-scroll]') as HTMLElement | null;
+    if (!scrollEl) return;
+    let saved = scrollEl.scrollTop;
+    const onMouseDown = () => {
+      saved = scrollEl.scrollTop;
+    };
+    const restore = () => {
+      requestAnimationFrame(() => {
+        if (scrollEl.scrollTop !== saved) scrollEl.scrollTop = saved;
+      });
+    };
+    wrapper.addEventListener('mousedown', onMouseDown, true);
+    window.addEventListener('blur', restore);
+    return () => {
+      wrapper.removeEventListener('mousedown', onMouseDown, true);
+      window.removeEventListener('blur', restore);
+    };
+  }, []);
+  return wrapperRef;
 }

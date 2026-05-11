@@ -6,6 +6,8 @@ import pmbEarlySketches1 from '@/assets/pmb-early-sketches-1.png';
 import pmbEarlySketches2 from '@/assets/pmb-early-sketches-2.png';
 import pmbMidFidelity1 from '@/assets/pmb-mid-fidelity-1.png';
 import pmbMidFidelity2 from '@/assets/pmb-mid-fidelity-2.png';
+import pmbFinalScreens from '@/assets/pmb-final-screens.jpg';
+import pmbArticleThumb from '@/assets/pmb-article-thumb.png';
 
 export type Block =
   | { type: 'context'; content: string }
@@ -17,7 +19,14 @@ export type Block =
       type: 'processNarrative';
       heading: string;
       content: string;
-      images: { src?: string; alt: string; aspect?: '4/3' | '16/9' | '1/1' }[];
+      images: { src?: string; alt: string; aspect?: '4/3' | '16/9' | '1/1' | '21/9' }[];
+    }
+  | {
+      type: 'featuredImage';
+      src: string;
+      alt: string;
+      aspect?: '16/10' | '16/9' | '21/9' | '4/3' | '1/1';
+      width?: 'sm' | 'md' | 'lg' | 'full';
     }
   | { type: 'figmaEmbed'; url: string; heading?: string; title?: string }
   | {
@@ -27,6 +36,7 @@ export type Block =
       description: string;
       date: string;
       url: string;
+      thumbnail?: string;
     }
   | { type: 'outcome'; content: string };
 
@@ -89,8 +99,11 @@ export const projectDetails: ProjectDetail[] = [
         content:
           "The final system used soft greens and retro typography to reflect Planet Money's tone. Engagement scaled from hundreds to thousands of users.",
         images: [
-          { alt: 'Final UI mockup 1', aspect: '4/3' },
-          { alt: 'Final UI mockup 2', aspect: '4/3' },
+          {
+            src: pmbFinalScreens,
+            alt: 'Final Planet Money Bot screens across phone and laptop',
+            aspect: '21/9',
+          },
         ],
       },
       {
@@ -106,6 +119,7 @@ export const projectDetails: ProjectDetail[] = [
           "Early Lessons In Accuracy, Sourcing, and Delight From A (Draft) Chatbot Based on NPR's Planet Money Archives",
         date: 'Apr 17, 2023',
         url: '#',
+        thumbnail: pmbArticleThumb,
       },
     ],
   },
