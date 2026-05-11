@@ -168,20 +168,22 @@ export function ProjectDetail({ slug, skipEnterAnimation = false }: ProjectDetai
           <img
             src={project.heroImage}
             alt={project.title}
-            className="absolute inset-0 w-full h-full object-cover transition-opacity duration-200"
+            className="absolute inset-0 w-full h-full object-cover"
             style={{
               objectPosition: project.heroImagePosition || 'center',
               borderRadius: '1.5rem',
               opacity: showMorphedElements ? 1 : 0,
+              transition: morphedElementsTransition,
             }}
           />
           {/* Independent hero border — fades in at end of opening, out at start of closing */}
           <div
             aria-hidden
-            className="absolute inset-0 border border-white/15 pointer-events-none transition-opacity duration-200"
+            className="absolute inset-0 border border-white/15 pointer-events-none"
             style={{
               borderRadius: '1.5rem',
               opacity: showMorphedElements ? 1 : 0,
+              transition: morphedElementsTransition,
             }}
           />
         </div>
@@ -189,8 +191,11 @@ export function ProjectDetail({ slug, skipEnterAnimation = false }: ProjectDetai
         {/* Title block — opacity-toggled. Ghost handles the morph; this is the resting state. */}
         <div
           ref={titleBlockRef}
-          className="mt-8 transition-opacity duration-200"
-          style={{ opacity: showMorphedElements ? 1 : 0 }}
+          className="mt-8"
+          style={{
+            opacity: showMorphedElements ? 1 : 0,
+            transition: morphedElementsTransition,
+          }}
         >
           <p className="font-display text-white/60 text-sm md:text-base font-semibold tracking-wide uppercase mb-3">
             {project.subtitle} · {project.category}
@@ -203,8 +208,11 @@ export function ProjectDetail({ slug, skipEnterAnimation = false }: ProjectDetai
         {/* Tags — opacity-toggled. */}
         <div
           ref={tagsBlockRef}
-          className="mt-5 transition-opacity duration-200"
-          style={{ opacity: showMorphedElements ? 1 : 0 }}
+          className="mt-5"
+          style={{
+            opacity: showMorphedElements ? 1 : 0,
+            transition: morphedElementsTransition,
+          }}
         >
           <div className="flex flex-wrap gap-2">
             {project.tags.map((tag) => (
