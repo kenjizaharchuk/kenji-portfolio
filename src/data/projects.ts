@@ -153,7 +153,7 @@ export const projectDetails: ProjectDetail[] = [
         description:
           "Early Lessons In Accuracy, Sourcing, and Delight From A (Draft) Chatbot Based on NPR's Planet Money Archives",
         date: 'Apr 17, 2023',
-        url: '#',
+        url: 'https://jskfellows.stanford.edu/can-we-build-an-ai-chatbot-for-journalism-79ffe39e053e',
         thumbnail: pmbArticleThumb,
       },
     ],
