@@ -232,9 +232,21 @@ export function ProjectsCarousel() {
   const [activeFilters, setActiveFilters] = useState<FilterCategory[]>([]);
   const [currentProjectId, setCurrentProjectId] = useState<number>(projects[2].id);
   const swiperRef = useRef<SwiperType | null>(null);
+  const sectionRef = useRef<HTMLElement | null>(null);
   const navigate = useNavigate();
   const { slug: activeSlug } = useParams();
   const morph = useMorph();
+
+  // Block browser swipe-back/forward when horizontal-dominant wheel events occur over the carousel section.
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+    const onWheel = (e: WheelEvent) => {
+      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) e.preventDefault();
+    };
+    el.addEventListener('wheel', onWheel, { passive: false });
+    return () => el.removeEventListener('wheel', onWheel);
+  }, []);
 
   // Filter projects based on active filters (OR logic)
   const filteredProjects = useMemo(() => {
