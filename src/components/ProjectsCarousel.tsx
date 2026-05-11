@@ -404,19 +404,23 @@ export function ProjectsCarousel() {
                           const cardEl = root.querySelector(
                             `[data-card-slug="${project.slug}"]`
                           ) as HTMLElement | null;
-                          const textEl = cardEl?.querySelector(
-                            '[data-card-part="text"]'
+                          const subtitleEl = cardEl?.querySelector(
+                            '[data-card-part="subtitle"]'
+                          ) as HTMLElement | null;
+                          const titleEl = cardEl?.querySelector(
+                            '[data-card-part="title"]'
                           ) as HTMLElement | null;
                           const tagsEl = cardEl?.querySelector(
                             '[data-card-part="tags"]'
                           ) as HTMLElement | null;
                           const detail = getProjectBySlug(project.slug!);
-                          if (cardEl && textEl && tagsEl && detail) {
+                          if (cardEl && subtitleEl && titleEl && tagsEl && detail) {
                             const frameRect = rectFromDOMRect(cardEl.getBoundingClientRect());
                             const cardRects: MorphRects = {
                               frame: frameRect,
                               image: frameRect,
-                              title: rectFromDOMRect(textEl.getBoundingClientRect()),
+                              subtitle: rectFromDOMRect(subtitleEl.getBoundingClientRect()),
+                              titleText: rectFromDOMRect(titleEl.getBoundingClientRect()),
                               tags: rectFromDOMRect(tagsEl.getBoundingClientRect()),
                             };
                             morph.startOpen(
