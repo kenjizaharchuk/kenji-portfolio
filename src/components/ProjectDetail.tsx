@@ -2,7 +2,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Minimize2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { getProjectBySlug, type Block } from '@/data/projects';
+import { getProjectBySlug, type Block, type ProjectMeta } from '@/data/projects';
 import { useMorph, rectFromDOMRect, type MorphRects } from '@/lib/morphContext';
 
 interface ProjectDetailProps {
@@ -299,11 +299,59 @@ export function ProjectDetail({ slug, skipEnterAnimation = false }: ProjectDetai
           transition={restTransition}
           className="space-y-16 md:space-y-24 mt-10 md:mt-14"
         >
+          {project.meta && <MetaStrip meta={project.meta} />}
           {project.blocks.map((block, i) => (
             <BlockRenderer key={i} block={block} />
           ))}
         </motion.div>
       </article>
+    </div>
+  );
+}
+
+function MetaStrip({ meta }: { meta: ProjectMeta }) {
+  const hasField = meta.client || meta.timeline || meta.outcome;
+  const hasLinks = meta.quickLinks && meta.quickLinks.length > 0;
+  if (!hasField && !hasLinks) return null;
+
+  const Field = ({ label, value }: { label: string; value: string }) => (
+    <div className="flex flex-col gap-1 min-w-0">
+      <span className="font-display text-[10px] md:text-xs uppercase tracking-wider text-foreground/45">
+        {label}
+      </span>
+      <span className="font-display text-sm md:text-[15px] text-foreground/85 leading-snug">
+        {value}
+      </span>
+    </div>
+  );
+
+  return (
+    <div className="border-y border-white/10 py-5 md:py-6">
+      <div className="grid grid-cols-1 md:grid-cols-[auto,auto,auto,1fr] gap-x-10 gap-y-5 md:items-start">
+        {meta.client && <Field label="Client" value={meta.client} />}
+        {meta.timeline && <Field label="Timeline" value={meta.timeline} />}
+        {meta.outcome && <Field label="Outcome" value={meta.outcome} />}
+        {hasLinks && (
+          <div className="flex flex-col gap-1 md:items-end">
+            <span className="font-display text-[10px] md:text-xs uppercase tracking-wider text-foreground/45">
+              Quick Links
+            </span>
+            <div className="flex flex-wrap gap-x-4 gap-y-1 md:justify-end">
+              {meta.quickLinks!.map((link) => (
+                <a
+                  key={link.url}
+                  href={link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-display text-sm md:text-[15px] text-foreground/80 hover:text-foreground underline underline-offset-4 decoration-white/25 hover:decoration-white/70 transition-colors"
+                >
+                  {link.label} <span aria-hidden>↗</span>
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
