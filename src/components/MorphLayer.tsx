@@ -65,13 +65,6 @@ export function MorphLayer() {
   const tagsStart = inverseUniform(cardRects.tags, detailRects.tags);
   const tagsEnd = { x: 0, y: 0, scale: 1 };
 
-  const initialFrame = opening ? frameStart : frameEnd;
-  const animateFrame = opening ? frameEnd : frameStart;
-  const initialImage = opening ? imageStart : imageEnd;
-  const animateImage = opening ? imageEnd : imageStart;
-  const initialTitle = opening ? titleStart : titleEnd;
-  const animateTitle = opening ? titleEnd : titleStart;
-  const initialTags = opening ? tagsStart : tagsEnd;
   // Treat the linger frame (phase==='open') as "still opening, at end state" so
   // nothing re-animates while we wait one paint before unmounting.
   const openingOrOpen = phase === 'opening' || phase === 'open';
@@ -92,12 +85,12 @@ export function MorphLayer() {
   // Border radius on the Frame: card-end has 1.5rem, viewport-end has 0.
   const radiusCard = '1.5rem';
   const radiusViewport = '0rem';
-  const initialRadius = opening ? radiusCard : radiusViewport;
-  const animateRadius = opening ? radiusViewport : radiusCard;
+  const initialRadius = openingOrOpen ? radiusCard : radiusViewport;
+  const animateRadius = openingOrOpen ? radiusViewport : radiusCard;
 
   // Gradient overlay on the Image: present at card-end (for text contrast), absent at hero-end.
-  const initialOverlay = opening ? 1 : 0;
-  const animateOverlay = opening ? 0 : 1;
+  const initialOverlay = openingOrOpen ? 1 : 0;
+  const animateOverlay = openingOrOpen ? 0 : 1;
 
   // Subtitle crossfade: card-variant visible at card-end; detail-variant visible at hero-end.
   const initialCardSub = opening ? 1 : 0;
