@@ -1,77 +1,47 @@
-# Fixing the card-end visual mismatch
+## Short answer
 
-## Diagnosis (your hypothesis was correct, with one refinement)
+Small tweak. ~10-line change to `MorphLayer.tsx`. No restructuring needed, and it doesn't reintroduce the card-end mismatch.
 
-The ghost currently renders **one copy** of each text/tag block using the **detail view's intrinsic styles** (subtitle `text-sm md:text-base`, title `text-4xl md:text-6xl`, tags in detail-width flex-wrap), and uniformly scales that copy down to fit the card at the card-end.
+## Why it currently reads as a fade
 
-Two sources of mismatch follow from this:
+Looking at `flipPair` in `MorphLayer.tsx`: both variants **do** translate. Card-variant goes `cardRect → detailRect`, detail-variant goes `cardRect → detailRect`. They travel in lockstep along the same path.
 
-1. **Title block** — the measured rect is the wrapper that contains *both* the subtitle and the `h1`. The detail subtitle (`"LEAD DESIGNER · DIGITAL DESIGN · WORK EXPERIENCE"`) is much longer than the card subtitle (`"Lead Designer"`), so the detail wrapper is wider than its title alone. Card-side measures a narrower wrapper. The width ratio used for uniform scale ends up smaller than the true font-size ratio (30/60 = 0.5), so the title shrinks *past* the real card title's size.
+The problem is exactly that lockstep: at every frame, both variants occupy nearly identical screen position and size. Since the positions match throughout, the only visual signal that distinguishes one variant from the other is **opacity**, and a linear `1→0` / `0→1` crossfade across the full 1.0s makes the dominant percept "fade in place" rather than "thing moving."
 
-2. **Tags** — chip styles are identical between views, but card and detail containers wrap chips at different widths, into different numbers of rows. Scaling detail-layout chips by `cardTagsWidth / detailTagsWidth` produces chips that are smaller than the real card's chips (which never reflowed and are at intrinsic font size).
+The motion is there. It's just drowned out by the crossfade.
 
-The subtitle already crossfades two stacked variants, which is why nobody complained about it.
+## The fix: compress the crossfade into a short window
 
-## Fix: dual-render the title slot and the tags, crossfade between them
-
-Render **both** a card-styled variant and a detail-styled variant for the title block and the tags. Each variant is laid out at its own natural size (no width animation, no reflow). Each variant FLIPs between the card rect and the detail rect using its own transform. They crossfade based on phase progress.
-
-At the card-end: card-variant is opacity 1, detail-variant is opacity 0 — perfect visual match with the real card.
-At the detail-end: inverse — perfect match with the resting case study.
-In the middle: both variants occupy nearly the same screen size and position (the title scales linearly because the string is identical and font weight matches; chips have identical intrinsic sizing). The crossfade therefore reads as a continuous resolve, not a "pop."
-
-This is the technique the subtitle is already using; we extend it to title and tags.
-
-## Implementation
-
-### `morphContext.tsx`
-Extend `MorphRects` so the ghost can position each variant precisely:
+Keep both variants traveling along the full path (unchanged). Change opacity from a linear ramp to a delayed-and-fast swap:
 
 ```ts
-interface MorphRects {
-  frame: Rect;
-  image: Rect;
-  titleText: Rect;   // the <h3>/<h1> element only
-  subtitle: Rect;    // the subtitle <p> element only
-  tags: Rect;        // unchanged role, but tags-of-the-source-view
-}
+// Opening: card-variant stays fully visible while it travels most of the way,
+// then quickly hands off to detail-variant near the end.
+opacity: openingOrOpen
+  ? { values: [1, 1, 0], times: [0, 0.65, 0.8] }   // card variant
+  : { values: [0, 0, 1], times: [0, 0.2, 0.35] }   // close: inverse
 ```
 
-Drop the old combined `title` rect.
+(Framer Motion supports keyframe arrays + `times` directly on `animate`.)
 
-### Measurement sites
-- `ProjectsCarousel.tsx` (card side): add `data-card-part="subtitle"` to the card's subtitle `<p>` and `data-card-part="title"` to the `<h3>`. Measure both. `tags` rect already measured.
-- `ProjectDetail.tsx`: add refs for the detail subtitle `<p>` and the detail `<h1>`. Measure both into `detailRects.subtitle` and `detailRects.titleText`. `tagsBlockRef` already measured.
+Effect: the eye locks onto a single element traveling from card position to detail position, with the style swap happening in a narrow window where both variants are at nearly identical screen size — making the handoff invisible while the *journey* becomes the dominant signal.
 
-### `MorphLayer.tsx` — render two variants per slot
+## Tradeoffs and risks
 
-**Title slot.** Two stacked `<h1>`s:
-- **Card-title variant** — classes `text-2xl md:text-3xl` (matches real card). Positioned at `detailRects.titleText` with transform `inverseUniform(cardRects.titleText, detailRects.titleText)` at card-end and identity at detail-end. *Wait — render it at the card layout instead*: position at `cardRects.titleText`, identity at card-end, transform to `detailRects.titleText` at detail-end. Cleaner mental model.
-- **Detail-title variant** — classes `text-4xl md:text-6xl`. Position at `detailRects.titleText`, identity at detail-end, transform to `cardRects.titleText` at card-end.
-- Opacity: card-variant `1 → 0`; detail-variant `0 → 1`. Reverse for closing.
+**Pros**
+- Reads as physical travel, not fade.
+- Card-end and detail-end visual matches are preserved exactly (each variant still hits its native rect at full opacity at the matching endpoint).
+- Roughly 10 lines changed, in one file. No context/rect/measurement changes.
 
-**Subtitle slot.** Same dual-FLIP, replacing the current "stacked at detail layout" approach. Card-variant uses the card's subtitle classes (`text-base text-white/70`), positioned at `cardRects.subtitle`. Detail-variant uses the detail classes (`text-sm md:text-base text-white/60`), positioned at `detailRects.subtitle`.
+**Cons / things to watch**
+- **Handoff visibility.** Currently the style difference (font size, weight, line-height, tag wrap) is smeared across the whole 1.0s, so any mismatch is invisible-per-frame. Concentrating the swap into ~150ms means any residual mismatch in that window becomes a brief pop. In practice the title string is identical, weights match, and at the swap moment both variants are ~95% of the way to the same target rect — so the pop should be undetectable. But it's the one thing worth eyeballing after the change.
+- **Asymmetric tuning.** Open and close may want slightly different crossfade windows because attention lands differently in each direction. Probably fine with the same numbers; one knob to tune if not.
+- **No regression to the original mismatch issue.** That bug was caused by uniformly scaling a single detail-styled variant down to card size. Each variant here is still rendered at its native style and FLIPped — endpoints are unchanged. Safe on that axis.
 
-**Tags slot.** Two stacked tag containers:
-- **Card-tags variant** — rendered inside a `width: cardRects.tags.width` flex-wrap, so chips wrap exactly like the real card. Position at `cardRects.tags`, identity at card-end, uniform scale to `detailRects.tags` at detail-end.
-- **Detail-tags variant** — rendered inside a `width: detailRects.tags.width` flex-wrap. Position at `detailRects.tags`, identity at detail-end, uniform scale to `cardRects.tags` at card-end.
-- Each variant's *own* width is fixed (no animation), so there is no reflow during the morph. The chips on each variant are at their natural intrinsic size when their opacity is 1.
+**What it does NOT fix**
+- The image and frame don't have this issue (single element, clearly traveling). No change needed there.
+- If you later want elements to feel like they *accelerate into* the detail position (motion-blur-ish), that's a different change (separate easing per variant, or staggered start times). Not part of this tweak.
 
-**Frame and image** — unchanged.
+## Recommendation
 
-### `ProjectDetail.tsx`
-- Add the two new refs (subtitle, titleText) and populate `detailRects` accordingly.
-- The "resting" opacity-toggled elements stay as-is.
-
-## What this preserves
-
-- No tag reflow during flight (each variant's container width is constant).
-- No title pop at midpoint (same string, linear scale, near-identical screen size; the crossfade lands on overlapping visuals).
-- Hero border behavior, easing curve (`[0.65, 0, 0.35, 1]`, 1.0s), z-layering, page background, and close-direction overlap from the prior fixes all stay exactly as they are.
-
-## Files touched
-
-- `src/lib/morphContext.tsx` — extend `MorphRects` (add `titleText`, `subtitle`; drop `title`).
-- `src/components/ProjectsCarousel.tsx` — measure card subtitle + title elements; populate new rect shape.
-- `src/components/ProjectDetail.tsx` — add subtitle/titleText refs; populate new rect shape.
-- `src/components/MorphLayer.tsx` — replace single-variant title block + single-variant tags with dual-render + crossfade.
+Worth doing now — it's cheap, reversible (just revert opacity keyframes), and the current "fade feel" is the kind of thing that gets harder to notice once content fills the page, so judging it now is easier than judging it later. If after trying it the handoff pop is visible, widen the crossfade window from ~150ms to ~250ms; that's the one dial.
