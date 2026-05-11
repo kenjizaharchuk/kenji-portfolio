@@ -391,16 +391,21 @@ function BlockRenderer({ block }: { block: Block }) {
                     ? 'aspect-[21/9]'
                     : img.aspect === '1/1'
                     ? 'aspect-square'
+                    : img.aspect === '16/10'
+                    ? 'aspect-[16/10]'
+                    : img.aspect === '3/2'
+                    ? 'aspect-[3/2]'
                     : 'aspect-[4/3]';
+                const fitClass = img.fit === 'contain' ? 'object-contain' : 'object-cover';
                 return img.src ? (
                   <div
                     key={i}
-                    className={`relative ${aspect} rounded-2xl overflow-hidden border border-white/10`}
+                    className={`relative ${aspect} rounded-2xl overflow-hidden border border-white/10 ${img.fit === 'contain' ? 'bg-white/[0.02]' : ''}`}
                   >
                     <img
                       src={img.src}
                       alt={img.alt}
-                      className="absolute inset-0 w-full h-full object-cover"
+                      className={`absolute inset-0 w-full h-full ${fitClass}`}
                     />
                   </div>
                 ) : (
@@ -459,6 +464,11 @@ function BlockRenderer({ block }: { block: Block }) {
               {block.heading}
             </h2>
           )}
+          {block.content && (
+            <p className="font-display text-foreground/85 text-lg md:text-xl leading-relaxed">
+              {block.content}
+            </p>
+          )}
           <div
             ref={wrapperRef}
             className="w-full aspect-[16/10] rounded-2xl overflow-hidden border border-white/10 bg-white/[0.02]"
@@ -471,9 +481,42 @@ function BlockRenderer({ block }: { block: Block }) {
               tabIndex={-1}
             />
           </div>
+          {block.externalUrl && (
+            <div className="flex justify-end pt-1">
+              <a
+                href={block.externalUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-display text-sm text-white/50 hover:text-white/90 transition-colors underline underline-offset-4 decoration-white/20 hover:decoration-white/60"
+              >
+                {block.linkLabel || 'See the full Figma file'} ↗
+              </a>
+            </div>
+          )}
         </div>
       );
     }
+    case 'liveLink':
+      return (
+        <div className="mx-auto w-full md:max-w-[60%]">
+          <a
+            href={block.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group block rounded-2xl border border-white/15 bg-white/[0.03] px-8 py-10 md:px-12 md:py-14 transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/[0.06] hover:border-white/30 hover:shadow-2xl text-center"
+          >
+            <h3 className="font-display text-white/95 text-2xl md:text-4xl font-bold leading-tight mb-2">
+              {block.label}
+              <span className="inline-block ml-3 transition-transform group-hover:translate-x-1">↗</span>
+            </h3>
+            {block.description && (
+              <p className="font-display text-white/55 text-sm md:text-base uppercase tracking-wider">
+                {block.description}
+              </p>
+            )}
+          </a>
+        </div>
+      );
     case 'featuredArticle':
       return (
         <div className="mx-auto w-full md:max-w-[60%]">
