@@ -103,7 +103,7 @@ export function MorphLayer() {
   };
 
   return createPortal(
-    <div className="fixed inset-0 pointer-events-none" style={{ zIndex: 65 }}>
+    <div className="fixed inset-0 pointer-events-none" style={{ zIndex: 65, opacity: phase === 'open' ? 0 : 1 }}>
       {/* Frame — dark backdrop that grows from card → viewport */}
       <motion.div
         className="bg-background border border-white/15"

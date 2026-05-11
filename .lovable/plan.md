@@ -1,54 +1,65 @@
-# Three Polish Fixes for the Morph
+## Diagnoses
 
-## Issue 1 — Image squishes on close (root cause + fix)
+**Issue 1 — Double-image flash on open (root cause):**
+`MorphLayer` lingers one paint at `phase === 'open'` to prevent a black flash. In that same paint, `ProjectDetail` flips `showMorphedElements` to `true` (opacity 1) because the condition fires on `morph.phase === 'open'`. Result: for one frame, both the ghost image AND the real hero image are rendered. The two layers aren't sub-pixel identical (different DOM, different stacking, browser rounding), so the user sees a doubled image.
 
-**Diagnosis.** The image ghost is rendered at the hero rect (~21:9) and animated via non-uniform `scaleX` / `scaleY` transforms. Card rect ≈ 1.43:1, hero rect ≈ 2.33:1 — those aspect ratios are very different, so `scaleX ≠ scaleY` for the entire flight. The wrapper has `object-cover` on the `<img>`, but `object-cover` only re-fits at the *source* layout size; once a non-uniform transform is applied, the rendered pixels stretch with it. Mid-flight the image is literally squashed.
+**Issue 2 — Black flash on close (root cause):**
+`close()` sets `isClosing=true` (real elements start fading), then waits `CLOSE_FADE_MS = 160ms` before calling `morph.startClose()`. During that 160ms the real elements are fading toward 0 but no ghost is mounted yet → dark page background is the only thing visible.
 
-**Why open looks fine and close doesn't.** Mathematically the distortion is identical in both directions. Perceptually it's much more visible on close because the image starts large (hero-size) and shrinks — the squish dominates a big portion of the viewport. On open it starts as a small card-sized element and grows; the eye is tracking the page assembling itself, not scrutinizing image proportions.
+**Issue 3 — Carousel disappears instantly on open (root cause):**
+`ProjectDetail` renders its root as `<div className="fixed inset-0 z-[60] bg-background ...">`. The instant the route mounts at `t=0` of the morph, this opaque dark surface covers the entire viewport, hiding the carousel before the frame ghost has expanded. On close, the inverse works because ProjectDetail unmounts only after `navigate(-1)` runs, which is timed to the retract — but on open, mount is immediate.
 
-**Fix.** Switch the image ghost from transform-scale to animating `top` / `left` / `width` / `height` directly. The `<img>` inside is `object-cover w-full h-full`, so at every interpolated frame the browser re-fits cover — zero distortion, identical visual on both directions. Frame stays on transform-scale (a flat dark rectangle has no aspect to distort, and we want compositor-friendly scaling there).
+---
 
-Cost: one element animating layout properties for 1s. Trivial — single layer, no children depending on its layout.
+## Fixes
 
-## Issue 2 — Black flash on landing (root cause + fix)
+### Fix 1 — Eliminate double-image (MorphLayer.tsx)
 
-**Diagnosis.** Today, at `t=0.9s`:
-- `onAnimationComplete` flips `phase` to `'open'`, which makes `MorphLayer` return `null` (ghost unmounts that frame).
-- Simultaneously the real hero image, hero border, title block, and tags flip their `opacity` from 0 → 1 via a Tailwind `transition-opacity duration-200` CSS transition.
+Replace the "linger then unmount" strategy with "fade ghost to 0 during linger frame". During `phase === 'open'`:
+- Keep the portal mounted for one paint (linger), BUT
+- Set the whole portal's `opacity` to 0 immediately when phase flips to 'open'
 
-Result: the ghost vanishes instantly while the real elements take 200ms to fade in. The detail page's `bg-background` (dark) shows through that 200ms window — the "black flash."
+Real elements are visible (opacity 1) and ghost is invisible (opacity 0) in the same paint. No double image, no black gap. After the 1-paint linger, unmount the portal.
 
-**Fix (two small adjustments, work together).**
+Implementation: wrap the portal's outer `<div>` with `style={{ opacity: phase === 'open' ? 0 : 1 }}`. The linger logic stays as-is for safe unmount timing.
 
-1. **Remove the 200ms CSS transition on the four real elements for the open direction.** They should snap to `opacity: 1` the same frame `phase === 'open'`. (Close direction continues to fade out via `isClosing`, which we keep as a JS-driven 160ms — handled by a small `closingFade` boolean separate from the open gate.)
-2. **Defer ghost unmount by one paint.** In `MorphLayer`, when `phase === 'open'`, keep rendering for one additional `requestAnimationFrame` tick (small `useState` + `useEffect`). This guarantees the real elements paint at opacity 1 in the same (or prior) frame the ghost disappears — no gap, no flash.
+### Fix 2 — Start close retract immediately (ProjectDetail.tsx)
 
-Net effect: at `t=0.9s` the ghost and real elements occupy the same pixels for one frame, then the ghost lifts off cleanly.
+Restructure `close()`:
+```
+setIsClosing(true);                       // real elements begin fading
+morph.startClose(detailRects, cardRects); // ghost retraction starts NOW
+navigate(-1 or '/');                      // schedule unmount via existing route flow
+```
+Remove the `setTimeout(..., CLOSE_FADE_MS)`. The CSS `transition: opacity 160ms` on real elements still produces a graceful fade, but it now overlaps the start of the 1s ghost retract instead of preceding it. No gap.
 
-Also nudge the body-content fade-in (`restAnimate`) `delay` from `0.55` → `0.45` so the surrounding case-study content is already ~70% faded in when the ghost lands. This isn't strictly required to kill the flash, but it makes the landing feel less like "page assembles after morph" and more like "page is already there."
+Concern: the ghost mounts and starts animating immediately while real elements are still partly visible behind it for ~160ms. The ghost sits at `z-index: 65` and the page is `z-index: 60`, so the ghost is on top — the cross-dissolve actually reads as a smooth handoff (real elements fading out under a ghost that's just starting to move). This is desirable, not a bug.
 
-## Issue 3 — Easing (recommendation)
+### Fix 3 — Don't paint the page background on open (ProjectDetail.tsx)
 
-Current curve `[0.22, 1, 0.36, 1]` is a strong ease-out: snaps fast at the start, glides at the end. That's exactly the "screen pops open" feeling you described.
+Make the root `bg-background` conditional on phase. The page background should appear ONLY when the frame ghost has finished expanding (i.e., NOT during `opening`).
 
-Recommendation: switch to a symmetric ease-in-out cubic, `[0.65, 0, 0.35, 1]`, and bump duration `0.9s → 1.0s`. This gives a soft start, builds speed through the middle, and decelerates into the landing — feels like the page is taking a breath before opening. Same curve on the close, so retracting feels equally graceful.
+```tsx
+const pageBgVisible = skipEnterAnimation || morph.phase !== 'opening';
+// root: className without bg-background; style={{ backgroundColor: pageBgVisible ? 'hsl(var(--background))' : 'transparent' }}
+```
 
-No tradeoffs against the other fixes — easing is independent.
+During `opening`: root is transparent → carousel/stars visible underneath → frame ghost expands over them (matches the close direction's reveal).
+At `phase === 'open'` (and during `closing`): root has its solid background as today.
 
-## Files to edit
+The carousel/Index page still renders in the DOM behind ProjectDetail (route is `/projects/:slug` which also renders `<Index>` per App.tsx routing — verify quickly, but the user's observation that close works confirms it). If for any reason the carousel doesn't paint behind ProjectDetail, we can additionally make ProjectDetail mount-skip its content rendering during `opening` and only show the close button + measurement refs in hidden form.
 
-- `src/components/MorphLayer.tsx`
-  - Image ghost: animate `top` / `left` / `width` / `height` instead of `x/y/scaleX/scaleY`.
-  - Add 1-frame deferred unmount when `phase === 'open'` (local `linger` state + rAF).
-  - Update `DURATION = 1.0`, `EASE = [0.65, 0, 0.35, 1]`.
-- `src/components/ProjectDetail.tsx`
-  - Replace `transition-opacity duration-200` on hero img, hero border, title block, tags with no transition for the open direction. Drive a separate `closingFade` opacity for close (instant on open, 160ms on close — can be done with inline `transition` style toggled by `isClosing`).
-  - `restAnimate` delay `0.55 → 0.45`.
+---
 
-No changes to context, carousel, routing, or `projects.ts`.
+## Technical notes
+
+- No changes to `morphContext.tsx`, `ProjectsCarousel.tsx`, `App.tsx`, or `projects.ts`.
+- Files touched: `src/components/MorphLayer.tsx`, `src/components/ProjectDetail.tsx`.
+- Ordering for #2: dispatching `setIsClosing(true)` and `morph.startClose(...)` in the same tick is safe — React batches; the ghost mounts with `phase: 'closing'` and animates from detailRects → cardRects in 1s, real elements fade 0→1 in 160ms underneath.
+- For #3, verify the route stack does keep `<Index>` mounted under `<ProjectDetail>`. If not, a one-line fallback is to render the carousel route content even on `/projects/:slug` (already the case based on App.tsx — both routes use `<Index />`).
 
 ## Tradeoffs / concerns
 
-- Animating `width`/`height`/`top`/`left` on the image ghost is not compositor-accelerated, but it's a single element for 1s — well within the perf budget. If a stutter ever appears on lower-end devices, fallback is a two-layer trick (outer non-uniform scale, inner counter-scale on the img) but that's not warranted yet.
-- The 1-frame ghost linger relies on real elements painting at opacity 1 in the same frame. If we ever see a single-frame double-image (ghost + real both visible), they're at identical position and identical pixels, so it reads as nothing — strictly safer than a gap.
-- Longer duration (1.0s) is a perceptible change. If after seeing it 1.0s feels too leisurely, dropping to 0.95s with the same curve is the obvious tuning knob.
+- Fix 1 assumes one `requestAnimationFrame` of `opacity: 0` ghost + opacity-1 real is enough to "cover the handoff." If we still see any flicker, the next iteration is to gate `showMorphedElements` on a context flag set after the linger completes (slightly more wiring).
+- Fix 2's overlap (ghost visible while real fades) is intentional and visually superior to the current sequential gap.
+- Fix 3 only matters for the `opening` phase; during the linger frame at `open`, we want the bg solid so there's no flash if anything goes wrong with the ghost layer.
