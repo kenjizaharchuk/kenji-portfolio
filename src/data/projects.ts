@@ -106,13 +106,14 @@ export const projectDetails: ProjectDetail[] = [
         heading: 'Final UI & Visual Language',
         content:
           "The final system used soft greens and retro typography to reflect Planet Money's tone. Engagement scaled from hundreds to thousands of users.",
-        images: [
-          {
-            src: pmbFinalScreens,
-            alt: 'Final Planet Money Bot screens across phone and laptop',
-            aspect: '21/9',
-          },
-        ],
+        images: [],
+      },
+      {
+        type: 'featuredImage',
+        src: pmbFinalScreens,
+        alt: 'Final Planet Money Bot screens across phone and laptop',
+        aspect: '21/9',
+        width: 'lg',
       },
       {
         type: 'outcome',
