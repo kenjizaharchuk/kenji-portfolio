@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Swiper as SwiperType } from 'swiper';
 import { EffectCoverflow, Mousewheel, FreeMode, Keyboard } from 'swiper/modules';
-import { useMorph, rectFromDOMRect } from '@/lib/morphContext';
+import { useMorph, rectFromDOMRect, type MorphRects } from '@/lib/morphContext';
 import { getProjectBySlug } from '@/data/projects';
 
 // @ts-ignore
