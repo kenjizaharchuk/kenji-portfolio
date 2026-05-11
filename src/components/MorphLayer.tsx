@@ -92,7 +92,7 @@ export function MorphLayer() {
   const opacityTransition = {
     duration: DURATION,
     ease: 'linear' as const,
-    times: [0, swapStart, swapEnd, 1].slice(0, 3),
+    times: [0, swapStart, swapEnd],
   };
   const transitionWithSwap = {
     ...TRANSITION,
