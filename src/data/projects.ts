@@ -169,61 +169,65 @@ export const projectDetails: ProjectDetail[] = [
       {
         type: 'context',
         content:
-          "Spiber is a Japanese biotech company creating Brewed Protein materials. As an intern at UltraSuperNew, I worked alongside my mentor on a B2B-focused website refresh, helping translate disorganized information into a clear, structured site for business audiences. Goal: restructure the site to make Spiber's technology and applications legible to potential B2B partners.",
+          "Spiber is a Japanese biotech company creating Brewed Protein materials. As an intern at UltraSuperNew, I worked alongside my mentor on a B2B-focused website refresh over six weeks: three weeks on content strategy and structure, three weeks on wireframing, with weekly client check-ins throughout. The goal was to translate disorganized information into a clear, navigable site for business audiences including investors, sustainability-focused brands, and potential hires.",
+      },
+      {
+        type: 'figmaEmbed',
+        heading: 'Research and Proposals',
+        content:
+          'Work started with audience research and page-by-page content proposals. We mapped what each audience type needed to find on the site, then proposed structural and content changes for key pages, presenting to the client weekly.',
+        url: 'https://embed.figma.com/design/NKAgY4tM2uA6gjMtBG9VVe/Spiber---For-Client--Copy-?node-id=1-196&embed-host=share',
+        externalUrl:
+          'https://www.figma.com/proto/NKAgY4tM2uA6gjMtBG9VVe/Spiber---For-Client--Copy-?node-id=1-196&t=eEYNp2ZyP6b2azcp-1',
+        linkLabel: 'See the full deck',
+        interactiveHint: true,
+        size: 'contained',
       },
       {
         type: 'processNarrative',
-        heading: 'Initial Sitemap',
+        heading: 'Sitemap',
         content:
-          "Early sitemap exploration mapped Spiber's content into a navigable structure. We worked through the existing site, identified gaps, and proposed new top-level sections.",
+          'With content strategy aligned, we mapped the full site structure. Early exploration identified gaps in the existing architecture. The final sitemap reorganized content into clearer hubs for Discover, Sustainability, About Us, and Careers.',
         images: [
           {
             src: spiberInitialSitemap,
             alt: 'Initial sitemap exploration for Spiber',
-            aspect: '16/9',
-            fit: 'contain',
+            aspect: 'natural',
           },
         ],
       },
       {
         type: 'figmaEmbed',
         heading: 'Final Sitemap',
-        content:
-          'Iterated structure with mobile considerations baked in. Reorganized content into clearer hubs for Discover, Sustainability, About Us, and Careers, with subpages mapped for each.',
+        content: 'Iterated structure with mobile considerations baked in.',
         url: 'https://embed.figma.com/design/NKAgY4tM2uA6gjMtBG9VVe/Spiber---For-Client--Copy-?node-id=827-4244&embed-host=share',
         externalUrl:
           'https://www.figma.com/design/NKAgY4tM2uA6gjMtBG9VVe/Spiber---For-Client--Copy-?node-id=827-4244&t=eEYNp2ZyP6b2azcp-1',
+        linkLabel: 'See the full Figma file',
       },
       {
         type: 'processNarrative',
-        heading: 'Example Wireframes',
+        heading: 'Wireframes',
         content:
-          'Wireframed key pages across desktop and mobile, establishing layout patterns for the top page, product detail pages, content hubs, and forms.',
+          'With structure approved, we wireframed key pages across desktop and mobile, establishing layout patterns for the top page, product detail pages, content hubs, and forms.',
         images: [
           {
             src: spiberWireframe1,
             alt: 'Spiber wireframes: top page and protein fiber detail',
-            aspect: '16/10',
-            fit: 'contain',
+            aspect: 'natural',
           },
           {
             src: spiberWireframe2,
             alt: 'Spiber wireframes: Discover hub and content pages',
-            aspect: '16/9',
-            fit: 'contain',
+            aspect: 'natural',
           },
         ],
       },
       {
         type: 'outcome',
-        content:
-          "Final site went live on Spiber's domain at spiber.inc/en.",
-      },
-      {
-        type: 'liveLink',
-        label: 'Visit the live site',
-        description: 'spiber.inc/en',
-        url: 'https://spiber.inc/en',
+        content: "The site went live on Spiber's domain.",
+        ctaUrl: 'https://spiber.inc/en',
+        ctaLabel: 'Visit spiber.inc/en ↗',
       },
     ],
   },
