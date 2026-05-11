@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef } from 'react';
+import { useState, useMemo, useRef, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Swiper as SwiperType } from 'swiper';
