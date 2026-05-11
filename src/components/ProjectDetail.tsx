@@ -368,5 +368,93 @@ function BlockRenderer({ block }: { block: Block }) {
           {block.content}
         </p>
       );
+    case 'processNarrative': {
+      const gridCols = block.images.length > 1 ? 'md:grid-cols-2' : 'md:grid-cols-1';
+      return (
+        <div className="space-y-6 md:space-y-8">
+          <div>
+            <h2 className="font-display text-3xl md:text-4xl font-bold text-white/90 mb-4">
+              {block.heading}
+            </h2>
+            <p className="font-display text-foreground/85 text-lg md:text-xl leading-relaxed">
+              {block.content}
+            </p>
+          </div>
+          {block.images.length > 0 && (
+            <div className={`grid grid-cols-1 ${gridCols} gap-4 md:gap-6`}>
+              {block.images.map((img, i) => {
+                const aspect =
+                  img.aspect === '16/9'
+                    ? 'aspect-[16/9]'
+                    : img.aspect === '1/1'
+                    ? 'aspect-square'
+                    : 'aspect-[4/3]';
+                return img.src ? (
+                  <div
+                    key={i}
+                    className={`relative ${aspect} rounded-2xl overflow-hidden border border-white/10`}
+                  >
+                    <img
+                      src={img.src}
+                      alt={img.alt}
+                      className="absolute inset-0 w-full h-full object-cover"
+                    />
+                  </div>
+                ) : (
+                  <div
+                    key={i}
+                    className={`relative ${aspect} rounded-2xl border border-dashed border-white/20 bg-white/[0.02] flex items-center justify-center`}
+                  >
+                    <span className="font-display text-white/40 text-sm md:text-base px-4 text-center">
+                      {img.alt}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      );
+    }
+    case 'figmaEmbed':
+      return (
+        <div className="space-y-4">
+          {block.heading && (
+            <h2 className="font-display text-3xl md:text-4xl font-bold text-white/90">
+              {block.heading}
+            </h2>
+          )}
+          <div className="w-full aspect-[16/10] rounded-2xl overflow-hidden border border-white/10 bg-white/[0.02]">
+            <iframe
+              src={block.url}
+              title={block.title || block.heading || 'Figma embed'}
+              className="w-full h-full"
+              allowFullScreen
+            />
+          </div>
+        </div>
+      );
+    case 'featuredArticle':
+      return (
+        <a
+          href={block.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="block rounded-2xl bg-white p-6 md:p-8 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-2xl border border-transparent hover:border-black/10"
+        >
+          <p className="font-display text-black/50 text-xs md:text-sm font-semibold tracking-wide uppercase mb-3">
+            Published in {block.source}
+          </p>
+          <h3 className="font-display text-black text-2xl md:text-3xl font-bold leading-tight mb-3">
+            {block.title}
+          </h3>
+          <p className="font-display text-black/70 text-base md:text-lg leading-relaxed mb-5">
+            {block.description}
+          </p>
+          <p className="font-display text-black/50 text-xs md:text-sm uppercase tracking-wide">
+            {block.date}
+          </p>
+        </a>
+      );
   }
 }
