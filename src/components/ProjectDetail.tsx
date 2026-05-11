@@ -44,7 +44,7 @@ export function ProjectDetail({ slug, skipEnterAnimation = false }: ProjectDetai
   }, [morph.phase]);
 
   const close = () => {
-    if (isClosing) return;
+    if (isClosingRef.current) return;
 
     const cardEl = document.querySelector(
       `[data-card-slug="${slug}"]`
@@ -78,6 +78,7 @@ export function ProjectDetail({ slug, skipEnterAnimation = false }: ProjectDetai
       };
 
       // Start retract immediately AND fade content in parallel — no gap.
+      isClosingRef.current = true;
       setIsClosing(true);
       morph.startClose(detailRects, cardRects);
       if (window.history.state && window.history.state.idx > 0) {
@@ -86,6 +87,7 @@ export function ProjectDetail({ slug, skipEnterAnimation = false }: ProjectDetai
         navigate('/');
       }
     } else {
+      isClosingRef.current = true;
       morph.reset();
       if (window.history.state && window.history.state.idx > 0) {
         navigate(-1);
@@ -94,6 +96,33 @@ export function ProjectDetail({ slug, skipEnterAnimation = false }: ProjectDetai
       }
     }
   };
+  closeRef.current = close;
+
+  // Intercept browser back / swipe-back: cancel the pop and route through close()
+  // so the back gesture gets the same animation as the close button.
+  useEffect(() => {
+    // Push a sentinel state so the next back fires popstate without leaving the route.
+    window.history.pushState({ ...window.history.state, __morphSentinel: true }, '');
+    const onPop = () => {
+      if (isClosingRef.current) return;
+      // Re-push the sentinel so subsequent backs are still caught until close() navigates.
+      window.history.pushState({ ...window.history.state, __morphSentinel: true }, '');
+      closeRef.current();
+    };
+    window.addEventListener('popstate', onPop);
+    return () => window.removeEventListener('popstate', onPop);
+  }, []);
+
+  // Safety net: if we unmount with morph state still active (e.g., unexpected route
+  // change), reset so the carousel cards are not left hidden.
+  useEffect(() => {
+    return () => {
+      if (morph.phase !== 'idle' && morph.phase !== 'closing') {
+        morph.reset();
+      }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
