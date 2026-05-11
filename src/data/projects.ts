@@ -119,6 +119,8 @@ export const projectDetails: ProjectDetail[] = [
         type: 'figmaEmbed',
         heading: 'Interactive prototype',
         url: 'https://embed.figma.com/design/90QF6KkETnDvmy85j9h2xL/Planet-Money-Design--Copy-?node-id=1051-2710&embed-host=share',
+        externalUrl:
+          'https://www.figma.com/design/90QF6KkETnDvmy85j9h2xL/Planet-Money-Design--Copy-?node-id=1051-2710&t=a7W8tnRNlraAX71g-1',
       },
       {
         type: 'processNarrative',
