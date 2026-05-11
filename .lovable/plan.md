@@ -1,28 +1,48 @@
-## Plan
+## Scope
 
-1. **Replace the current Figma scroll guard with temporary diagnostics only**
-   - Remove/disable the existing restoration guard for this test so it does not hide the real trigger.
-   - Add clearly prefixed console logs around the Figma embed and the project detail scroll container.
-   - Keep this diagnostic code temporary and easy to remove.
+Data and copy changes for Spiber and Planet Money Bot. Files touched: `src/data/projects.ts` and `src/components/ProjectDetail.tsx` only.
 
-2. **Log every plausible scroll-jump signal**
-   - Scroll container: `scroll`, current `scrollTop`, previous `scrollTop`, delta, active element, iframe bounds, wrapper bounds.
-   - Window/document/body: `scroll`, `focus`, `blur`, `focusin`, `focusout`, pointer/mouse events.
-   - Iframe element: `load`, `focus`, `blur`, `pointerdown`, `mousedown`, bounding rect before/after interaction.
-   - Global messages: `message` events from Figma/embed origins, logging only origin and safe metadata.
-   - Layout shifts: `ResizeObserver` on the wrapper and iframe; optional `PerformanceObserver` for layout shift entries if supported.
+## Task 1: Planet Money Bot
 
-3. **Have you reproduce the issue once**
-   - You click the Figma page-selector dropdown in the preview.
-   - I’ll read the console log snapshot and identify the exact event order and which scrollable element changed.
+- Update existing `figmaEmbed` URL to `https://embed.figma.com/design/90QF6KkETnDvmy85j9h2xL/Planet-Money-Design--Copy-?node-id=1262-6744&embed-host=share` and match `externalUrl` to same node id.
+- Update bottom `featuredArticle` URL to `https://jskfellows.stanford.edu/can-we-build-an-ai-chatbot-for-journalism-79ffe39e053e`. Keep treatment; adjust copy so the card's action reads "Read the article →".
 
-4. **Propose the permanent fix based on evidence**
-   - If the scroll is browser focus-scroll: use a structural isolation fix rather than another timed restoration attempt.
-   - If the scroll is layout/resize-driven: stabilize iframe/wrapper dimensions and containment.
-   - If anchoring/smooth scrolling is involved: apply scoped CSS such as `overflow-anchor: none`, `scroll-behavior: auto`, or containment only where needed.
-   - If Figma posts a message that triggers layout or focus behavior: ignore/neutralize the app-side trigger if one exists.
+## Task 2: Spiber rewrite
 
-5. **After confirmation, remove diagnostics and implement the smallest permanent fix**
-   - No permanent console noise.
-   - No extra visual changes to the case study.
-   - Keep the solution scoped to the Figma embed/project detail view.
+### Type changes (`src/data/projects.ts`)
+
+- `processNarrative` image `aspect` union: add `'natural'`. Lets image render at intrinsic ratio.
+- `outcome` block: add optional `ctaUrl?: string` and `ctaLabel?: string`.
+- `figmaEmbed` block: add optional `interactiveHint?: boolean` and `size?: 'default' | 'contained'`.
+  - `interactiveHint: true` renders a small hint line directly below the iframe ("Click through the embed to explore the deck." — short, plain).
+  - `size: 'contained'` constrains the embed to a narrower max width on desktop with horizontal breathing room; mobile stays full width.
+
+### Renderer changes (`src/components/ProjectDetail.tsx`)
+
+- `processNarrative`: when `aspect === 'natural'`, drop forced aspect class and absolute positioning; render image as a normal block at intrinsic ratio inside the rounded bordered container.
+- `outcome`: when `ctaUrl` is set, render a subtle inline link below the sentence using `ctaLabel`, new tab, `rel="noopener noreferrer"`.
+- `figmaEmbed`:
+  - When `size === 'contained'`, wrap the iframe in a centered container roughly `md:max-w-[70%]` (mobile full width).
+  - When `interactiveHint` is true, render a small muted hint line directly below the iframe (e.g. `text-sm text-foreground/60`).
+  - When `externalUrl` is set on a block that also has `interactiveHint`, promote the external link from the subtle right-aligned footnote to a more visible treatment: left-aligned, normal text size, underlined, with the link icon/arrow. Sits below the hint, above any spacing to the next block. This applies only when both `interactiveHint` and `externalUrl` exist on the same block, so other embeds keep the existing footnote style.
+
+### Spiber blocks (replaces current Spiber blocks)
+
+Keep slug/title/subtitle/category/tags/heroImage. Replace `blocks` with:
+
+1. `context` — six-week timeline, three weeks content strategy + three weeks wireframing, weekly client check-ins, audiences: investors, sustainability-focused brands, potential hires.
+2. `figmaEmbed` — heading "Research and Proposals"; content paragraph as specified; embed URL `…node-id=1-196…`; external URL `…proto/…node-id=1-196…`; `linkLabel: 'See the full deck'`; `interactiveHint: true`; `size: 'contained'`.
+3. `processNarrative` — heading "Sitemap"; paragraph as specified; one image `spiber-initial-sitemap.png`, `aspect: 'natural'`.
+4. `figmaEmbed` — heading "Final Sitemap"; content "Iterated structure with mobile considerations baked in."; embed URL `…node-id=827-4244…`; external URL `…node-id=827-4244…`; `linkLabel: 'See the full Figma file'`. No `interactiveHint`, default size.
+5. `processNarrative` — heading "Wireframes"; paragraph as specified; two images (`spiber-wireframe-1.png`, `spiber-wireframe-2.png`), both `aspect: 'natural'`.
+6. `outcome` — "The site went live on Spiber's domain." with `ctaUrl: 'https://spiber.inc/en'`, `ctaLabel: 'Visit spiber.inc/en ↗'`.
+
+The unused `liveLink` block type definition stays in place to keep the change minimal.
+
+## Voice
+
+Plain, concise, first-person where natural. No emdashes.
+
+## Out of scope
+
+`ProjectsCarousel.tsx`, morph animation, routing, and every file outside the two listed.
