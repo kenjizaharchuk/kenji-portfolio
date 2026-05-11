@@ -70,6 +70,13 @@ export const projectDetails: ProjectDetail[] = [
           "Planet Money Bot is a conversational chatbot that lets users explore economics through NPR's Planet Money archive. In partnership with NPR, I led the UX and interface design from raw prototype to launch, focusing on usability, transparency, and play. Goal: build a website to boost engagement with the extensive Planet Money podcast archives.",
       },
       {
+        type: 'featuredImage',
+        src: pmbLaptopHero,
+        alt: 'Planet Money Bot landing page on a laptop',
+        aspect: '16/10',
+        width: 'md',
+      },
+      {
         type: 'processNarrative',
         heading: 'Early Experiments & Wireframes',
         content:
