@@ -30,7 +30,23 @@ export function MorphLayer() {
   const morph = useMorph();
   const { phase, cardRects, detailRects, image, imagePosition, title, cardSubtitle, detailSubtitle, tags, setOpen, reset } = morph;
 
-  if (phase === 'idle' || phase === 'open') return null;
+  // Linger one paint after phase flips to 'open' so the real underlying
+  // elements (which snap to opacity 1 in the same frame) are guaranteed to
+  // paint before the ghost unmounts. Kills the single-frame black flash.
+  const [linger, setLinger] = useState(false);
+  useEffect(() => {
+    if (phase === 'open') {
+      setLinger(true);
+      const id = requestAnimationFrame(() => {
+        requestAnimationFrame(() => setLinger(false));
+      });
+      return () => cancelAnimationFrame(id);
+    }
+    setLinger(false);
+  }, [phase]);
+
+  if (phase === 'idle') return null;
+  if (phase === 'open' && !linger) return null;
   if (!cardRects || !detailRects) return null;
 
   const opening = phase === 'opening';
