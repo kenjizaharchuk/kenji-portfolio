@@ -159,6 +159,7 @@ const projects: Project[] = [
     image: spiberProject,
     tags: ['Wireframing', 'Interface Design', 'Figma'],
     categories: ['Digital Design', 'Work Experience'],
+    slug: 'spiber',
   },
   {
     id: 10,
