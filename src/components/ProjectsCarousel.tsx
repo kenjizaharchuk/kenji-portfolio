@@ -370,10 +370,10 @@ export function ProjectsCarousel() {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
                     <div className="relative z-10 h-full p-6 md:p-8 flex flex-col justify-end">
                       <div data-card-part="text">
-                        <p className="font-display text-white/70 text-base font-semibold tracking-wide uppercase mb-2">
+                        <p data-card-part="subtitle" className="font-display text-white/70 text-base font-semibold tracking-wide uppercase mb-2">
                           {project.subtitle}
                         </p>
-                        <h3 className="font-display text-white text-2xl md:text-3xl font-bold">
+                        <h3 data-card-part="title" className="font-display text-white text-2xl md:text-3xl font-bold">
                           {project.title}
                         </h3>
                       </div>
