@@ -128,6 +128,13 @@ export function ProjectDetail({ slug, skipEnterAnimation = false }: ProjectDetai
   const morphedElementsVisible =
     skipEnterAnimation || morph.phase === 'open' || morph.phase === 'idle';
   const showMorphedElements = morphedElementsVisible && !isClosing;
+  // Open direction: snap to opacity 1 the same frame phase flips to 'open'
+  // (the MorphLayer lingers one paint to cover the handoff — no flash).
+  // Close direction: fade out over CLOSE_FADE_MS so the elements gracefully
+  // disappear before the ghost retracts.
+  const morphedElementsTransition = isClosing
+    ? `opacity ${CLOSE_FADE_MS}ms ease-out`
+    : 'none';
 
   // Rest of the case-study content fades in after the morph completes; fades out at start of close.
   const restInitial = skipEnterAnimation ? false : { opacity: 0, y: 12 };
@@ -135,7 +142,7 @@ export function ProjectDetail({ slug, skipEnterAnimation = false }: ProjectDetai
     isClosing || !morphedElementsVisible ? { opacity: 0, y: 0 } : { opacity: 1, y: 0 };
   const restTransition = isClosing
     ? { duration: CLOSE_FADE_MS / 1000, ease: 'easeOut' as const }
-    : { ...transition, delay: skipEnterAnimation ? 0 : 0.55 };
+    : { ...transition, delay: skipEnterAnimation ? 0 : 0.45 };
 
   return (
     <div className="fixed inset-0 z-[60] bg-background overflow-y-auto">
