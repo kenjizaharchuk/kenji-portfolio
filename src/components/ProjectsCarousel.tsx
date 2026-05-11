@@ -348,7 +348,7 @@ export function ProjectsCarousel() {
               }}
               keyboard={{ enabled: true }}
               modules={[EffectCoverflow, Mousewheel, FreeMode, Keyboard]}
-              className="projects-carousel w-full max-w-7xl [overscroll-behavior-x:contain] [touch-action:pan-y]"
+              className="projects-carousel w-full max-w-7xl"
             >
               {filteredProjects.map((project) => {
                 const isActive = project.id === currentProjectId;
