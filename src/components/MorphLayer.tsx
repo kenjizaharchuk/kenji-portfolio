@@ -1,9 +1,10 @@
 import { createPortal } from 'react-dom';
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useMorph, type Rect, type MorphRects, type MorphPhase } from '@/lib/morphContext';
 
-const DURATION = 0.9;
-const EASE = [0.22, 1, 0.36, 1] as const;
+const DURATION = 1.0;
+const EASE = [0.65, 0, 0.35, 1] as const;
 const TRANSITION = { duration: DURATION, ease: EASE };
 
 /** Non-uniform inverse (used for frame and image). */
