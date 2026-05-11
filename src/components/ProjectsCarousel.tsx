@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Swiper as SwiperType } from 'swiper';
 import { EffectCoverflow, Mousewheel, FreeMode, Keyboard } from 'swiper/modules';
-import { useMorph, rectFromDOMRect } from '@/lib/morphContext';
+import { useMorph, rectFromDOMRect, type MorphRects } from '@/lib/morphContext';
 import { getProjectBySlug } from '@/data/projects';
 
 // @ts-ignore
@@ -369,17 +369,19 @@ export function ProjectsCarousel() {
                     )}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
                     <div className="relative z-10 h-full p-6 md:p-8 flex flex-col justify-end">
-                      <p className="font-display text-white/70 text-base font-semibold tracking-wide uppercase mb-2">
-                        {project.subtitle}
-                      </p>
-                      <h3 className="font-display text-white text-2xl md:text-3xl font-bold mb-3">
-                        {project.title}
-                      </h3>
-                      <div className="flex flex-wrap gap-2">
+                      <div data-card-part="text">
+                        <p className="font-display text-white/70 text-base font-semibold tracking-wide uppercase mb-2">
+                          {project.subtitle}
+                        </p>
+                        <h3 className="font-display text-white text-2xl md:text-3xl font-bold">
+                          {project.title}
+                        </h3>
+                      </div>
+                      <div data-card-part="tags" className="flex flex-wrap gap-2 mt-3">
                         {project.tags.map((tag) => (
                           <span
                             key={tag}
-                            className="font-display px-3 py-1 text-sm font-medium rounded-full border border-white/30 text-white/80 bg-white/10 backdrop-blur-sm"
+                            className="font-display px-3 py-1 text-sm font-medium rounded-full border border-white/30 text-white/80 bg-white/10 backdrop-blur-sm whitespace-nowrap"
                           >
                             {tag}
                           </span>
@@ -398,18 +400,36 @@ export function ProjectsCarousel() {
                         onClick={(e) => {
                           if (!isActive) return;
                           e.preventDefault();
-                          // Find the card element to measure its current screen rect.
-                          const cardEl = (e.currentTarget as HTMLElement).querySelector(
+                          const root = e.currentTarget as HTMLElement;
+                          const cardEl = root.querySelector(
                             `[data-card-slug="${project.slug}"]`
                           ) as HTMLElement | null;
+                          const textEl = cardEl?.querySelector(
+                            '[data-card-part="text"]'
+                          ) as HTMLElement | null;
+                          const tagsEl = cardEl?.querySelector(
+                            '[data-card-part="tags"]'
+                          ) as HTMLElement | null;
                           const detail = getProjectBySlug(project.slug!);
-                          if (cardEl && detail) {
-                            const rect = rectFromDOMRect(cardEl.getBoundingClientRect());
+                          if (cardEl && textEl && tagsEl && detail) {
+                            const frameRect = rectFromDOMRect(cardEl.getBoundingClientRect());
+                            const cardRects: MorphRects = {
+                              frame: frameRect,
+                              image: frameRect,
+                              title: rectFromDOMRect(textEl.getBoundingClientRect()),
+                              tags: rectFromDOMRect(tagsEl.getBoundingClientRect()),
+                            };
                             morph.startOpen(
-                              project.slug!,
-                              rect,
-                              detail.heroImage,
-                              detail.heroImagePosition
+                              {
+                                slug: project.slug!,
+                                image: detail.heroImage,
+                                imagePosition: detail.heroImagePosition,
+                                title: detail.title,
+                                cardSubtitle: project.subtitle,
+                                detailSubtitle: `${detail.subtitle} · ${detail.category}`,
+                                tags: detail.tags,
+                              },
+                              cardRects
                             );
                           }
                           navigate(`/projects/${project.slug}`);

@@ -9,51 +9,80 @@ export interface Rect {
   height: number;
 }
 
+export interface MorphRects {
+  frame: Rect;
+  image: Rect;
+  title: Rect;
+  tags: Rect;
+}
+
+export interface MorphPayload {
+  slug: string;
+  image: string;
+  imagePosition?: string;
+  title: string;
+  cardSubtitle: string;
+  detailSubtitle: string;
+  tags: string[];
+}
+
 interface MorphState {
   slug: string | null;
-  sourceRect: Rect | null;
-  targetRect: Rect | null;
   image: string | null;
   imagePosition: string | null;
+  title: string | null;
+  cardSubtitle: string | null;
+  detailSubtitle: string | null;
+  tags: string[] | null;
+  cardRects: MorphRects | null;
+  detailRects: MorphRects | null;
   phase: MorphPhase;
 }
 
 const initialState: MorphState = {
   slug: null,
-  sourceRect: null,
-  targetRect: null,
   image: null,
   imagePosition: null,
+  title: null,
+  cardSubtitle: null,
+  detailSubtitle: null,
+  tags: null,
+  cardRects: null,
+  detailRects: null,
   phase: 'idle',
 };
 
 type Action =
-  | { type: 'startOpen'; slug: string; sourceRect: Rect; image: string; imagePosition?: string }
-  | { type: 'setTargetRect'; rect: Rect }
+  | { type: 'startOpen'; payload: MorphPayload; cardRects: MorphRects }
+  | { type: 'setDetailRects'; rects: MorphRects }
   | { type: 'setOpen' }
-  | { type: 'startClose'; sourceRect: Rect; targetRect: Rect }
+  | { type: 'startClose'; detailRects: MorphRects; cardRects: MorphRects }
   | { type: 'reset' };
 
 function reducer(state: MorphState, action: Action): MorphState {
   switch (action.type) {
     case 'startOpen':
       return {
-        slug: action.slug,
-        sourceRect: action.sourceRect,
-        targetRect: null,
-        image: action.image,
-        imagePosition: action.imagePosition || 'center',
+        slug: action.payload.slug,
+        image: action.payload.image,
+        imagePosition: action.payload.imagePosition || 'center',
+        title: action.payload.title,
+        cardSubtitle: action.payload.cardSubtitle,
+        detailSubtitle: action.payload.detailSubtitle,
+        tags: action.payload.tags,
+        cardRects: action.cardRects,
+        detailRects: null,
         phase: 'opening',
       };
-    case 'setTargetRect':
-      return { ...state, targetRect: action.rect };
+    case 'setDetailRects':
+      return { ...state, detailRects: action.rects };
     case 'setOpen':
       return { ...state, phase: 'open' };
     case 'startClose':
       return {
         ...state,
-        sourceRect: action.sourceRect,
-        targetRect: action.targetRect,
+        detailRects: action.detailRects,
+        cardRects: action.cardRects,
         phase: 'closing',
       };
     case 'reset':
@@ -64,10 +93,10 @@ function reducer(state: MorphState, action: Action): MorphState {
 }
 
 interface MorphContextValue extends MorphState {
-  startOpen: (slug: string, sourceRect: Rect, image: string, imagePosition?: string) => void;
-  setTargetRect: (rect: Rect) => void;
+  startOpen: (payload: MorphPayload, cardRects: MorphRects) => void;
+  setDetailRects: (rects: MorphRects) => void;
   setOpen: () => void;
-  startClose: (sourceRect: Rect, targetRect: Rect) => void;
+  startClose: (detailRects: MorphRects, cardRects: MorphRects) => void;
   reset: () => void;
 }
 
@@ -77,25 +106,25 @@ export function MorphProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const startOpen = useCallback(
-    (slug: string, sourceRect: Rect, image: string, imagePosition?: string) =>
-      dispatch({ type: 'startOpen', slug, sourceRect, image, imagePosition }),
+    (payload: MorphPayload, cardRects: MorphRects) =>
+      dispatch({ type: 'startOpen', payload, cardRects }),
     []
   );
-  const setTargetRect = useCallback(
-    (rect: Rect) => dispatch({ type: 'setTargetRect', rect }),
+  const setDetailRects = useCallback(
+    (rects: MorphRects) => dispatch({ type: 'setDetailRects', rects }),
     []
   );
   const setOpen = useCallback(() => dispatch({ type: 'setOpen' }), []);
   const startClose = useCallback(
-    (sourceRect: Rect, targetRect: Rect) =>
-      dispatch({ type: 'startClose', sourceRect, targetRect }),
+    (detailRects: MorphRects, cardRects: MorphRects) =>
+      dispatch({ type: 'startClose', detailRects, cardRects }),
     []
   );
   const reset = useCallback(() => dispatch({ type: 'reset' }), []);
 
   return (
     <MorphContext.Provider
-      value={{ ...state, startOpen, setTargetRect, setOpen, startClose, reset }}
+      value={{ ...state, startOpen, setDetailRects, setOpen, startClose, reset }}
     >
       {children}
     </MorphContext.Provider>

@@ -1,9 +1,9 @@
-import { useEffect, useLayoutEffect, useRef } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Minimize2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { getProjectBySlug, type Block } from '@/data/projects';
-import { useMorph, rectFromDOMRect } from '@/lib/morphContext';
+import { useMorph, rectFromDOMRect, type MorphRects } from '@/lib/morphContext';
 
 interface ProjectDetailProps {
   slug: string;
@@ -12,39 +12,80 @@ interface ProjectDetailProps {
 }
 
 const transition = { duration: 0.8, ease: [0.22, 1, 0.36, 1] as const };
+const CLOSE_FADE_MS = 160;
 
 export function ProjectDetail({ slug, skipEnterAnimation = false }: ProjectDetailProps) {
   const navigate = useNavigate();
   const project = getProjectBySlug(slug);
   const morph = useMorph();
-  const heroSlotRef = useRef<HTMLDivElement | null>(null);
 
-  // Measure the hero slot once mounted so the ghost can fly there.
+  const heroSlotRef = useRef<HTMLDivElement | null>(null);
+  const titleBlockRef = useRef<HTMLDivElement | null>(null);
+  const tagsBlockRef = useRef<HTMLDivElement | null>(null);
+
+  const [isClosing, setIsClosing] = useState(false);
+
+  // Measure the four target rects after mount so the ghost can fly there.
   useLayoutEffect(() => {
-    if (!heroSlotRef.current) return;
     if (morph.phase !== 'opening') return;
-    const rect = rectFromDOMRect(heroSlotRef.current.getBoundingClientRect());
-    morph.setTargetRect(rect);
+    if (!heroSlotRef.current || !titleBlockRef.current || !tagsBlockRef.current) return;
+    const rects: MorphRects = {
+      frame: { top: 0, left: 0, width: window.innerWidth, height: window.innerHeight },
+      image: rectFromDOMRect(heroSlotRef.current.getBoundingClientRect()),
+      title: rectFromDOMRect(titleBlockRef.current.getBoundingClientRect()),
+      tags: rectFromDOMRect(tagsBlockRef.current.getBoundingClientRect()),
+    };
+    morph.setDetailRects(rects);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [morph.phase]);
 
   const close = () => {
-    // If a ghost morph is feasible (we have a card on the page), animate the close.
+    if (isClosing) return;
+
     const cardEl = document.querySelector(
       `[data-card-slug="${slug}"]`
     ) as HTMLElement | null;
+    const textEl = cardEl?.querySelector('[data-card-part="text"]') as HTMLElement | null;
+    const tagsEl = cardEl?.querySelector('[data-card-part="tags"]') as HTMLElement | null;
     const heroEl = heroSlotRef.current;
-    if (cardEl && heroEl && morph.phase !== 'idle') {
-      const heroRect = rectFromDOMRect(heroEl.getBoundingClientRect());
-      const cardRect = rectFromDOMRect(cardEl.getBoundingClientRect());
-      morph.startClose(heroRect, cardRect);
+    const titleEl = titleBlockRef.current;
+    const detailTagsEl = tagsBlockRef.current;
+
+    const canMorph =
+      cardEl && textEl && tagsEl && heroEl && titleEl && detailTagsEl && morph.phase !== 'idle';
+
+    if (canMorph) {
+      const frameRect = rectFromDOMRect(cardEl.getBoundingClientRect());
+      const cardRects: MorphRects = {
+        frame: frameRect,
+        image: frameRect,
+        title: rectFromDOMRect(textEl.getBoundingClientRect()),
+        tags: rectFromDOMRect(tagsEl.getBoundingClientRect()),
+      };
+      const detailRects: MorphRects = {
+        frame: { top: 0, left: 0, width: window.innerWidth, height: window.innerHeight },
+        image: rectFromDOMRect(heroEl.getBoundingClientRect()),
+        title: rectFromDOMRect(titleEl.getBoundingClientRect()),
+        tags: rectFromDOMRect(detailTagsEl.getBoundingClientRect()),
+      };
+
+      // Start content fade-out, then hand off to the morph layer.
+      setIsClosing(true);
+      window.setTimeout(() => {
+        morph.startClose(detailRects, cardRects);
+        if (window.history.state && window.history.state.idx > 0) {
+          navigate(-1);
+        } else {
+          navigate('/');
+        }
+      }, CLOSE_FADE_MS);
     } else {
       morph.reset();
-    }
-    if (window.history.state && window.history.state.idx > 0) {
-      navigate(-1);
-    } else {
-      navigate('/');
+      if (window.history.state && window.history.state.idx > 0) {
+        navigate(-1);
+      } else {
+        navigate('/');
+      }
     }
   };
 
@@ -55,7 +96,7 @@ export function ProjectDetail({ slug, skipEnterAnimation = false }: ProjectDetai
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [isClosing]);
 
   // Lock background scroll while detail is open.
   useEffect(() => {
@@ -82,12 +123,19 @@ export function ProjectDetail({ slug, skipEnterAnimation = false }: ProjectDetai
     );
   }
 
-  const contentInitial = skipEnterAnimation ? false : { opacity: 0, y: 12 };
-  const contentAnimate = { opacity: 1, y: 0 };
-  const contentExit = { opacity: 0, transition: { duration: 0.18 } };
+  // The card-derived elements (hero, title, tags) are visible only when the morph is fully open
+  // (or when there's no morph at all — direct URL visit).
+  const morphedElementsVisible =
+    skipEnterAnimation || morph.phase === 'open' || morph.phase === 'idle';
+  const showMorphedElements = morphedElementsVisible && !isClosing;
 
-  // Show the real hero image only when the morph is done (or we skipped it entirely).
-  const showRealHero = skipEnterAnimation || morph.phase === 'open' || morph.phase === 'idle';
+  // Rest of the case-study content fades in after the morph completes; fades out at start of close.
+  const restInitial = skipEnterAnimation ? false : { opacity: 0, y: 12 };
+  const restAnimate =
+    isClosing || !morphedElementsVisible ? { opacity: 0, y: 0 } : { opacity: 1, y: 0 };
+  const restTransition = isClosing
+    ? { duration: CLOSE_FADE_MS / 1000, ease: 'easeOut' as const }
+    : { ...transition, delay: skipEnterAnimation ? 0 : 0.55 };
 
   return (
     <div className="fixed inset-0 z-[60] bg-background overflow-y-auto">
@@ -95,64 +143,79 @@ export function ProjectDetail({ slug, skipEnterAnimation = false }: ProjectDetai
       <motion.button
         onClick={close}
         aria-label="Close project"
-        initial={contentInitial}
-        animate={contentAnimate}
-        exit={contentExit}
-        transition={{ ...transition, delay: skipEnterAnimation ? 0 : 0.45 }}
+        initial={restInitial}
+        animate={restAnimate}
+        transition={restTransition}
         className="fixed top-6 right-6 md:top-8 md:right-8 z-[70] p-3 rounded-full border border-white/20 bg-black/40 backdrop-blur-sm text-white/80 hover:text-white hover:bg-white/10 transition-colors"
       >
         <Minimize2 size={20} />
       </motion.button>
 
       <article className="max-w-5xl mx-auto px-6 md:px-10 pt-16 md:pt-24 pb-24">
-        {/* Hero slot — reserves layout space, ghost flies on top during morph */}
+        {/* Hero slot — reserves layout space. Real image + border fade in once morph is open. */}
         <div
           ref={heroSlotRef}
-          className="relative w-full aspect-[21/9] border border-white/15"
-          style={{ borderRadius: '1.5rem', overflow: 'hidden' }}
+          className="relative w-full aspect-[21/9]"
+          style={{ borderRadius: '1.5rem' }}
         >
-          {showRealHero && (
-            <img
-              src={project.heroImage}
-              alt={project.title}
-              className="absolute inset-0 w-full h-full object-cover"
-              style={{ objectPosition: project.heroImagePosition || 'center' }}
-            />
-          )}
+          <img
+            src={project.heroImage}
+            alt={project.title}
+            className="absolute inset-0 w-full h-full object-cover transition-opacity duration-200"
+            style={{
+              objectPosition: project.heroImagePosition || 'center',
+              borderRadius: '1.5rem',
+              opacity: showMorphedElements ? 1 : 0,
+            }}
+          />
+          {/* Independent hero border — fades in at end of opening, out at start of closing */}
+          <div
+            aria-hidden
+            className="absolute inset-0 border border-white/15 pointer-events-none transition-opacity duration-200"
+            style={{
+              borderRadius: '1.5rem',
+              opacity: showMorphedElements ? 1 : 0,
+            }}
+          />
         </div>
 
-        {/* Title block — fades in after morph */}
-        <motion.div
-          initial={contentInitial}
-          animate={contentAnimate}
-          exit={contentExit}
-          transition={{ ...transition, delay: skipEnterAnimation ? 0 : 0.5 }}
-          className="mt-8"
+        {/* Title block — opacity-toggled. Ghost handles the morph; this is the resting state. */}
+        <div
+          ref={titleBlockRef}
+          className="mt-8 transition-opacity duration-200"
+          style={{ opacity: showMorphedElements ? 1 : 0 }}
         >
           <p className="font-display text-white/60 text-sm md:text-base font-semibold tracking-wide uppercase mb-3">
             {project.subtitle} · {project.category}
           </p>
-          <h1 className="font-display text-white text-4xl md:text-6xl font-bold mb-5">
+          <h1 className="font-display text-white text-4xl md:text-6xl font-bold leading-[1.05]">
             {project.title}
           </h1>
+        </div>
+
+        {/* Tags — opacity-toggled. */}
+        <div
+          ref={tagsBlockRef}
+          className="mt-5 transition-opacity duration-200"
+          style={{ opacity: showMorphedElements ? 1 : 0 }}
+        >
           <div className="flex flex-wrap gap-2">
             {project.tags.map((tag) => (
               <span
                 key={tag}
-                className="font-display px-3 py-1 text-sm font-medium rounded-full border border-white/30 text-white/80 bg-white/10 backdrop-blur-sm"
+                className="font-display px-3 py-1 text-sm font-medium rounded-full border border-white/30 text-white/80 bg-white/10 backdrop-blur-sm whitespace-nowrap"
               >
                 {tag}
               </span>
             ))}
           </div>
-        </motion.div>
+        </div>
 
-        {/* Blocks */}
+        {/* Rest of the case-study content — does not participate in the morph */}
         <motion.div
-          initial={contentInitial}
-          animate={contentAnimate}
-          exit={contentExit}
-          transition={{ ...transition, delay: skipEnterAnimation ? 0 : 0.6 }}
+          initial={restInitial}
+          animate={restAnimate}
+          transition={restTransition}
           className="space-y-16 md:space-y-24 mt-10 md:mt-14"
         >
           {project.blocks.map((block, i) => (
@@ -189,7 +252,7 @@ function BlockRenderer({ block }: { block: Block }) {
       return (
         <blockquote className="border-l-4 border-primary pl-6 md:pl-8">
           <p className="font-display text-white/95 text-2xl md:text-4xl font-semibold leading-snug">
-            “{block.content}”
+            "{block.content}"
           </p>
           {block.attribution && (
             <footer className="font-display text-white/50 text-sm md:text-base mt-4 uppercase tracking-wide">

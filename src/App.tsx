@@ -9,7 +9,7 @@ import PhysicalDesign from "./pages/PhysicalDesign";
 import DigitalDesign from "./pages/DigitalDesign";
 import Art from "./pages/Art";
 import { MorphProvider } from "./lib/morphContext";
-import { MorphGhost } from "./components/MorphGhost";
+import { MorphLayer } from "./components/MorphLayer";
 
 const queryClient = new QueryClient();
 
@@ -20,7 +20,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <MorphProvider>
-          <MorphGhost />
+          <MorphLayer />
           <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/projects/:slug" element={<Index />} />
