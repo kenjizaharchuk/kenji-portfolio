@@ -396,6 +396,20 @@ function BlockRenderer({ block }: { block: Block }) {
           {block.images.length > 0 && (
             <div className={`grid grid-cols-1 ${gridCols} gap-4 md:gap-6`}>
               {block.images.map((img, i) => {
+                if (img.aspect === 'natural' && img.src) {
+                  return (
+                    <div
+                      key={i}
+                      className="rounded-2xl overflow-hidden border border-white/10 bg-white/[0.02]"
+                    >
+                      <img
+                        src={img.src}
+                        alt={img.alt}
+                        className="block w-full h-auto"
+                      />
+                    </div>
+                  );
+                }
                 const aspect =
                   img.aspect === '16/9'
                     ? 'aspect-[16/9]'
