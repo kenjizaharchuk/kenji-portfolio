@@ -74,7 +74,7 @@ export const projectDetails: ProjectDetail[] = [
         src: pmbLaptopHero,
         alt: 'Planet Money Bot landing page on a laptop',
         aspect: '16/10',
-        width: 'md',
+        width: 'sm',
       },
       {
         type: 'processNarrative',
@@ -92,8 +92,8 @@ export const projectDetails: ProjectDetail[] = [
         content:
           'Mid-fidelity iterations tested answer states, feedback flows, accessibility, and error handling. A/B testing with FullStory on hundreds of users informed each round of refinement.',
         images: [
-          { src: pmbMidFidelity1, alt: 'Mid-fidelity Figma screen 1', aspect: '16/9' },
-          { src: pmbMidFidelity2, alt: 'Mid-fidelity Figma screen 2', aspect: '16/9' },
+          { src: pmbMidFidelity1, alt: 'Mid-fidelity Figma screen 1', aspect: '4/3' },
+          { src: pmbMidFidelity2, alt: 'Mid-fidelity Figma screen 2', aspect: '4/3' },
         ],
       },
       {
