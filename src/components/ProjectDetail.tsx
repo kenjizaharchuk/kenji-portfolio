@@ -105,8 +105,6 @@ export function ProjectDetail({ slug, skipEnterAnimation = false }: ProjectDetai
     window.history.pushState({ ...window.history.state, __morphSentinel: true }, '');
     const onPop = () => {
       if (isClosingRef.current) return;
-      // Re-push the sentinel so subsequent backs are still caught until close() navigates.
-      window.history.pushState({ ...window.history.state, __morphSentinel: true }, '');
       closeRef.current();
     };
     window.addEventListener('popstate', onPop);
