@@ -122,20 +122,27 @@ export function MorphLayer() {
         onAnimationComplete={onFrameComplete}
       />
 
-      {/* Image — single continuous element, scales+travels card → hero */}
+      {/* Image — animates top/left/width/height (no transform-scale), so
+          object-cover re-fits at every interpolated size with zero distortion. */}
       <motion.div
         style={{
           position: 'absolute',
-          top: detailRects.image.top,
-          left: detailRects.image.left,
-          width: detailRects.image.width,
-          height: detailRects.image.height,
           transformOrigin: 'top left',
           borderRadius: '1.5rem',
           overflow: 'hidden',
         }}
-        initial={initialImage}
-        animate={animateImage}
+        initial={{
+          top: initialImageRect.top,
+          left: initialImageRect.left,
+          width: initialImageRect.width,
+          height: initialImageRect.height,
+        }}
+        animate={{
+          top: animateImageRect.top,
+          left: animateImageRect.left,
+          width: animateImageRect.width,
+          height: animateImageRect.height,
+        }}
         transition={TRANSITION}
       >
         {image && (
