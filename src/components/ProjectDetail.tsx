@@ -78,6 +78,7 @@ export function ProjectDetail({ slug, skipEnterAnimation = false }: ProjectDetai
 
       // Start retract immediately AND fade content in parallel — no gap.
       setIsClosing(true);
+      isClosingRef.current = true;
       morph.startClose(detailRects, cardRects);
       if (window.history.state && window.history.state.idx > 0) {
         navigate(-1);
