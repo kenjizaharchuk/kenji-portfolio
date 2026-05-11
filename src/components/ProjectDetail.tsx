@@ -20,19 +20,21 @@ export function ProjectDetail({ slug, skipEnterAnimation = false }: ProjectDetai
   const morph = useMorph();
 
   const heroSlotRef = useRef<HTMLDivElement | null>(null);
-  const titleBlockRef = useRef<HTMLDivElement | null>(null);
+  const subtitleRef = useRef<HTMLParagraphElement | null>(null);
+  const titleTextRef = useRef<HTMLHeadingElement | null>(null);
   const tagsBlockRef = useRef<HTMLDivElement | null>(null);
 
   const [isClosing, setIsClosing] = useState(false);
 
-  // Measure the four target rects after mount so the ghost can fly there.
+  // Measure the target rects after mount so the ghost can fly there.
   useLayoutEffect(() => {
     if (morph.phase !== 'opening') return;
-    if (!heroSlotRef.current || !titleBlockRef.current || !tagsBlockRef.current) return;
+    if (!heroSlotRef.current || !subtitleRef.current || !titleTextRef.current || !tagsBlockRef.current) return;
     const rects: MorphRects = {
       frame: { top: 0, left: 0, width: window.innerWidth, height: window.innerHeight },
       image: rectFromDOMRect(heroSlotRef.current.getBoundingClientRect()),
-      title: rectFromDOMRect(titleBlockRef.current.getBoundingClientRect()),
+      subtitle: rectFromDOMRect(subtitleRef.current.getBoundingClientRect()),
+      titleText: rectFromDOMRect(titleTextRef.current.getBoundingClientRect()),
       tags: rectFromDOMRect(tagsBlockRef.current.getBoundingClientRect()),
     };
     morph.setDetailRects(rects);
