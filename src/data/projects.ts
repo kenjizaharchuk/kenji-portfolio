@@ -96,6 +96,21 @@ export const projectDetails: ProjectDetail[] = [
     category: 'Digital Design · Work Experience',
     tags: ['User Research', 'Brand Development', 'UI/UX', 'A/B Testing', 'Figma'],
     heroImage: planetMoney,
+    meta: {
+      client: 'NPR',
+      timeline: 'Summer to Fall 2023 (5 months)',
+      outcome: 'Used by thousands of users before sunset in 2024',
+      quickLinks: [
+        {
+          label: 'View Figma file',
+          url: 'https://www.figma.com/design/90QF6KkETnDvmy85j9h2xL/Planet-Money-Design--Copy-?node-id=1262-6744&t=a7W8tnRNlraAX71g-1',
+        },
+        {
+          label: 'Read the article',
+          url: 'https://jskfellows.stanford.edu/can-we-build-an-ai-chatbot-for-journalism-79ffe39e053e',
+        },
+      ],
+    },
     blocks: [
       {
         type: 'context',
