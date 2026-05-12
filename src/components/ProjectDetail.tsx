@@ -470,13 +470,21 @@ function BlockRenderer({ block }: { block: Block }) {
                 if (img.aspect === 'natural' && img.src) {
                   return (
                     <div key={i} className={widthWrap || undefined}>
-                      <div className="rounded-2xl overflow-hidden border border-white/10 bg-white/[0.02]">
+                      {img.bare ? (
                         <img
                           src={img.src}
                           alt={img.alt}
                           className="block w-full h-auto"
                         />
-                      </div>
+                      ) : (
+                        <div className="rounded-2xl overflow-hidden border border-white/10 bg-white/[0.02]">
+                          <img
+                            src={img.src}
+                            alt={img.alt}
+                            className="block w-full h-auto"
+                          />
+                        </div>
+                      )}
                       {linkEl}
                     </div>
                   );
