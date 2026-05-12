@@ -358,12 +358,18 @@ function MetaStrip({ meta }: { meta: ProjectMeta }) {
 
 function BlockRenderer({ block }: { block: Block }) {
   switch (block.type) {
-    case 'context':
+    case 'context': {
+      const paragraphs = block.content.split(/\n\n+/);
       return (
-        <p className="font-display text-foreground/85 text-lg md:text-xl leading-relaxed">
-          {block.content}
-        </p>
+        <div className="space-y-5 md:space-y-6">
+          {paragraphs.map((p, i) => (
+            <p key={i} className="font-display text-foreground/85 text-lg md:text-xl leading-relaxed">
+              {p}
+            </p>
+          ))}
+        </div>
       );
+    }
     case 'gallery':
       return (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
