@@ -394,7 +394,7 @@ export const projectDetails: ProjectDetail[] = [
     category: 'Digital Design',
     tags: ['Figma', 'UI/UX Design', 'Opportunity Mapping', 'Visual Systems'],
     heroImage: geniusRedesign,
-    heroImagePosition: 'center 30%',
+    
     meta: {
       client: 'Personal project, Stanford Design 170 (Visual Frontiers)',
       timeline: 'Spring 2023, 6 weeks',
