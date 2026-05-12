@@ -580,11 +580,18 @@ export const projectDetails: ProjectDetail[] = [
         ],
       },
       {
-        type: 'featuredImage',
-        src: discordZoning,
-        alt: 'Booth floor plan with measurements',
-        width: 'lg',
-        aspect: 'natural',
+        type: 'processNarrative',
+        heading: 'From city to booth',
+        content:
+          'Translating Discordopolis into a real 9m by 18m space meant making every zone earn its footprint. Main Street runs the long edge, with the Loading Zone and Secret Quest as the entry sequence. The Local Area Network and Console Corner anchor the middle. The Discord Konbini and stage share the front. The Nook and Triumph of the Train sit at the far ends. The floor plan is what the city looks like once it has to obey real measurements.',
+        images: [
+          {
+            src: discordZoning,
+            alt: 'Booth floor plan with measurements',
+            aspect: 'natural',
+            width: 'lg',
+          },
+        ],
       },
       {
         type: 'outcome',
