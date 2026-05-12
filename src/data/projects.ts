@@ -18,6 +18,14 @@ import skynProject from '@/assets/skyn-project.png';
 import skynFinalWebsite from '@/assets/skyn-final-website.png';
 import skynArticleDesign from '@/assets/skyn-article-design.png';
 import discordBooth from '@/assets/discord-booth.png';
+import discordWelcome from '@/assets/Welcome_to_Discordopolis.png';
+import discordCityFrame from '@/assets/What_defines_a_city.png';
+import discordMap from '@/assets/Discordopolis_Map.png';
+import discordLoadingZone from '@/assets/Discord_Alley.png';
+import discordSecretQuest from '@/assets/Secret_Quests.png';
+import discordSecretQuestStamps from '@/assets/Secret_Quest_Hand.png';
+import discordNook from '@/assets/The_Nook.png';
+import discordZoning from '@/assets/Zoning_Map.png';
 import geniusFinalDesign from '@/assets/genius-final-design.png';
 import geniusMoodboard from '@/assets/genius-moodboard.png';
 import geniusBrandGuide from '@/assets/genius-brand-guide.png';
@@ -509,9 +517,79 @@ export const projectDetails: ProjectDetail[] = [
     title: 'Discord Tokyo Game Show Booth',
     subtitle: 'Creative Intern',
     category: 'Digital Design · Work Experience',
-    tags: ['Experience Design', 'Concept Development', 'Client Presentation'],
+    tags: ['Experience Design', 'Concept Development', 'Client Presentation', 'Midjourney', 'Adobe Illustrator'],
     heroImage: discordBooth,
-    blocks: [],
+    client: 'Discord, via UltraSuperNew Inc.',
+    timeline: 'Summer 2024, 4 weeks',
+    quickLinks: [
+      { label: 'Tokyo Game Show 2024', url: 'https://expo.nikkeibp.co.jp/tgs/2024/en/' },
+    ],
+    blocks: [
+      {
+        type: 'context',
+        content:
+          "Discord came to UltraSuperNew with an RFP for their Tokyo Game Show 2024 booth: 9m by 18m, ¥40M budget, four days, post brand-refresh. The brief asked for a full booth concept and creative direction. We responded as a team of three. A creative director, a creative technologist, and me. Four weeks from brief to pitch. Concept work in Midjourney, layout in Illustrator.",
+      },
+      {
+        type: 'featuredImage',
+        src: discordWelcome,
+        alt: 'Welcome to Discordopolis title card',
+        width: 'lg',
+        aspect: 'natural',
+      },
+      {
+        type: 'processNarrative',
+        heading: 'What defines a city?',
+        content:
+          "Every city is built from three things: its citizens, its language, and its organic spaces. We used that frame to design Discordopolis, the cyberpunk capital of the Nation of Gaming. Discord's users are the citizens. Its servers and channels are the language. The booth itself would be the organic space where all of it converges.",
+        images: [
+          {
+            src: discordCityFrame,
+            alt: 'Citizens, Language, Organic Spaces conceptual frame',
+            aspect: 'natural',
+            width: 'lg',
+          },
+        ],
+      },
+      {
+        type: 'processNarrative',
+        heading: 'Mapping Discordopolis',
+        content:
+          'From the conceptual frame, we mapped Discordopolis as a set of connected zones, each tied to a Discord product or behavior. The Loading Zone, The Secret Quest, The Nook, Triumph of the Train, Console Corner, Local Area Network, the Discord Konbini. A torii gate marked the entrance to each. Visitors moved through the city as a route, not a room.',
+        images: [
+          {
+            src: discordMap,
+            alt: 'Stylized organic zoning map of Discordopolis',
+            aspect: 'natural',
+            width: 'lg',
+          },
+        ],
+      },
+      {
+        type: 'processNarrative',
+        heading: 'Zones in detail',
+        content:
+          "Three zones got the most attention in the pitch. The Loading Zone, where a Discord 101 video plays through an LED tunnel as visitors enter. The Secret Quest, a hidden checkpoint system with shrines, ciphers, and invisible stamps; visitors decode pieces of a final message by visiting each torii gate, and a barterer with a UV device validates the stamps at the end. The Nook, a Do Not Disturb capsule space with beanbags and a city view.",
+        images: [
+          { src: discordLoadingZone, alt: 'Big Data Alley rendering of the Loading Zone', aspect: 'natural' },
+          { src: discordSecretQuest, alt: 'Secret Quest shrine checkpoint with cipher', aspect: 'natural' },
+          { src: discordSecretQuestStamps, alt: "Invisible stamps revealed under UV light on a visitor's arm", aspect: 'natural' },
+          { src: discordNook, alt: 'The Nook chillout space with city view', aspect: 'natural' },
+        ],
+      },
+      {
+        type: 'featuredImage',
+        src: discordZoning,
+        alt: 'Booth floor plan with measurements',
+        width: 'lg',
+        aspect: 'natural',
+      },
+      {
+        type: 'outcome',
+        content:
+          'Discord chose another studio. We later learned the decision was effectively made before pitches landed. They came back later with another project; we passed. The booth was never built, but the work was a stretch in scope, the team was a good one, and I came out of it understanding how a pitch actually gets made.',
+      },
+    ],
   },
 ];
 
