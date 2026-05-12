@@ -8,6 +8,7 @@ interface NavItem {
 const navItems: NavItem[] = [
   { label: 'About Me', sectionId: 'about' },
   { label: 'Things I\'ve Made', sectionId: 'things' },
+  { label: 'Featured Projects', sectionId: 'featured' },
   { label: 'Contact', sectionId: 'contact' },
 ];
 
@@ -32,21 +33,31 @@ export function HeroSidebar({ isPreloaderActive = false, forceHidden = false }: 
 
   useEffect(() => {
     const aboutSection = document.getElementById('about');
+    const featuredSection = document.getElementById('featured');
     const contactSection = document.getElementById('contact');
 
     if (!aboutSection || !contactSection) return;
 
     let inAbout = false;
+    let inFeatured = false;
     let inContact = false;
     let overlapsCarousel = false;
 
     const updateVisibility = () => {
-      setIsVisible((inAbout || inContact) && !overlapsCarousel);
+      setIsVisible((inAbout || inFeatured || inContact) && !overlapsCarousel);
     };
 
     const aboutObserver = new IntersectionObserver(
       ([entry]) => {
         inAbout = entry.isIntersecting;
+        updateVisibility();
+      },
+      { threshold: 0 }
+    );
+
+    const featuredObserver = new IntersectionObserver(
+      ([entry]) => {
+        inFeatured = entry.isIntersecting;
         updateVisibility();
       },
       { threshold: 0 }
@@ -61,6 +72,7 @@ export function HeroSidebar({ isPreloaderActive = false, forceHidden = false }: 
     );
 
     aboutObserver.observe(aboutSection);
+    if (featuredSection) featuredObserver.observe(featuredSection);
     contactObserver.observe(contactSection);
 
     // Real bounding-box overlap check between the sidebar nav and the
@@ -100,6 +112,7 @@ export function HeroSidebar({ isPreloaderActive = false, forceHidden = false }: 
 
     return () => {
       aboutObserver.disconnect();
+      featuredObserver.disconnect();
       contactObserver.disconnect();
       window.removeEventListener('scroll', schedule);
       window.removeEventListener('resize', schedule);
