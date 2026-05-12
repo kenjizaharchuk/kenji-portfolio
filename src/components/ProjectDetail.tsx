@@ -541,6 +541,39 @@ function BlockRenderer({ block }: { block: Block }) {
           : block.width === 'full'
           ? ''
           : 'md:max-w-[65%]';
+      if (block.aspect === 'natural') {
+        return (
+          <div className={`mx-auto w-full ${maxW}`}>
+            {block.bare ? (
+              <img
+                src={block.src}
+                alt={block.alt}
+                className="block w-full h-auto"
+              />
+            ) : (
+              <div className="rounded-2xl overflow-hidden border border-white/10 bg-white/[0.02]">
+                <img
+                  src={block.src}
+                  alt={block.alt}
+                  className="block w-full h-auto"
+                />
+              </div>
+            )}
+            {block.externalLink && (
+              <div className="flex justify-end pt-1">
+                <a
+                  href={block.externalLink.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-display text-sm text-white/50 hover:text-white/90 transition-colors underline underline-offset-4 decoration-white/20 hover:decoration-white/60"
+                >
+                  {block.externalLink.label} ↗
+                </a>
+              </div>
+            )}
+          </div>
+        );
+      }
       const aspect =
         block.aspect === '16/9'
           ? 'aspect-[16/9]'
