@@ -47,9 +47,24 @@ export function ProjectDetail({ slug, skipEnterAnimation = false }: ProjectDetai
   const close = () => {
     if (isClosing) return;
 
-    const cardEl = document.querySelector(
-      `[data-card-slug="${slug}"]`
-    ) as HTMLElement | null;
+    const candidates = Array.from(
+      document.querySelectorAll(`[data-card-slug="${slug}"]`)
+    ) as HTMLElement[];
+    const vh = window.innerHeight;
+    const vw = window.innerWidth;
+    const cardEl =
+      candidates
+        .map((el) => {
+          const r = el.getBoundingClientRect();
+          if (r.width === 0 || r.height === 0) return null;
+          const cx = r.left + r.width / 2;
+          const cy = r.top + r.height / 2;
+          const dx = cx - vw / 2;
+          const dy = cy - vh / 2;
+          return { el, dist: Math.hypot(dx, dy) };
+        })
+        .filter((x): x is { el: HTMLElement; dist: number } => !!x)
+        .sort((a, b) => a.dist - b.dist)[0]?.el ?? candidates[0] ?? null;
     const cardSubtitleEl = cardEl?.querySelector('[data-card-part="subtitle"]') as HTMLElement | null;
     const cardTitleEl = cardEl?.querySelector('[data-card-part="title"]') as HTMLElement | null;
     const tagsEl = cardEl?.querySelector('[data-card-part="tags"]') as HTMLElement | null;
