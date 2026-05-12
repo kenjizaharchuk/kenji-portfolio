@@ -40,6 +40,7 @@ export type Block =
       alt: string;
       aspect?: '16/10' | '16/9' | '21/9' | '4/3' | '1/1';
       width?: 'sm' | 'md' | 'lg' | 'full';
+      externalLink?: { label: string; url: string };
     }
   | {
       type: 'figmaEmbed';
@@ -220,6 +221,7 @@ export const projectDetails: ProjectDetail[] = [
         alt: 'Live Spiber homepage at spiber.inc/en',
         aspect: '16/9',
         width: 'md',
+        externalLink: { label: 'Visit live site', url: 'https://spiber.inc/en' },
       },
       {
         type: 'processNarrative',

@@ -552,6 +552,18 @@ function BlockRenderer({ block }: { block: Block }) {
               className="absolute inset-0 w-full h-full object-cover"
             />
           </div>
+          {block.externalLink && (
+            <div className="flex justify-end pt-1">
+              <a
+                href={block.externalLink.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-display text-sm text-white/50 hover:text-white/90 transition-colors underline underline-offset-4 decoration-white/20 hover:decoration-white/60"
+              >
+                {block.externalLink.label} ↗
+              </a>
+            </div>
+          )}
         </div>
       );
     }
