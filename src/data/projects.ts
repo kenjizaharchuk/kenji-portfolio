@@ -59,6 +59,7 @@ export type Block =
         bare?: boolean;
         externalLink?: { label: string; url: string };
       }[];
+      matchedHeight?: boolean;
     }
   | {
       type: 'featuredImage';
