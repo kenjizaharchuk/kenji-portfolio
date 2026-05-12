@@ -217,4 +217,4 @@ export const projects: Project[] = [
   },
 ];
 
-export const getProjectBySlug = (slug: string) => projects.find((p) => p.slug === slug);
+export const getCarouselProjectBySlug = (slug: string) => projects.find((p) => p.slug === slug);
