@@ -596,7 +596,7 @@ export const projectDetails: ProjectDetail[] = [
       {
         type: 'outcome',
         content:
-          'Discord chose another studio. We later learned the decision was effectively made before pitches landed. They came back later with another project; we passed. The booth was never built, but the work was a stretch in scope, the team was a good one, and I came out of it understanding how a pitch actually gets made.',
+          'Ultimately Discord went with another studio for this project. We later learned the decision was effectively made before pitches landed. They came back later with another project which we passed on. The booth was never built, but the work was a stretch in scope, the team was a good one, and I came out of it understanding how a pitch actually gets made.',
       },
     ],
   },
