@@ -598,7 +598,7 @@ function BlockRenderer({ block }: { block: Block }) {
             </div>
             {block.interactiveHint && (
               <p className="font-display text-sm text-white/55 pt-3">
-                This embed is interactive. Click through to explore the deck.
+                {block.interactiveHintText ?? 'This embed is interactive. Click through to explore the deck.'}
               </p>
             )}
             {promotedLink && (
