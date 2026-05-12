@@ -263,13 +263,17 @@ export const projectDetails: ProjectDetail[] = [
         type: 'processNarrative',
         heading: 'Final Sitemap',
         content:
-          "The final structure doubles as a map of how each audience moves through the site. Investors land on traction and contact, brands and designers head into Protein Fiber and Discover, academia goes to Innovation, future talent goes to Careers. Mobile was treated as a primary surface from the start, so navigation depth, section hierarchy, and call-to-action placement were all checked at small screens before sign-off.",
+          "The image shown is one view of the final sitemap, colored from the investor perspective with their priorities highlighted across the structure. We produced this same view for all four audiences, and each one lit up different parts of the site based on what that audience needed to find first. The structure itself was designed with mobile as a primary surface from the start, so navigation depth, hierarchy, and call-to-action placement were all checked at small screens before sign-off.",
         images: [
           {
             src: spiberSitemapInvestors,
             alt: 'Final sitemap with the investor path highlighted across the site',
             aspect: 'natural',
             width: 'lg',
+            externalLink: {
+              label: 'See full slide deck',
+              url: 'https://www.figma.com/proto/NKAgY4tM2uA6gjMtBG9VVe/Spiber---For-Client--Copy-?node-id=1-196&t=eEYNp2ZyP6b2azcp-1',
+            },
           },
         ],
       },
