@@ -54,14 +54,6 @@ export type Block =
       content?: string;
       externalUrl?: string;
       linkLabel?: string;
-  | {
-      type: 'figmaEmbed';
-      url: string;
-      heading?: string;
-      title?: string;
-      content?: string;
-      externalUrl?: string;
-      linkLabel?: string;
       interactiveHint?: boolean;
       interactiveHintText?: string;
       size?: 'default' | 'contained';
