@@ -31,6 +31,7 @@ export type Block =
         aspect?: '4/3' | '16/9' | '1/1' | '21/9' | '16/10' | '3/2' | 'natural';
         fit?: 'cover' | 'contain';
         width?: 'sm' | 'md' | 'lg' | 'full';
+        externalLink?: { label: string; url: string };
       }[];
     }
   | {
