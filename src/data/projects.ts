@@ -14,6 +14,7 @@ import spiberAudienceInsights from '@/assets/spiber-audience-insights.png';
 import spiberProposalTopPage from '@/assets/spiber-proposal-top-page.png';
 import spiberProposalInnovation from '@/assets/spiber-proposal-innovation.png';
 import spiberSitemapInvestors from '@/assets/spiber-sitemap-investors.png';
+import skynProject from '@/assets/skyn-project.png';
 import skynFinalWebsite from '@/assets/skyn-final-website.png';
 import skynArticleDesign from '@/assets/skyn-article-design.png';
 import discordBooth from '@/assets/discord-booth.png';
