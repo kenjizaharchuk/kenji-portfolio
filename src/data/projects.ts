@@ -519,11 +519,13 @@ export const projectDetails: ProjectDetail[] = [
     category: 'Digital Design · Work Experience',
     tags: ['Experience Design', 'Concept Development', 'Client Presentation', 'Midjourney', 'Adobe Illustrator'],
     heroImage: discordBooth,
-    client: 'Discord, via UltraSuperNew Inc.',
-    timeline: 'Summer 2024, 4 weeks',
-    quickLinks: [
-      { label: 'Tokyo Game Show 2024', url: 'https://expo.nikkeibp.co.jp/tgs/2024/en/' },
-    ],
+    meta: {
+      client: 'Discord, via UltraSuperNew Inc.',
+      timeline: 'Summer 2024, 4 weeks',
+      quickLinks: [
+        { label: 'Tokyo Game Show 2024', url: 'https://expo.nikkeibp.co.jp/tgs/2024/en/' },
+      ],
+    },
     blocks: [
       {
         type: 'context',
