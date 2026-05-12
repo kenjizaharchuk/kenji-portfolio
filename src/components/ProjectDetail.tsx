@@ -445,7 +445,9 @@ function BlockRenderer({ block }: { block: Block }) {
             <div className={`grid grid-cols-1 ${gridCols} gap-4 md:gap-6`}>
               {block.images.map((img, i) => {
                 const widthClass =
-                  img.width === 'sm'
+                  img.width === 'xs'
+                    ? 'md:max-w-[32%]'
+                    : img.width === 'sm'
                     ? 'md:max-w-[50%]'
                     : img.width === 'md'
                     ? 'md:max-w-[65%]'
@@ -534,7 +536,9 @@ function BlockRenderer({ block }: { block: Block }) {
     }
     case 'featuredImage': {
       const maxW =
-        block.width === 'sm'
+        block.width === 'xs'
+          ? 'md:max-w-[32%]'
+          : block.width === 'sm'
           ? 'md:max-w-[50%]'
           : block.width === 'lg'
           ? 'md:max-w-[80%]'

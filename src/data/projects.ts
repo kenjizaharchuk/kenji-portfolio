@@ -38,7 +38,7 @@ export type Block =
         alt: string;
         aspect?: '4/3' | '16/9' | '1/1' | '21/9' | '16/10' | '3/2' | 'natural';
         fit?: 'cover' | 'contain';
-        width?: 'sm' | 'md' | 'lg' | 'full';
+        width?: 'xs' | 'sm' | 'md' | 'lg' | 'full';
         bare?: boolean;
         externalLink?: { label: string; url: string };
       }[];
@@ -48,7 +48,7 @@ export type Block =
       src: string;
       alt: string;
       aspect?: '16/10' | '16/9' | '21/9' | '4/3' | '1/1' | 'natural';
-      width?: 'sm' | 'md' | 'lg' | 'full';
+      width?: 'xs' | 'sm' | 'md' | 'lg' | 'full';
       bare?: boolean;
       externalLink?: { label: string; url: string };
     }
@@ -418,7 +418,7 @@ export const projectDetails: ProjectDetail[] = [
         alt: 'Genius Lyrics Redesign final design',
         aspect: 'natural',
         bare: true,
-        width: 'lg',
+        width: 'xs',
       },
       {
         type: 'processNarrative',
@@ -431,6 +431,10 @@ export const projectDetails: ProjectDetail[] = [
             alt: 'Genius moodboard with logo treatments and color references',
             aspect: 'natural',
             width: 'lg',
+            externalLink: {
+              label: 'View in Figma',
+              url: 'https://www.figma.com/design/3WJtXJMWNyr79vRnFzarpC/Kenji-Zaharchuk-ME-125?node-id=0-1&t=YBsnZz6rJLaZgv3A-1',
+            },
           },
         ],
       },
@@ -445,6 +449,10 @@ export const projectDetails: ProjectDetail[] = [
             alt: 'Genius brand profile and style guide',
             aspect: 'natural',
             width: 'lg',
+            externalLink: {
+              label: 'View in Figma',
+              url: 'https://www.figma.com/design/3WJtXJMWNyr79vRnFzarpC/Kenji-Zaharchuk-ME-125?node-id=44-492&t=YBsnZz6rJLaZgv3A-1',
+            },
           },
         ],
       },
@@ -459,6 +467,10 @@ export const projectDetails: ProjectDetail[] = [
             alt: 'Musical Timeline feature proposal showing genre breakdown over years with personal photo collages',
             aspect: 'natural',
             width: 'lg',
+            externalLink: {
+              label: 'View in Figma',
+              url: 'https://www.figma.com/design/3WJtXJMWNyr79vRnFzarpC/Kenji-Zaharchuk-ME-125?node-id=563-3313&t=YBsnZz6rJLaZgv3A-1',
+            },
           },
         ],
       },
