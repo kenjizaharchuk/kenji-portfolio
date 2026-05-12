@@ -104,16 +104,16 @@ export function FeaturedProjects() {
                   )}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent" />
 
-                  <div className="relative z-10 h-full p-4 md:p-5 flex flex-col justify-end">
+                  <div className="relative z-10 h-full p-3 md:p-4 flex flex-col justify-end">
                     <p
                       data-card-part="subtitle"
-                      className="font-display text-white/70 text-[11px] md:text-xs font-semibold tracking-wider uppercase mb-1.5"
+                      className="font-display text-white/70 text-[10px] md:text-[11px] font-semibold tracking-wider uppercase mb-1.5"
                     >
                       {category}
                     </p>
                     <h3
                       data-card-part="title"
-                      className="font-display text-white text-lg md:text-xl font-bold leading-tight"
+                      className="font-display text-white text-base md:text-lg font-bold leading-tight"
                     >
                       {project.title}
                     </h3>
