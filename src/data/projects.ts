@@ -187,7 +187,7 @@ export const projectDetails: ProjectDetail[] = [
   },
   {
     slug: 'spiber',
-    title: 'Spiber',
+    title: 'Spiber Brewed Protein',
     subtitle: 'Creative Intern',
     category: 'Digital Design · Work Experience',
     tags: ['Information Architecture', 'Wireframing', 'Sitemap Design', 'Figma'],
