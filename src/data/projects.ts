@@ -221,6 +221,7 @@ export const projectDetails: ProjectDetail[] = [
         alt: 'Live Spiber homepage at spiber.inc/en',
         aspect: '16/9',
         width: 'md',
+        externalLink: { label: 'Visit live site', url: 'https://spiber.inc/en' },
       },
       {
         type: 'processNarrative',
