@@ -8,6 +8,7 @@ interface NavItem {
 const navItems: NavItem[] = [
   { label: 'About Me', sectionId: 'about' },
   { label: 'Things I\'ve Made', sectionId: 'things' },
+  { label: 'Featured Projects', sectionId: 'featured' },
   { label: 'Contact', sectionId: 'contact' },
 ];
 
