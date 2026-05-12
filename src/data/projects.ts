@@ -308,7 +308,7 @@ export const projectDetails: ProjectDetail[] = [
     subtitle: 'Creative Intern',
     category: 'Digital Design · Work Experience',
     tags: ['Digital Design', 'Concept Development', 'Brand Consistency', 'Figma'],
-    heroImage: skynFinalWebsite,
+    heroImage: skynProject,
     meta: {
       client: 'SKYN (via UltraSuperNew Inc.)',
       timeline: 'Summer 2024 · 4 weeks',
