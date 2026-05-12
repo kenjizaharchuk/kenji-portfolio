@@ -25,14 +25,14 @@ export function FeaturedProjects() {
       id="featured"
       className="relative w-full pt-36 pb-24 md:pt-48 md:pb-32 px-4 sm:px-6"
     >
-      <div className="w-[82vw] max-w-4xl mx-auto">
-        <div className="text-center mb-12 md:mb-14">
+      <div className="w-[74vw] max-w-3xl mx-auto">
+        <div className="text-center mb-10 md:mb-12">
           <h2 className="font-display text-5xl md:text-6xl font-bold text-white/90">
             Featured Projects
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-7 md:gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-7">
           {featured.map((project) => {
             const isHidden =
               !!project.slug &&
