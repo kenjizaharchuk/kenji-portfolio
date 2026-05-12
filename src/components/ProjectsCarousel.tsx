@@ -88,9 +88,9 @@ const projects: Project[] = [
     title: 'Airan Lab',
     subtitle: 'Product & Mechanical Research',
     image: airanLab,
-    tags: ['Rapid Prototyping', 'CAD', '3D Printing', 'Design Iteration'],
+    tags: ['Mechanical Design', 'Fusion 360', '3D Printing', 'Prototyping', 'Hardware'],
     categories: ['Physical Design', 'Work Experience'],
-    link: 'https://news.stanford.edu/stories/2025/11/ultrasound-technique-aging-injured-brains-neurodegeneration-treatment-research',
+    slug: 'airan-lab',
   },
   {
     id: 4,
