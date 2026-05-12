@@ -30,6 +30,15 @@ import geniusFinalDesign from '@/assets/genius-final-design.png';
 import geniusMoodboard from '@/assets/genius-moodboard.png';
 import geniusBrandGuide from '@/assets/genius-brand-guide.png';
 import geniusMusicalTimeline from '@/assets/genius-musical-timeline.png';
+import airanLab from '@/assets/airan-lab.png';
+import airanFinalPrototype from '@/assets/Final_Helment_Prototype.png';
+import airanInitialHelmet from '@/assets/Initial_Helmet.jpeg';
+import airanRapidPrototype from '@/assets/Rapid_prototype.jpeg';
+import airanV1 from '@/assets/V1_Design.png';
+import airanV2 from '@/assets/V2_Design.png';
+import airanV3Crystal from '@/assets/V3_Final_Crystal_Design.png';
+import airanV3Housing from '@/assets/V3_All_Parts_Crystal_Housing.png';
+import airanWhiteboard from '@/assets/Initial_Brainstorming.png';
 
 export type Block =
   | { type: 'context'; content: string }
