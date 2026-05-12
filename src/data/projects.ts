@@ -232,6 +232,10 @@ export const projectDetails: ProjectDetail[] = [
             alt: 'Insights slide: what each audience expects to see on the Spiber website',
             aspect: 'natural',
             width: 'lg',
+            externalLink: {
+              label: 'See full slide deck',
+              url: 'https://www.figma.com/proto/NKAgY4tM2uA6gjMtBG9VVe/Spiber---For-Client--Copy-?node-id=1-196&t=eEYNp2ZyP6b2azcp-1',
+            },
           },
         ],
       },
