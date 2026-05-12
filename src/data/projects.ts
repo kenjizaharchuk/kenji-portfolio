@@ -416,6 +416,8 @@ export const projectDetails: ProjectDetail[] = [
         type: 'featuredImage',
         src: geniusFinalDesign,
         alt: 'Genius Lyrics Redesign final design',
+        aspect: 'natural',
+        bare: true,
         width: 'lg',
       },
       {
@@ -427,6 +429,7 @@ export const projectDetails: ProjectDetail[] = [
           {
             src: geniusMoodboard,
             alt: 'Genius moodboard with logo treatments and color references',
+            aspect: 'natural',
             width: 'lg',
           },
         ],
@@ -440,6 +443,7 @@ export const projectDetails: ProjectDetail[] = [
           {
             src: geniusBrandGuide,
             alt: 'Genius brand profile and style guide',
+            aspect: 'natural',
             width: 'lg',
           },
         ],
@@ -453,6 +457,7 @@ export const projectDetails: ProjectDetail[] = [
           {
             src: geniusMusicalTimeline,
             alt: 'Musical Timeline feature proposal showing genre breakdown over years with personal photo collages',
+            aspect: 'natural',
             width: 'lg',
           },
         ],
