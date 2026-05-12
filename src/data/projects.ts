@@ -30,6 +30,15 @@ import geniusFinalDesign from '@/assets/genius-final-design.png';
 import geniusMoodboard from '@/assets/genius-moodboard.png';
 import geniusBrandGuide from '@/assets/genius-brand-guide.png';
 import geniusMusicalTimeline from '@/assets/genius-musical-timeline.png';
+import airanLab from '@/assets/airan-lab.png';
+import airanFinalPrototype from '@/assets/Final_Helment_Prototype.png';
+import airanInitialHelmet from '@/assets/Initial_Helmet.jpeg';
+import airanRapidPrototype from '@/assets/Rapid_prototype.jpeg';
+import airanV1 from '@/assets/V1_Design.png';
+import airanV2 from '@/assets/V2_Design.png';
+import airanV3Crystal from '@/assets/V3_Final_Crystal_Design.png';
+import airanV3Housing from '@/assets/V3_All_Parts_Crystal_Housing.png';
+import airanWhiteboard from '@/assets/Initial_Brainstorming.png';
 
 export type Block =
   | { type: 'context'; content: string }
@@ -597,6 +606,102 @@ export const projectDetails: ProjectDetail[] = [
         type: 'outcome',
         content:
           'Ultimately Discord went with another studio for this project. We later learned the decision was effectively made before pitches landed. They came back later with another project which we passed on. The booth was never built, but the work was a stretch in scope, the team was a good one, and I came out of it understanding how a pitch actually gets made.',
+      },
+    ],
+  },
+  {
+    slug: 'airan-lab',
+    title: 'Airan Lab',
+    subtitle: 'Product & Mechanical Research',
+    category: 'Physical Design · Work Experience',
+    tags: ['Mechanical Design', 'Fusion 360', '3D Printing', 'Prototyping', 'Hardware'],
+    heroImage: airanLab,
+    meta: {
+      client: 'Airan Lab, Stanford School of Medicine',
+      timeline: 'June to September 2025, 4 months',
+      quickLinks: [
+        {
+          label: 'Stanford Report: New ultrasound technique could help aging and injured brains',
+          url: 'https://news.stanford.edu/stories/2025/11/ultrasound-technique-aging-injured-brains-neurodegeneration-treatment-research',
+        },
+        {
+          label: 'Nature Biotechnology paper',
+          url: 'https://www.nature.com/articles/s41587-025-02866-8',
+        },
+        { label: 'Airan Lab', url: 'https://airan-lab.stanford.edu/' },
+      ],
+    },
+    blocks: [
+      {
+        type: 'context',
+        content:
+          "The Airan Lab at Stanford School of Medicine, led by Dr. Raag Airan, develops noninvasive ways to interact with the brain using focused ultrasound. The lab had recently developed a protocol called Ultrasonic Debris Clearance, or UDC, which uses low-intensity transcranial ultrasound to drive the brain's glymphatic system, the natural mechanism that clears waste from cerebrospinal fluid. In mouse models, three ten-minute sessions improved survival in hemorrhagic stroke by 30%. The next step was a wearable: a helmet that could deliver the same protocol to humans.",
+      },
+      {
+        type: 'context',
+        content:
+          "I joined for four months in summer 2025 as a Product and Mechanical Research Assistant, working directly with Payton and occasionally with Ralph, with Dr. Airan around as well. The lab needed someone to design the part that actually touches the head: the crystal housing that holds each ultrasound transducer in place while keeping it cool, sealed, and angled correctly. That became my work for the summer.",
+      },
+      {
+        type: 'processNarrative',
+        heading: 'Where it started',
+        content:
+          "Before any CAD, the question was simpler: how many crystals can we fit on a head, and where do they go? The lab's research tracked five active threads at the time; the glymphatics column was the helmet. The first prototype was paper circles taped to a Speedo swim cap on a foam head. The work started crude on purpose, just to find out what was physically possible.",
+        images: [
+          { src: airanWhiteboard, alt: "Whiteboard tracking the lab's five research threads, glymphatics column on the left", aspect: 'natural', width: 'md' },
+          { src: airanInitialHelmet, alt: 'First prototype: paper circles taped to a swim cap on a foam head', aspect: 'natural', width: 'md' },
+        ],
+      },
+      {
+        type: 'processNarrative',
+        heading: 'The constraints',
+        content:
+          "The crystal size was fixed; everything had to work around it. Each crystal heats up under power, so water had to flow past every one to keep it safe against skin. Water near a head can't leak. We needed to fit as many crystals as possible to maximize brain coverage, while leaving room for cooling channels and the wiring. The geometry of a skull is irregular, so spacing and angles had to be solved together. The final lab system runs 8 independently-driven channels; on a small model head we found we could physically fit 13 crystal positions. Current coverage is about 50% of the brain, with the gaps at superficial regions.",
+        images: [
+          { src: airanRapidPrototype, alt: 'Mid-stage prototype with masking-taped housings stuck to a swim cap on a mannequin', aspect: 'natural', width: 'lg' },
+        ],
+      },
+      {
+        type: 'processNarrative',
+        heading: 'V1, nozzles',
+        content:
+          'The first CAD version put nozzles on the side of each housing to circulate water. Two variations: nozzles level with the head, and nozzles tucked away from it. The first was uncomfortable against skin; the second was flimsy and would have broken under handling. Either way, sticking-out nozzles were the wrong answer. The next version had to move water through the structure itself.',
+        images: [
+          { src: airanV1, alt: 'V1 crystal housing CAD: nozzle iterations', aspect: 'natural', width: 'lg' },
+        ],
+      },
+      {
+        type: 'processNarrative',
+        heading: 'V2, integrated',
+        content:
+          "V2 combined the inner housing and the transducer into a single pre-assembled piece, so the practitioner only handles one part. Water now flowed through channels in the outer housing walls, not through external nozzles. Five sub-iterations on this concept, ending in an O-ring seal. The squeeze math came in here: PLA expands during 3D printing, so the dimensions of the housing had to anticipate that expansion to land at the right tolerance after the print cooled. The starting target was a -10% squeeze, knowing we'd adjust after the first part came off the printer.",
+        images: [
+          { src: airanV2, alt: 'V2 crystal housing CAD: side view and cross-section showing internal water channels', aspect: 'natural', width: 'lg' },
+        ],
+      },
+      {
+        type: 'processNarrative',
+        heading: 'V3, where I left off',
+        content:
+          'V3 simplified again. The O-ring now wrapped around the crystal casing itself and squeezed into the inner housing to seal. Fewer parts, cleaner assembly, more reliable seal. Two open questions remained: once the transducer was seated, the O-ring would jam it in place with no good way to remove it for service, and the routing of individual water tubes from each housing to a pump was unresolved.',
+        images: [
+          { src: airanV3Crystal, alt: 'V3 crystal casing with O-ring seal', aspect: 'natural', width: 'md' },
+          { src: airanV3Housing, alt: 'V3 final assembled housing parts', aspect: 'natural', width: 'md' },
+        ],
+      },
+      {
+        type: 'featuredImage',
+        src: airanFinalPrototype,
+        alt: 'Final assembled helmet prototype with crystal housings mounted on a foam head',
+        width: 'md',
+        aspect: 'natural',
+      },
+      {
+        type: 'outcome',
+        content:
+          "I left in September to focus on my master's. What remained was the larger system: the enclosure that holds the amplifiers, the 8-channel driver circuitry, the water pumps, and the wiring that has to deliver synchronized ultrasound to every crystal without any risk to the patient. That's the kind of problem I'd have loved to keep working on.\n\nThe lab kept going. In November 2025, they published the underlying protocol in Nature Biotechnology. The Knight Initiative for Brain Resilience is now funding the clinical translation, and the helmet will be tested at Stanford's memory disorders clinic. Long-term, the technique could apply to stroke, traumatic brain injury, Parkinson's, Alzheimer's, ALS, and migraines.\n\nIt's strange to leave something at V3 and watch it become a clinical trial. I'm proud of the part I got to make, and grateful for what I learned about how a real research lab actually builds something for the first time.",
+        ctaUrl: 'https://news.stanford.edu/stories/2025/11/ultrasound-technique-aging-injured-brains-neurodegeneration-treatment-research',
+        ctaLabel: 'Read the Stanford announcement',
       },
     ],
   },
