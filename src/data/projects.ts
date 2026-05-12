@@ -16,8 +16,6 @@ import spiberProposalInnovation from '@/assets/spiber-proposal-innovation.png';
 import spiberSitemapInvestors from '@/assets/spiber-sitemap-investors.png';
 import skynFinalWebsite from '@/assets/skyn-final-website.png';
 import skynArticleDesign from '@/assets/skyn-article-design.png';
-import spotifyFeature from '@/assets/spotify-feature.png';
-import geniusRedesign from '@/assets/genius-redesign.png';
 import discordBooth from '@/assets/discord-booth.png';
 
 export type Block =
