@@ -23,7 +23,7 @@ export function FeaturedProjects() {
   return (
     <section
       id="featured"
-      className="relative w-full pt-24 pb-8 md:pt-32 md:pb-12 px-4 sm:px-6"
+      className="relative w-full pt-36 pb-24 md:pt-48 md:pb-32 px-4 sm:px-6"
     >
       <div className="w-[80vw] max-w-4xl mx-auto">
         <div className="text-center mb-10 md:mb-12">
