@@ -18,6 +18,10 @@ import skynProject from '@/assets/skyn-project.png';
 import skynFinalWebsite from '@/assets/skyn-final-website.png';
 import skynArticleDesign from '@/assets/skyn-article-design.png';
 import discordBooth from '@/assets/discord-booth.png';
+import geniusFinalDesign from '@/assets/genius-final-design.png';
+import geniusMoodboard from '@/assets/genius-moodboard.png';
+import geniusBrandGuide from '@/assets/genius-brand-guide.png';
+import geniusMusicalTimeline from '@/assets/genius-musical-timeline.png';
 
 export type Block =
   | { type: 'context'; content: string }
