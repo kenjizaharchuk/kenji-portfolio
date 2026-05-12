@@ -14,6 +14,7 @@ import spiberAudienceInsights from '@/assets/spiber-audience-insights.png';
 import spiberProposalTopPage from '@/assets/spiber-proposal-top-page.png';
 import spiberProposalInnovation from '@/assets/spiber-proposal-innovation.png';
 import spiberSitemapInvestors from '@/assets/spiber-sitemap-investors.png';
+import skynProject from '@/assets/skyn-project.png';
 import skynFinalWebsite from '@/assets/skyn-final-website.png';
 import skynArticleDesign from '@/assets/skyn-article-design.png';
 import discordBooth from '@/assets/discord-booth.png';
@@ -54,6 +55,7 @@ export type Block =
       externalUrl?: string;
       linkLabel?: string;
       interactiveHint?: boolean;
+      interactiveHintText?: string;
       size?: 'default' | 'contained';
     }
   | {
@@ -306,7 +308,7 @@ export const projectDetails: ProjectDetail[] = [
     subtitle: 'Creative Intern',
     category: 'Digital Design · Work Experience',
     tags: ['Digital Design', 'Concept Development', 'Brand Consistency', 'Figma'],
-    heroImage: skynFinalWebsite,
+    heroImage: skynProject,
     meta: {
       client: 'SKYN (via UltraSuperNew Inc.)',
       timeline: 'Summer 2024 · 4 weeks',
@@ -346,10 +348,11 @@ export const projectDetails: ProjectDetail[] = [
         heading: 'Summer Campaign Website',
         content:
           'The campaign site brought "Human Softness" into a digital experience: hero film, compatibility test flow, video modal, product strip, store finder. The Figma file shows the design exploration across desktop and mobile.',
-        url: 'https://www.figma.com/design/cGNUVCEtOq3poxQdkZBmqX/SKYN---Summer-Campaign-2024--Draft---Copy-?node-id=708-994',
+        url: 'https://embed.figma.com/design/cGNUVCEtOq3poxQdkZBmqX/SKYN---Summer-Campaign-2024--Draft---Copy-?node-id=708-994&embed-host=share',
         externalUrl: 'https://www.figma.com/design/cGNUVCEtOq3poxQdkZBmqX/SKYN---Summer-Campaign-2024--Draft---Copy-?node-id=708-994',
         linkLabel: 'Open in Figma',
         interactiveHint: true,
+        interactiveHintText: 'This embed is interactive. Click through to explore the Figma workspace.',
         size: 'contained',
       },
       {
