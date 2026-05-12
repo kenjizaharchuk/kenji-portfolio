@@ -50,6 +50,7 @@ export type Block =
       aspect?: '16/10' | '16/9' | '21/9' | '4/3' | '1/1' | 'natural';
       width?: 'xs' | 'sm' | 'md' | 'lg' | 'full';
       bare?: boolean;
+      tightSpacing?: boolean;
       externalLink?: { label: string; url: string };
     }
   | {
@@ -419,6 +420,7 @@ export const projectDetails: ProjectDetail[] = [
         aspect: 'natural',
         bare: true,
         width: 'xs',
+        tightSpacing: true,
       },
       {
         type: 'processNarrative',
