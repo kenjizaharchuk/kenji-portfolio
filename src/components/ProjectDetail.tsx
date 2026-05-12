@@ -332,7 +332,7 @@ function MetaStrip({ meta }: { meta: ProjectMeta }) {
         {meta.timeline && <Field label="Timeline" value={meta.timeline} />}
         {meta.outcome && <Field label="Outcome" value={meta.outcome} />}
         {hasLinks && (
-          <div className="flex flex-col gap-1.5 md:items-end">
+          <div className="flex flex-col gap-1.5 md:items-end md:col-start-4 md:justify-self-end">
             <span className="font-display text-xs md:text-sm font-semibold uppercase tracking-wider text-foreground/70">
               Quick Links
             </span>
@@ -358,12 +358,18 @@ function MetaStrip({ meta }: { meta: ProjectMeta }) {
 
 function BlockRenderer({ block }: { block: Block }) {
   switch (block.type) {
-    case 'context':
+    case 'context': {
+      const paragraphs = block.content.split(/\n\n+/);
       return (
-        <p className="font-display text-foreground/85 text-lg md:text-xl leading-relaxed">
-          {block.content}
-        </p>
+        <div className="space-y-5 md:space-y-6">
+          {paragraphs.map((p, i) => (
+            <p key={i} className="font-display text-foreground/85 text-lg md:text-xl leading-relaxed">
+              {p}
+            </p>
+          ))}
+        </div>
       );
+    }
     case 'gallery':
       return (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
