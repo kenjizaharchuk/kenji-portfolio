@@ -440,7 +440,11 @@ function BlockRenderer({ block }: { block: Block }) {
       );
     }
     case 'processNarrative': {
+      const matched = (block as any).matchedHeight && block.images.length > 1;
       const gridCols = block.images.length > 1 ? 'md:grid-cols-2' : 'md:grid-cols-1';
+      const containerClass = matched
+        ? 'flex flex-col md:flex-row md:items-center md:justify-center gap-4 md:gap-6'
+        : `grid grid-cols-1 ${gridCols} gap-4 md:gap-6`;
       return (
         <div className="space-y-6 md:space-y-8">
           <div>
@@ -452,7 +456,7 @@ function BlockRenderer({ block }: { block: Block }) {
             </p>
           </div>
           {block.images.length > 0 && (
-            <div className={`grid grid-cols-1 ${gridCols} gap-4 md:gap-6`}>
+            <div className={containerClass}>
               {block.images.map((img, i) => {
                 const widthClass =
                   img.width === 'xs'
@@ -466,7 +470,7 @@ function BlockRenderer({ block }: { block: Block }) {
                     : img.width === 'full'
                     ? ''
                     : '';
-                const widthWrap = widthClass ? `mx-auto w-full ${widthClass}` : '';
+                const widthWrap = !matched && widthClass ? `mx-auto w-full ${widthClass}` : '';
                 const linkEl = img.externalLink ? (
                   <div className="flex justify-end pt-1">
                     <a
@@ -480,21 +484,16 @@ function BlockRenderer({ block }: { block: Block }) {
                   </div>
                 ) : null;
                 if (img.aspect === 'natural' && img.src) {
+                  const imgClass = matched
+                    ? 'block w-full h-auto md:h-[460px] md:w-auto md:max-w-full object-contain'
+                    : 'block w-full h-auto';
                   return (
                     <div key={i} className={widthWrap || undefined}>
                       {img.bare ? (
-                        <img
-                          src={img.src}
-                          alt={img.alt}
-                          className="block w-full h-auto"
-                        />
+                        <img src={img.src} alt={img.alt} className={imgClass} />
                       ) : (
                         <div className="rounded-2xl overflow-hidden border border-white/10 bg-white/[0.02]">
-                          <img
-                            src={img.src}
-                            alt={img.alt}
-                            className="block w-full h-auto"
-                          />
+                          <img src={img.src} alt={img.alt} className={imgClass} />
                         </div>
                       )}
                       {linkEl}

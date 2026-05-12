@@ -59,6 +59,7 @@ export type Block =
         bare?: boolean;
         externalLink?: { label: string; url: string };
       }[];
+      matchedHeight?: boolean;
     }
   | {
       type: 'featuredImage';
@@ -648,9 +649,10 @@ export const projectDetails: ProjectDetail[] = [
         content:
           "Before any CAD, the question was simpler: how many crystals can we fit on a head, and where do they go? The lab's research tracked five active threads at the time; the glymphatics column was the helmet. The first prototype was paper circles taped to a Speedo swim cap on a foam head. The work started crude on purpose, just to find out what was physically possible.",
         images: [
-          { src: airanWhiteboard, alt: "Whiteboard tracking the lab's five research threads, glymphatics column on the left", aspect: 'natural', width: 'md' },
-          { src: airanInitialHelmet, alt: 'First prototype: paper circles taped to a swim cap on a foam head', aspect: 'natural', width: 'md' },
+          { src: airanWhiteboard, alt: "Whiteboard tracking the lab's five research threads, glymphatics column on the left", aspect: 'natural' },
+          { src: airanInitialHelmet, alt: 'First prototype: paper circles taped to a swim cap on a foam head', aspect: 'natural' },
         ],
+        matchedHeight: true,
       },
       {
         type: 'processNarrative',
@@ -658,7 +660,7 @@ export const projectDetails: ProjectDetail[] = [
         content:
           "The crystal size was fixed; everything had to work around it. Each crystal heats up under power, so water had to flow past every one to keep it safe against skin. Water near a head can't leak. We needed to fit as many crystals as possible to maximize brain coverage, while leaving room for cooling channels and the wiring. The geometry of a skull is irregular, so spacing and angles had to be solved together. The final lab system runs 8 independently-driven channels; on a small model head we found we could physically fit 13 crystal positions. Current coverage is about 50% of the brain, with the gaps at superficial regions.",
         images: [
-          { src: airanRapidPrototype, alt: 'Mid-stage prototype with masking-taped housings stuck to a swim cap on a mannequin', aspect: 'natural', width: 'lg' },
+          { src: airanRapidPrototype, alt: 'Mid-stage prototype with masking-taped housings stuck to a swim cap on a mannequin', aspect: 'natural', width: 'md' },
         ],
       },
       {
@@ -685,9 +687,10 @@ export const projectDetails: ProjectDetail[] = [
         content:
           'V3 simplified again. The O-ring now wrapped around the crystal casing itself and squeezed into the inner housing to seal. Fewer parts, cleaner assembly, more reliable seal. Two open questions remained: once the transducer was seated, the O-ring would jam it in place with no good way to remove it for service, and the routing of individual water tubes from each housing to a pump was unresolved.',
         images: [
-          { src: airanV3Crystal, alt: 'V3 crystal casing with O-ring seal', aspect: 'natural', width: 'md' },
-          { src: airanV3Housing, alt: 'V3 final assembled housing parts', aspect: 'natural', width: 'md' },
+          { src: airanV3Crystal, alt: 'V3 crystal casing with O-ring seal', aspect: 'natural' },
+          { src: airanV3Housing, alt: 'V3 final assembled housing parts', aspect: 'natural' },
         ],
+        matchedHeight: true,
       },
       {
         type: 'featuredImage',
