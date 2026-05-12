@@ -530,7 +530,7 @@ export const projectDetails: ProjectDetail[] = [
       {
         type: 'context',
         content:
-          "Discord came to UltraSuperNew with an RFP for their Tokyo Game Show 2024 booth: 9m by 18m, ¥40M budget, four days, post brand-refresh. The brief asked for a full booth concept and creative direction. We responded as a team of three. A creative director, a creative technologist, and me. Four weeks from brief to pitch. Concept work in Midjourney, layout in Illustrator.",
+          "Discord came to UltraSuperNew with an RFP for their Tokyo Game Show 2024 booth: 9m by 18m, ¥40M budget, four days, post brand-refresh. The brief asked for a full booth concept and creative direction. We responded as a team of three. A creative director, a creative technologist, and me. Four weeks from brief to pitch. Concept work in Midjourney, layout in Illustrator.\n\nWe landed on cyberpunk as the visual language because three things overlap inside it: Tokyo's existing futurism and neon vocabulary, Discord's refreshed brand identity in deep purples and pinks, and the aesthetic of the games people actually play. Cyberpunk 2077, Ghostrunner, Deus Ex, The Ascent, Stray. A cyberpunk city was the place where all three could converge.",
       },
       {
         type: 'featuredImage',
