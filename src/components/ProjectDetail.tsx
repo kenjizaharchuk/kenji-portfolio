@@ -332,7 +332,7 @@ function MetaStrip({ meta }: { meta: ProjectMeta }) {
         {meta.timeline && <Field label="Timeline" value={meta.timeline} />}
         {meta.outcome && <Field label="Outcome" value={meta.outcome} />}
         {hasLinks && (
-          <div className="flex flex-col gap-1.5 md:items-end">
+          <div className="flex flex-col gap-1.5 md:items-end md:col-start-4 md:justify-self-end">
             <span className="font-display text-xs md:text-sm font-semibold uppercase tracking-wider text-foreground/70">
               Quick Links
             </span>
