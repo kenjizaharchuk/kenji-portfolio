@@ -42,6 +42,7 @@ const Index = () => {
       <HeroSidebar isPreloaderActive={showPreloader} forceHidden={!!slug} />
       <AboutSection />
       <ProjectsCarousel />
+      <FeaturedProjects />
       <ContactSection />
 
       <AnimatePresence>
