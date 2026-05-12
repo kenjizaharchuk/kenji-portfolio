@@ -548,7 +548,7 @@ function BlockRenderer({ block }: { block: Block }) {
       const tightWrap = block.tightSpacing ? '-my-10 md:-my-16' : '';
       if (block.aspect === 'natural') {
         return (
-          <div className={`mx-auto w-full ${maxW}`}>
+          <div className={`mx-auto w-full ${maxW} ${tightWrap}`}>
             {block.bare ? (
               <img
                 src={block.src}
