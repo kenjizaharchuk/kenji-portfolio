@@ -1,25 +1,23 @@
-## Add live-site link under final website screenshot
+## Metadata strip emphasis (Spiber case study + all projects)
 
-Add a subtle "Visit live site ↗" link under the `featuredImage` at the top of the Spiber case study (the live homepage screenshot), styled identically to the "See full slide deck" links under the Audience Insights and Final Sitemap images.
+File: `src/components/ProjectDetail.tsx`, inside `MetaStrip`.
 
-### Implementation
+### Labels (CLIENT / TIMELINE / OUTCOME / QUICK LINKS)
+- Size: `text-[10px] md:text-xs` → `text-xs md:text-sm` (one size up).
+- Weight: add `font-semibold`.
+- Opacity: `text-foreground/45` → `text-foreground/70`.
+- Keep uppercase + `tracking-wider`.
 
-**`src/data/projects.ts`** — extend the `featuredImage` block type with an optional `externalLink`:
+### Values (Client/Timeline/Outcome)
+- Size: `text-sm md:text-[15px]` → `text-base md:text-lg`.
+- Weight: add `font-medium`.
+- Opacity: `text-foreground/85` → `text-foreground` (full).
+- Slightly increase vertical gap between label and value: `gap-1` → `gap-1.5`.
 
-```ts
-| {
-    type: 'featuredImage';
-    ...
-    externalLink?: { label: string; url: string };
-  }
-```
+### Quick Links
+- Already at a good level; bump slightly to match new value prominence:
+  - Size: `text-sm md:text-[15px]` → `text-base md:text-[15px]` (mobile bump only).
+  - Opacity: `text-foreground/80` → `text-foreground/90`.
+  - No weight change.
 
-Apply on the Spiber final-site featuredImage:
-
-```ts
-externalLink: { label: 'Visit live site', url: 'https://spiber.inc/en' }
-```
-
-**`src/components/ProjectDetail.tsx`** — in the `featuredImage` case, after the image wrapper, conditionally render the same right-aligned, muted footnote-style anchor (`text-sm text-white/50`, underline, `↗`, `target="_blank" rel="noopener noreferrer"`) constrained to the same `max-w` width.
-
-No other changes.
+No other components, no animation/layout/structure changes.
