@@ -38,6 +38,7 @@ import airanV1 from '@/assets/V1_Design.png';
 import airanV2 from '@/assets/V2_Design.png';
 import airanV3Crystal from '@/assets/V3_Final_Crystal_Design.png';
 import airanV3Housing from '@/assets/V3_All_Parts_Crystal_Housing.png';
+import airanV3Combined from '@/assets/V3_Combined.png';
 import airanWhiteboard from '@/assets/Initial_Brainstorming.png';
 
 export type Block =
@@ -687,16 +688,14 @@ export const projectDetails: ProjectDetail[] = [
         content:
           'V3 simplified again. The O-ring now wrapped around the crystal casing itself and squeezed into the inner housing to seal. Fewer parts, cleaner assembly, more reliable seal. Two open questions remained: once the transducer was seated, the O-ring would jam it in place with no good way to remove it for service, and the routing of individual water tubes from each housing to a pump was unresolved.',
         images: [
-          { src: airanV3Crystal, alt: 'V3 crystal casing with O-ring seal', aspect: 'natural', bare: true },
-          { src: airanV3Housing, alt: 'V3 final assembled housing parts', aspect: 'natural', bare: true },
+          { src: airanV3Combined, alt: 'V3 crystal casing with O-ring seal alongside cross-section and final assembled housing parts', aspect: 'natural', bare: true },
         ],
-        matchedHeight: true,
       },
       {
         type: 'featuredImage',
         src: airanFinalPrototype,
         alt: 'Final assembled helmet prototype with crystal housings mounted on a foam head',
-        width: 'md',
+        width: 'sm',
         aspect: 'natural',
       },
       {
