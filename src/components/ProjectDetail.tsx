@@ -537,7 +537,7 @@ function BlockRenderer({ block }: { block: Block }) {
     case 'featuredImage': {
       const maxW =
         block.width === 'xs'
-          ? 'md:max-w-[32%]'
+          ? 'md:max-w-[35%]'
           : block.width === 'sm'
           ? 'md:max-w-[50%]'
           : block.width === 'lg'
@@ -545,6 +545,7 @@ function BlockRenderer({ block }: { block: Block }) {
           : block.width === 'full'
           ? ''
           : 'md:max-w-[65%]';
+      const tightWrap = block.tightSpacing ? '-my-10 md:-my-16' : '';
       if (block.aspect === 'natural') {
         return (
           <div className={`mx-auto w-full ${maxW}`}>
