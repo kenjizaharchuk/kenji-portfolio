@@ -438,6 +438,7 @@ function BlockRenderer({ block }: { block: Block }) {
           )}
         </div>
       );
+    }
     case 'processNarrative': {
       const gridCols = block.images.length > 1 ? 'md:grid-cols-2' : 'md:grid-cols-1';
       return (
