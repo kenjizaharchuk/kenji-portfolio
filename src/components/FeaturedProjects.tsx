@@ -25,7 +25,7 @@ export function FeaturedProjects() {
       id="featured"
       className="relative w-full pt-36 pb-24 md:pt-48 md:pb-32 px-4 sm:px-6"
     >
-      <div className="w-[80vw] max-w-4xl mx-auto">
+      <div className="w-[88vw] max-w-5xl mx-auto">
         <div className="text-center mb-14 md:mb-16">
           <h2 className="font-display text-5xl md:text-6xl font-bold text-white/90">
             Featured Projects
