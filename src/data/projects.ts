@@ -18,6 +18,10 @@ import skynProject from '@/assets/skyn-project.png';
 import skynFinalWebsite from '@/assets/skyn-final-website.png';
 import skynArticleDesign from '@/assets/skyn-article-design.png';
 import discordBooth from '@/assets/discord-booth.png';
+import geniusFinalDesign from '@/assets/genius-final-design.png';
+import geniusMoodboard from '@/assets/genius-moodboard.png';
+import geniusBrandGuide from '@/assets/genius-brand-guide.png';
+import geniusMusicalTimeline from '@/assets/genius-musical-timeline.png';
 
 export type Block =
   | { type: 'context'; content: string }
@@ -388,8 +392,87 @@ export const projectDetails: ProjectDetail[] = [
     category: 'Digital Design',
     tags: ['Figma', 'UI/UX Design', 'Opportunity Mapping', 'Visual Systems'],
     heroImage: geniusRedesign,
-    heroImagePosition: 'center 78%',
-    blocks: [],
+    heroImagePosition: 'center 30%',
+    meta: {
+      client: 'Personal project, Stanford Design 170 (Visual Frontiers)',
+      timeline: 'Spring 2023, 6 weeks',
+      quickLinks: [
+        {
+          label: 'Full Figma file',
+          url: 'https://www.figma.com/design/3WJtXJMWNyr79vRnFzarpC/Kenji-Zaharchuk-ME-125?node-id=718-5',
+        },
+        { label: 'Current Genius site', url: 'https://genius.com/' },
+      ],
+    },
+    blocks: [
+      {
+        type: 'context',
+        content:
+          "Genius is a music annotation site where users break down the meaning behind lyrics. I've used it for years and think its core idea, decoding the meaning behind the music, is one of the most genuinely interesting propositions in music tech. The site itself doesn't always reflect that. For a 6-week project in Stanford's Design 170 (Visual Frontiers), I redesigned Genius to better surface what makes it valuable: search, discussion, and the depth of community knowledge behind every song.",
+      },
+      {
+        type: 'featuredImage',
+        src: geniusFinalDesign,
+        alt: 'Genius Lyrics Redesign final design',
+        width: 'lg',
+      },
+      {
+        type: 'processNarrative',
+        heading: 'Mood and Direction',
+        content:
+          "I started with a moodboard pulling references around Genius's existing yellow identity, then pushed toward deeper oranges, gradients, and natural textures. The goal was to keep what's distinct about the brand while making it feel less flat and more atmospheric.",
+        images: [
+          {
+            src: geniusMoodboard,
+            alt: 'Genius moodboard with logo treatments and color references',
+            width: 'lg',
+          },
+        ],
+      },
+      {
+        type: 'processNarrative',
+        heading: 'Brand Profile and Style Guide',
+        content:
+          "Before touching the interface, I worked out the brand foundations. Core values: sharing knowledge, community, promoting emerging artists. Voice: professional but inviting, thought-provoking, fun. I built a type system around Genius's existing Programme typeface, with a clean heading hierarchy and a refined color scheme that kept Genius yellow without the muddiness of the current site.",
+        images: [
+          {
+            src: geniusBrandGuide,
+            alt: 'Genius brand profile and style guide',
+            width: 'lg',
+          },
+        ],
+      },
+      {
+        type: 'processNarrative',
+        heading: 'A New Feature: Musical Timeline',
+        content:
+          "Among the new features I proposed, the Musical Timeline stood out. The idea: a yearly visual recap that pairs the music you listened to most with images from your life that year. If art is the way we decorate space, music is the way we decorate time. The timeline shows your genre breakdown across years, your top song each year, and a collage of memories alongside it. It fits Genius's core ethos. The music you loved at a given moment tells you something about who you were.",
+        images: [
+          {
+            src: geniusMusicalTimeline,
+            alt: 'Musical Timeline feature proposal showing genre breakdown over years with personal photo collages',
+            width: 'lg',
+          },
+        ],
+      },
+      {
+        type: 'figmaEmbed',
+        heading: 'Final Product',
+        content:
+          'A fully interactive prototype of the redesigned Genius. Click through to explore search, discovery, and the Musical Timeline feature.',
+        url: 'https://embed.figma.com/proto/3WJtXJMWNyr79vRnFzarpC/Kenji-Zaharchuk-ME-125?node-id=720-3152&p=f&scaling=scale-down&content-scaling=fixed&page-id=718%3A5&starting-point-node-id=720%3A3152&show-proto-sidebar=0&embed-host=share',
+        externalUrl: 'https://www.figma.com/design/3WJtXJMWNyr79vRnFzarpC/Kenji-Zaharchuk-ME-125?node-id=718-5',
+        linkLabel: 'Open in Figma',
+        interactiveHint: true,
+        interactiveHintText: 'This embed is interactive. Click through to explore the prototype.',
+        size: 'contained',
+      },
+      {
+        type: 'outcome',
+        content:
+          'I learned a lot through this project. The fundamentals the class was built around (type, color, layout, brand systems), and a quieter lesson about what makes people love a product. Rarely the logo or the palette. Usually the feel of the thing in use. Genius has the foundation for that, and the redesign was an attempt to bring more of it to the surface.',
+      },
+    ],
   },
   {
     slug: 'spotify',
