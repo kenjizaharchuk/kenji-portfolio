@@ -25,14 +25,14 @@ export function FeaturedProjects() {
       id="featured"
       className="relative w-full pt-36 pb-24 md:pt-48 md:pb-32 px-4 sm:px-6"
     >
-      <div className="w-[80vw] max-w-4xl mx-auto">
-        <div className="text-center mb-10 md:mb-12">
-          <h2 className="font-display text-4xl md:text-5xl font-bold text-white/90">
+      <div className="w-[88vw] max-w-5xl mx-auto">
+        <div className="text-center mb-14 md:mb-16">
+          <h2 className="font-display text-5xl md:text-6xl font-bold text-white/90">
             Featured Projects
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7 md:gap-9">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10">
           {featured.map((project) => {
             const isHidden =
               !!project.slug &&
@@ -104,16 +104,16 @@ export function FeaturedProjects() {
                   )}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent" />
 
-                  <div className="relative z-10 h-full p-3 md:p-4 flex flex-col justify-end">
+                  <div className="relative z-10 h-full p-5 md:p-6 flex flex-col justify-end">
                     <p
                       data-card-part="subtitle"
-                      className="font-display text-white/70 text-[10px] md:text-[11px] font-semibold tracking-wider uppercase mb-1.5"
+                      className="font-display text-white/70 text-xs md:text-sm font-semibold tracking-wider uppercase mb-1.5"
                     >
                       {category}
                     </p>
                     <h3
                       data-card-part="title"
-                      className="font-display text-white text-base md:text-lg font-bold leading-tight"
+                      className="font-display text-white text-xl md:text-2xl font-bold leading-tight"
                     >
                       {project.title}
                     </h3>
