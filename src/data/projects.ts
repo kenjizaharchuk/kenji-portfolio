@@ -348,10 +348,11 @@ export const projectDetails: ProjectDetail[] = [
         heading: 'Summer Campaign Website',
         content:
           'The campaign site brought "Human Softness" into a digital experience: hero film, compatibility test flow, video modal, product strip, store finder. The Figma file shows the design exploration across desktop and mobile.',
-        url: 'https://www.figma.com/design/cGNUVCEtOq3poxQdkZBmqX/SKYN---Summer-Campaign-2024--Draft---Copy-?node-id=708-994',
+        url: 'https://embed.figma.com/design/cGNUVCEtOq3poxQdkZBmqX/SKYN---Summer-Campaign-2024--Draft---Copy-?node-id=708-994&embed-host=share',
         externalUrl: 'https://www.figma.com/design/cGNUVCEtOq3poxQdkZBmqX/SKYN---Summer-Campaign-2024--Draft---Copy-?node-id=708-994',
         linkLabel: 'Open in Figma',
         interactiveHint: true,
+        interactiveHintText: 'This embed is interactive. Click through to explore the Figma workspace.',
         size: 'contained',
       },
       {
