@@ -660,7 +660,7 @@ export const projectDetails: ProjectDetail[] = [
         content:
           "The crystal size was fixed; everything had to work around it. Each crystal heats up under power, so water had to flow past every one to keep it safe against skin. Water near a head can't leak. We needed to fit as many crystals as possible to maximize brain coverage, while leaving room for cooling channels and the wiring. The geometry of a skull is irregular, so spacing and angles had to be solved together. The final lab system runs 8 independently-driven channels; on a small model head we found we could physically fit 13 crystal positions. Current coverage is about 50% of the brain, with the gaps at superficial regions.",
         images: [
-          { src: airanRapidPrototype, alt: 'Mid-stage prototype with masking-taped housings stuck to a swim cap on a mannequin', aspect: 'natural', width: 'lg' },
+          { src: airanRapidPrototype, alt: 'Mid-stage prototype with masking-taped housings stuck to a swim cap on a mannequin', aspect: 'natural', width: 'md' },
         ],
       },
       {
