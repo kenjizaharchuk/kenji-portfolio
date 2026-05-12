@@ -39,6 +39,7 @@ export type Block =
         aspect?: '4/3' | '16/9' | '1/1' | '21/9' | '16/10' | '3/2' | 'natural';
         fit?: 'cover' | 'contain';
         width?: 'sm' | 'md' | 'lg' | 'full';
+        bare?: boolean;
         externalLink?: { label: string; url: string };
       }[];
     }
@@ -46,8 +47,9 @@ export type Block =
       type: 'featuredImage';
       src: string;
       alt: string;
-      aspect?: '16/10' | '16/9' | '21/9' | '4/3' | '1/1';
+      aspect?: '16/10' | '16/9' | '21/9' | '4/3' | '1/1' | 'natural';
       width?: 'sm' | 'md' | 'lg' | 'full';
+      bare?: boolean;
       externalLink?: { label: string; url: string };
     }
   | {
@@ -392,7 +394,7 @@ export const projectDetails: ProjectDetail[] = [
     category: 'Digital Design',
     tags: ['Figma', 'UI/UX Design', 'Opportunity Mapping', 'Visual Systems'],
     heroImage: geniusRedesign,
-    heroImagePosition: 'center 30%',
+    
     meta: {
       client: 'Personal project, Stanford Design 170 (Visual Frontiers)',
       timeline: 'Spring 2023, 6 weeks',
@@ -414,6 +416,8 @@ export const projectDetails: ProjectDetail[] = [
         type: 'featuredImage',
         src: geniusFinalDesign,
         alt: 'Genius Lyrics Redesign final design',
+        aspect: 'natural',
+        bare: true,
         width: 'lg',
       },
       {
@@ -425,6 +429,7 @@ export const projectDetails: ProjectDetail[] = [
           {
             src: geniusMoodboard,
             alt: 'Genius moodboard with logo treatments and color references',
+            aspect: 'natural',
             width: 'lg',
           },
         ],
@@ -438,6 +443,7 @@ export const projectDetails: ProjectDetail[] = [
           {
             src: geniusBrandGuide,
             alt: 'Genius brand profile and style guide',
+            aspect: 'natural',
             width: 'lg',
           },
         ],
@@ -451,6 +457,7 @@ export const projectDetails: ProjectDetail[] = [
           {
             src: geniusMusicalTimeline,
             alt: 'Musical Timeline feature proposal showing genre breakdown over years with personal photo collages',
+            aspect: 'natural',
             width: 'lg',
           },
         ],
