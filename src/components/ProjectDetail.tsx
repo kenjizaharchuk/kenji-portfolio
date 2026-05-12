@@ -417,12 +417,15 @@ function BlockRenderer({ block }: { block: Block }) {
           </div>
         </div>
       );
-    case 'outcome':
+    case 'outcome': {
+      const outcomeParagraphs = block.content.split(/\n\n+/);
       return (
         <div className="space-y-4">
-          <p className="font-display text-foreground/90 text-lg md:text-2xl leading-relaxed font-semibold">
-            {block.content}
-          </p>
+          {outcomeParagraphs.map((p, i) => (
+            <p key={i} className="font-display text-foreground/90 text-lg md:text-2xl leading-relaxed font-semibold">
+              {p}
+            </p>
+          ))}
           {block.ctaUrl && (
             <a
               href={block.ctaUrl}
