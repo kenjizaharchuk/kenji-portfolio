@@ -315,11 +315,11 @@ function MetaStrip({ meta }: { meta: ProjectMeta }) {
   if (!hasField && !hasLinks) return null;
 
   const Field = ({ label, value }: { label: string; value: string }) => (
-    <div className="flex flex-col gap-1 min-w-0">
-      <span className="font-display text-[10px] md:text-xs uppercase tracking-wider text-foreground/45">
+    <div className="flex flex-col gap-1.5 min-w-0">
+      <span className="font-display text-xs md:text-sm font-semibold uppercase tracking-wider text-foreground/70">
         {label}
       </span>
-      <span className="font-display text-sm md:text-[15px] text-foreground/85 leading-snug">
+      <span className="font-display text-base md:text-lg font-medium text-foreground leading-snug">
         {value}
       </span>
     </div>
@@ -332,8 +332,8 @@ function MetaStrip({ meta }: { meta: ProjectMeta }) {
         {meta.timeline && <Field label="Timeline" value={meta.timeline} />}
         {meta.outcome && <Field label="Outcome" value={meta.outcome} />}
         {hasLinks && (
-          <div className="flex flex-col gap-1 md:items-end">
-            <span className="font-display text-[10px] md:text-xs uppercase tracking-wider text-foreground/45">
+          <div className="flex flex-col gap-1.5 md:items-end">
+            <span className="font-display text-xs md:text-sm font-semibold uppercase tracking-wider text-foreground/70">
               Quick Links
             </span>
             <div className="flex flex-wrap gap-x-4 gap-y-1 md:justify-end">
@@ -343,7 +343,7 @@ function MetaStrip({ meta }: { meta: ProjectMeta }) {
                   href={link.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="font-display text-sm md:text-[15px] text-foreground/80 hover:text-foreground underline underline-offset-4 decoration-white/25 hover:decoration-white/70 transition-colors"
+                  className="font-display text-base md:text-[15px] text-foreground/90 hover:text-foreground underline underline-offset-4 decoration-white/25 hover:decoration-white/70 transition-colors"
                 >
                   {link.label} <span aria-hidden>↗</span>
                 </a>
