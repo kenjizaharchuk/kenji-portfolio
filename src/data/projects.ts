@@ -14,6 +14,9 @@ import spiberAudienceInsights from '@/assets/spiber-audience-insights.png';
 import spiberProposalTopPage from '@/assets/spiber-proposal-top-page.png';
 import spiberProposalInnovation from '@/assets/spiber-proposal-innovation.png';
 import spiberSitemapInvestors from '@/assets/spiber-sitemap-investors.png';
+import skynFinalWebsite from '@/assets/skyn-final-website.png';
+import skynArticleDesign from '@/assets/skyn-article-design.png';
+import discordBooth from '@/assets/discord-booth.png';
 
 export type Block =
   | { type: 'context'; content: string }
@@ -296,6 +299,112 @@ export const projectDetails: ProjectDetail[] = [
         ctaLabel: 'Visit spiber.inc/en ↗',
       },
     ],
+  },
+  {
+    slug: 'skyn',
+    title: 'SKYN',
+    subtitle: 'Creative Intern',
+    category: 'Digital Design · Work Experience',
+    tags: ['Digital Design', 'Concept Development', 'Brand Consistency', 'Figma'],
+    heroImage: skynFinalWebsite,
+    meta: {
+      client: 'SKYN (via UltraSuperNew Inc.)',
+      timeline: 'Summer 2024 · 4 weeks',
+      quickLinks: [
+        { label: 'Watch the campaign film', url: 'https://www.youtube.com/watch?v=DMfDWW10YDY' },
+        {
+          label: 'Summer Campaign Figma',
+          url: 'https://www.figma.com/design/cGNUVCEtOq3poxQdkZBmqX/SKYN---Summer-Campaign-2024--Draft---Copy-?node-id=708-994',
+        },
+        {
+          label: 'Articles Figma',
+          url: 'https://www.figma.com/design/A1tnjx9O1Dr3S5bgzCaCCQ/SKYN-Articles?node-id=0-1',
+        },
+      ],
+    },
+    blocks: [
+      {
+        type: 'context',
+        content:
+          'SKYN is a condom brand whose ethos centers on "Softness," the idea that genuine connection comes from real communication and physical closeness. For Summer 2024\'s "Human Softness" campaign with UltraSuperNew, we asked whether two strangers could feel a perfect match without one actually existing. I worked on concept development, the campaign landing site, and editorial articles for SKYNBUN, SKYN\'s main editorial site.',
+      },
+      {
+        type: 'featuredImage',
+        src: skynFinalWebsite,
+        alt: 'SKYN Human Softness campaign site',
+        width: 'lg',
+      },
+      {
+        type: 'processNarrative',
+        heading: 'Campaign Concept',
+        content:
+          'The premise was a fake compatibility study. Two single volunteers each completed a series of tests with experts before being introduced and told they were nearly a 100% match. The twist: the experts were actors and the tests were rigged. By the end, both participants reported feeling a genuine connection anyway. The film argued that real attraction comes from the experience of communication and closeness, not from the algorithm telling you it should. I helped develop the experience flow, including the on-screen compatibility test sequence and the structure of the moments between the volunteers. I was also on set during filming, which was the most enjoyable part of the project.',
+        images: [],
+      },
+      {
+        type: 'figmaEmbed',
+        heading: 'Summer Campaign Website',
+        content:
+          'The campaign site brought "Human Softness" into a digital experience: hero film, compatibility test flow, video modal, product strip, store finder. The Figma file shows the design exploration across desktop and mobile.',
+        url: 'https://www.figma.com/design/cGNUVCEtOq3poxQdkZBmqX/SKYN---Summer-Campaign-2024--Draft---Copy-?node-id=708-994',
+        externalUrl: 'https://www.figma.com/design/cGNUVCEtOq3poxQdkZBmqX/SKYN---Summer-Campaign-2024--Draft---Copy-?node-id=708-994',
+        linkLabel: 'Open in Figma',
+        interactiveHint: true,
+        size: 'contained',
+      },
+      {
+        type: 'processNarrative',
+        heading: 'Editorial Article Layouts',
+        content:
+          "Alongside the campaign site, I designed layouts for a series of editorial articles on SKYNBUN. Each article paired SKYN's brand voice with a different cultural angle: relationship science, lifestyle advice, creativity prompts, interviews. The challenge was building layouts that read playfully without losing the editorial restraint of the rest of the site. The articles are still live and have been viewed by thousands of readers.",
+        images: [
+          {
+            src: skynArticleDesign,
+            alt: 'SKYNBUN editorial article layouts across desktop and mobile',
+            width: 'lg',
+            externalLink: {
+              label: 'Open in Figma',
+              url: 'https://www.figma.com/design/A1tnjx9O1Dr3S5bgzCaCCQ/SKYN-Articles?node-id=0-1',
+            },
+          },
+        ],
+      },
+      {
+        type: 'outcome',
+        content:
+          '"Human Softness" launched across SKYN\'s Japanese social and digital channels in August 2024, anchored by a five-minute campaign film. The editorial articles I designed are still live on SKYNBUN today. The campaign landing site is no longer up, though SKYN\'s Valentine 2024 site at skynbun.jp/valentine2024 is still live as a visual reference for the era.',
+        ctaUrl: 'https://www.youtube.com/watch?v=DMfDWW10YDY',
+        ctaLabel: 'Watch the campaign film',
+      },
+    ],
+  },
+  {
+    slug: 'genius-lyrics',
+    title: 'Genius Lyrics Redesign',
+    subtitle: 'Creative Brand Expansion',
+    category: 'Digital Design',
+    tags: ['Figma', 'UI/UX Design', 'Opportunity Mapping', 'Visual Systems'],
+    heroImage: geniusRedesign,
+    heroImagePosition: 'center 78%',
+    blocks: [],
+  },
+  {
+    slug: 'spotify',
+    title: 'New Spotify Feature',
+    subtitle: 'Product Feature Concept',
+    category: 'Digital Design',
+    tags: ['Figma', 'UI/UX Design', 'Design System Consistency'],
+    heroImage: spotifyFeature,
+    blocks: [],
+  },
+  {
+    slug: 'discord',
+    title: 'Discord Tokyo Game Show Booth',
+    subtitle: 'Creative Intern',
+    category: 'Digital Design · Work Experience',
+    tags: ['Experience Design', 'Concept Development', 'Client Presentation'],
+    heroImage: discordBooth,
+    blocks: [],
   },
 ];
 

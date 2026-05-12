@@ -134,6 +134,7 @@ const projects: Project[] = [
     image: discordBooth,
     tags: ['Experience Design', 'Concept Development', 'Client Presentation'],
     categories: ['Digital Design', 'Work Experience'],
+    slug: 'discord',
   },
   {
     id: 7,
@@ -142,6 +143,7 @@ const projects: Project[] = [
     image: spotifyFeature,
     tags: ['Figma', 'UI/UX Design', 'Design System Consistency'],
     categories: ['Digital Design'],
+    slug: 'spotify',
   },
   {
     id: 8,
@@ -151,6 +153,7 @@ const projects: Project[] = [
     imagePosition: 'center 78%',
     tags: ['Figma', 'UI/UX Design', 'Opportunity Mapping', 'Visual Systems'],
     categories: ['Digital Design'],
+    slug: 'genius-lyrics',
   },
   {
     id: 9,
@@ -168,6 +171,7 @@ const projects: Project[] = [
     image: skynProject,
     tags: ['Digital Design', 'Concept Development', 'Brand Consistency', 'Figma'],
     categories: ['Digital Design', 'Work Experience'],
+    slug: 'skyn',
   },
   {
     id: 2,
