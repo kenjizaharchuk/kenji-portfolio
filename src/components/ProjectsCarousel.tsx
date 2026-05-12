@@ -132,7 +132,7 @@ const projects: Project[] = [
     title: 'Discord Tokyo Game Show Booth',
     subtitle: 'Creative Intern · UltraSuperNew Inc.',
     image: discordBooth,
-    tags: ['Experience Design', 'Concept Development', 'Client Presentation'],
+    tags: ['Experience Design', 'Concept Development', 'Client Presentation', 'Midjourney', 'Adobe Illustrator'],
     categories: ['Digital Design', 'Work Experience'],
     slug: 'discord',
   },
