@@ -8,6 +8,7 @@ import { ProjectsCarousel } from '@/components/ProjectsCarousel';
 import { ContactSection } from '@/components/ContactSection';
 import { Preloader } from '@/components/Preloader';
 import { ProjectDetail } from '@/components/ProjectDetail';
+import { FeaturedProjects } from '@/components/FeaturedProjects';
 
 const Index = () => {
   const { slug } = useParams();
