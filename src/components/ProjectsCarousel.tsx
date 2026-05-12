@@ -157,7 +157,7 @@ const projects: Project[] = [
     title: 'Spiber Brewed Protein',
     subtitle: 'Creative Intern · UltraSuperNew Inc.',
     image: spiberProject,
-    tags: ['Wireframing', 'Interface Design', 'Figma'],
+    tags: ['Information Architecture', 'Wireframing', 'Sitemap Design', 'Figma'],
     categories: ['Digital Design', 'Work Experience'],
     slug: 'spiber',
   },

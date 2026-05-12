@@ -455,6 +455,18 @@ function BlockRenderer({ block }: { block: Block }) {
                     ? ''
                     : '';
                 const widthWrap = widthClass ? `mx-auto w-full ${widthClass}` : '';
+                const linkEl = img.externalLink ? (
+                  <div className="flex justify-end pt-1">
+                    <a
+                      href={img.externalLink.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-display text-sm text-white/50 hover:text-white/90 transition-colors underline underline-offset-4 decoration-white/20 hover:decoration-white/60"
+                    >
+                      {img.externalLink.label} ↗
+                    </a>
+                  </div>
+                ) : null;
                 if (img.aspect === 'natural' && img.src) {
                   return (
                     <div key={i} className={widthWrap || undefined}>
@@ -465,6 +477,7 @@ function BlockRenderer({ block }: { block: Block }) {
                           className="block w-full h-auto"
                         />
                       </div>
+                      {linkEl}
                     </div>
                   );
                 }
@@ -501,9 +514,9 @@ function BlockRenderer({ block }: { block: Block }) {
                   </div>
                 );
                 return widthWrap ? (
-                  <div key={i} className={widthWrap}>{inner}</div>
+                  <div key={i} className={widthWrap}>{inner}{linkEl}</div>
                 ) : (
-                  <div key={i}>{inner}</div>
+                  <div key={i}>{inner}{linkEl}</div>
                 );
               })}
             </div>
