@@ -649,9 +649,10 @@ export const projectDetails: ProjectDetail[] = [
         content:
           "Before any CAD, the question was simpler: how many crystals can we fit on a head, and where do they go? The lab's research tracked five active threads at the time; the glymphatics column was the helmet. The first prototype was paper circles taped to a Speedo swim cap on a foam head. The work started crude on purpose, just to find out what was physically possible.",
         images: [
-          { src: airanWhiteboard, alt: "Whiteboard tracking the lab's five research threads, glymphatics column on the left", aspect: 'natural', width: 'md' },
-          { src: airanInitialHelmet, alt: 'First prototype: paper circles taped to a swim cap on a foam head', aspect: 'natural', width: 'md' },
+          { src: airanWhiteboard, alt: "Whiteboard tracking the lab's five research threads, glymphatics column on the left", aspect: 'natural' },
+          { src: airanInitialHelmet, alt: 'First prototype: paper circles taped to a swim cap on a foam head', aspect: 'natural' },
         ],
+        matchedHeight: true,
       },
       {
         type: 'processNarrative',
