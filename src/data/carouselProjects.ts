@@ -18,6 +18,7 @@ import rizzleAi from '@/assets/rizzle-ai.png';
 import notesFromFarm from '@/assets/notes-from-farm.jpg';
 import timeCapsule from '@/assets/time-capsule.jpg';
 import sensoryPuzzle from '@/assets/sensory-puzzle.jpg';
+import stoneLanternMold from '@/assets/stone-lantern-mold.JPG.asset.json';
 
 export const FILTER_CATEGORIES = [
   'Physical Design',
