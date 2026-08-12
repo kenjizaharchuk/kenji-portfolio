@@ -56,7 +56,7 @@ export const projects: Project[] = [
     title: 'Stone Lantern Mold',
     subtitle: 'Additive Manufacturing for Repeatable Casting',
     image: stoneLanternMold.url,
-    imagePosition: 'center 30%',
+    imagePosition: 'center bottom',
     tags: ['TPU 3D Printing', 'Mold Design', 'Hydrostatic Simulation', 'Design for Manufacturing', 'Fusion 360'],
     categories: ['Physical Design'],
     link: 'https://docs.google.com/presentation/d/1g2llmE0ZVSJEn_Gelu62Pbc-JVPjGG4jQrhqtQxfGEY/edit?usp=sharing',
