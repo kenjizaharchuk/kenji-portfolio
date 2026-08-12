@@ -52,6 +52,16 @@ export const projects: Project[] = [
     categories: ['Physical Design'],
   },
   {
+    id: 22,
+    title: 'Stone Lantern Mold',
+    subtitle: 'Additive Manufacturing for Repeatable Casting',
+    image: stoneLanternMold.url,
+    imagePosition: 'center 30%',
+    tags: ['TPU 3D Printing', 'Mold Design', 'Hydrostatic Simulation', 'Design for Manufacturing', 'Fusion 360'],
+    categories: ['Physical Design'],
+    link: 'https://docs.google.com/presentation/d/1g2llmE0ZVSJEn_Gelu62Pbc-JVPjGG4jQrhqtQxfGEY/edit?usp=sharing',
+  },
+  {
     id: 5,
     title: 'Wooden Clock',
     subtitle: 'Functional Art',
@@ -215,15 +225,6 @@ export const projects: Project[] = [
     tags: ['Accessible Design', 'Rapid Prototyping'],
     categories: ['Physical Design'],
     link: 'https://www.youtube.com/watch?v=OM2aNGwdu0M',
-  },
-  {
-    id: 22,
-    title: 'Stone Lantern Mold',
-    subtitle: 'Additive Manufacturing for Repeatable Casting',
-    image: stoneLanternMold.url,
-    tags: ['TPU 3D Printing', 'Mold Design', 'Hydrostatic Simulation', 'Design for Manufacturing', 'Fusion 360'],
-    categories: ['Physical Design'],
-    link: 'https://docs.google.com/presentation/d/1g2llmE0ZVSJEn_Gelu62Pbc-JVPjGG4jQrhqtQxfGEY/edit?usp=sharing',
   },
 ];
 
