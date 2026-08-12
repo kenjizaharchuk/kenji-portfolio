@@ -16,7 +16,8 @@ import { projects, FILTER_CATEGORIES, type FilterCategory } from '@/data/carouse
 
 export function ProjectsCarousel() {
   const [activeFilters, setActiveFilters] = useState<FilterCategory[]>([]);
-  const [currentProjectId, setCurrentProjectId] = useState<number>(projects[2].id);
+  const initialProjectId = projects.find(p => p.title === 'Maple Leaf Paper Punch')?.id ?? projects[2].id;
+  const [currentProjectId, setCurrentProjectId] = useState<number>(initialProjectId);
   const swiperRef = useRef<SwiperType | null>(null);
   const sectionRef = useRef<HTMLElement | null>(null);
   const navigate = useNavigate();
