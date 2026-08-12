@@ -101,7 +101,7 @@ export function HeroSidebar({ isPreloaderActive = false, forceHidden = false }: 
 
     return () => {
       aboutObserver.disconnect();
-      featuredObserver.disconnect();
+      
       contactObserver.disconnect();
       window.removeEventListener('scroll', schedule);
       window.removeEventListener('resize', schedule);
