@@ -18,6 +18,7 @@ import rizzleAi from '@/assets/rizzle-ai.png';
 import notesFromFarm from '@/assets/notes-from-farm.jpg';
 import timeCapsule from '@/assets/time-capsule.jpg';
 import sensoryPuzzle from '@/assets/sensory-puzzle.jpg';
+import stoneLanternMold from '@/assets/stone-lantern-mold.JPG.asset.json';
 
 export const FILTER_CATEGORIES = [
   'Physical Design',
@@ -214,6 +215,15 @@ export const projects: Project[] = [
     tags: ['Accessible Design', 'Rapid Prototyping'],
     categories: ['Physical Design'],
     link: 'https://www.youtube.com/watch?v=OM2aNGwdu0M',
+  },
+  {
+    id: 22,
+    title: 'Stone Lantern Mold',
+    subtitle: 'Additive Manufacturing for Repeatable Casting',
+    image: stoneLanternMold.url,
+    tags: ['TPU 3D Printing', 'Mold Design', 'Hydrostatic Simulation', 'Design for Manufacturing', 'Fusion 360'],
+    categories: ['Physical Design'],
+    link: 'https://docs.google.com/presentation/d/1g2llmE0ZVSJEn_Gelu62Pbc-JVPjGG4jQrhqtQxfGEY/edit?usp=sharing',
   },
 ];
 
